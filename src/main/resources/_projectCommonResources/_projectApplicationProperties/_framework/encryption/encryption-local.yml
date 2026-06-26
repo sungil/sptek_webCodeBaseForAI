@@ -3,7 +3,7 @@
 jasypt:
   encryptor:
     bean: customJasyptStringEncryptor # 이 프로퍼티가 없어도 실제 jasyptStringEncryptor 이름으로 등록된 Bean이 있으면 해당 Bean이 동작함
-    password: ${JASYPT_ENCRYPTOR_PASSWORD} # 일반 형식 32자 이상 권장
+    password: ${JASYPT_ENCRYPTOR_PASSWORD:12345678901234567890123456789012} # 일반 형식 32자 이상 권장
     #algorithm: PBEWithMD5AndDES # 보안성 낮음
     algorithm: PBEWITHHMACSHA512ANDAES_256 #보안성 높음
 
@@ -11,15 +11,15 @@ jasypt:
     # 원문: "originPlainText", spec: PBEWITHHMACSHA512ANDAES_256, JASYPT_ENCRYPTOR_PASSWORD=12345678901234567890123456789012
     encValue: ENC(KvF6T1vmnpuch4OqqLci0TNRpr49EiCFYG6zkQU8FbXheNP4z7VfYgQg/yEygNqC)
 
-  # jasyptStringEncryptor 으로 선언된 Bean 이 없다면 아래 설정으로 기분 StringEncryptor 을 설정할수 있다 (CustomJasyptConfig 에서 jasyptStringEncryptor 가 Bean으로 설정되면 의미가 없음)
-  #jasypt:
-  #  encryptor:
-  #    password: default_encryption_password_abc
+# jasyptStringEncryptor 으로 선언된 Bean 이 없다면 아래 설정으로 기분 StringEncryptor 을 설정할수 있다 (CustomJasyptConfig 에서 jasyptStringEncryptor 가 Bean으로 설정되면 의미가 없음)
+#jasypt:
+#  encryptor:
+#    password: default_encryption_password_abc
 
 
 aesEncryptor:
-  base64SecretKey: ${AESENCRYPTOR_BASE64SECRETKEY} #Base64 형식의 43자 이상(256bit 이상, 1자 6bit)
+  base64SecretKey: ${AESENCRYPTOR_BASE64SECRETKEY:1234567890123456789012345678901234567890123} #Base64 형식의 43자 이상(256bit 이상, 1자 6bit)
 
 desEncryptor:
-  base64SecretKey: ${DESENCRYPTOR_BASE64SECRETKEY} #Base64 형식의 11자 이상(64bit 이상, 1자 6bit)
+  base64SecretKey: ${DESENCRYPTOR_BASE64SECRETKEY:12345678901} #Base64 형식의 11자 이상(64bit 이상, 1자 6bit)
 
