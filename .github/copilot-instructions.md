@@ -23,3 +23,10 @@
 * 다국어 설정과 관련한 질문은 [i18n](../src/main/resources/_projectCommonResources/i18n) 을 참조해 설명할것
 * HandlerMethodArgumentResolver, Aspect, ResponseBodyAdvice, EventListener, Filter, OncePerRequestFilter, HandlerInterceptor, SecurityFilterChain 
   과 관련된 예시 코드를 원할때는 [_projectCommon](../src/main/java/com/sptek/_projectCommon) 내부 파일을 실시간으로 참조해서 답변해줘
+
+
+5. 커밋 메시지 생성 지침
+* 커밋 메시지를 생성할 때는 현재 변경 diff를 기준으로 한글로 작성해줘
+* 제목은 변경 의도가 드러나도록 간결하게 작성하고, 단순 변경은 제목만 작성해줘
+* 본문이 필요한 경우 주요 변경점과 검증 결과만 짧게 포함해줘
+* 민감값, 개인 경로, 임시 파일, 생성 파일 내용은 커밋 메시지에 포함하지 말아줘

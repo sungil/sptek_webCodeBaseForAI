@@ -4,7 +4,7 @@
 
 ## 1. 프로젝트 기준
 
-- 이 저장소는 SPT Framework Web Core 기반의 단일 모듈 Spring Boot 웹 애플리케이션이다.
+- 이 저장소는 SPT(사명) Framework Web Core 기반의 단일 모듈 Spring Boot 웹 애플리케이션이다.
 - 빌드 기준은 Java 17, Spring Boot 3.2.5, Gradle Wrapper 7.6.1이다. 로컬 JDK는 17 이상을 사용할 수 있지만 생성되는 코드는 Java 17과 호환되어야 한다.
 - 주요 기술은 Spring MVC, Thymeleaf, Spring Security, JPA, MyBatis, H2/MySQL/MariaDB, Redis, SpringDoc, Lombok이다.
 - 기본 활성 프로파일은 `local`이다. 프로파일은 `local`, `dev`, `stg`, `prd` 네 종류를 기준으로 한다.
@@ -25,16 +25,17 @@
 ## 3. 작업 시작 전 확인 절차
 
 1. `git status --short`로 사용자의 기존 변경을 확인하고 관련 없는 변경을 보존한다.
-2. 요청과 직접 관련된 클래스, 호출자, 설정, 테스트 또는 예제를 `rg`로 찾는다. 클래스명이나 프레임워크 기능에 관해 답할 때 기억에 의존하지 말고 현재 파일을 다시 읽는다.
-3. 프레임워크 기능을 사용하는 작업은 다음 연결 지점을 함께 확인한다.
+2. PowerShell에서 한글 주석이나 문서를 읽을 때는 인코딩 깨짐을 피하기 위해 `Get-Content -Encoding UTF8`처럼 UTF-8을 명시한다.
+3. 요청과 직접 관련된 클래스, 호출자, 설정, 테스트 또는 예제를 `rg`로 찾는다. 클래스명이나 프레임워크 기능에 관해 답할 때 기억에 의존하지 말고 현재 파일을 다시 읽는다.
+4. 프레임워크 기능을 사용하는 작업은 다음 연결 지점을 함께 확인한다.
    - 커스텀 `@Enable_*` 애노테이션과 그 조건·등록 코드
    - `SptWfwApplication`의 활성화 애노테이션
    - `_frameworkWebCoreResources/_frameworkApplicationProperties`
    - `_projectCommonResources/_projectApplicationProperties`
    - `_projectCommon`의 실제 확장 예제
-4. 보안 경로나 API URL을 바꿀 때 `_projectCommon/springSecurity/SecurityFilterChainConfig.java`와 프레임워크 필터 체인의 matcher 및 순서를 확인한다.
-5. 로그백 질문·변경은 `_frameworkWebCoreResources/logbackConfig`, 다국어 작업은 `_projectCommonResources/i18n`을 함께 확인한다.
-6. 요구가 불명확하더라도 기존 구조에서 안전하게 결정할 수 있는 범위는 진행한다. 데이터 모델, 인증 정책, 외부 계약처럼 결과가 크게 달라지는 선택만 사용자에게 확인한다.
+5. 보안 경로나 API URL을 바꿀 때 `_projectCommon/springSecurity/SecurityFilterChainConfig.java`와 프레임워크 필터 체인의 matcher 및 순서를 확인한다.
+6. 로그백 질문·변경은 `_frameworkWebCoreResources/logbackConfig`, 다국어 작업은 `_projectCommonResources/i18n`을 함께 확인한다.
+7. 요구가 불명확하더라도 기존 구조에서 안전하게 결정할 수 있는 범위는 진행한다. 데이터 모델, 인증 정책, 외부 계약처럼 결과가 크게 달라지는 선택만 사용자에게 확인한다.
 
 ## 4. 구현 규칙
 
@@ -92,7 +93,13 @@ bash ./gradlew bootRun --args='--spring.profiles.active=local'
 - 외부 라이브러리를 추가하기 전에 Spring 또는 현재 의존성으로 해결 가능한지 확인한다. 추가가 필요하면 목적과 버전 호환성을 설명하고 최소 범위로 반영한다.
 - 공개 API 계약을 바꾸면 컨트롤러, DTO validation, 공통 응답 래핑, 보안 matcher, HTTP 예제, 관련 문서를 함께 검토한다.
 
-## 8. 완료 보고
+## 8. 커밋 메시지
+
+- 커밋 메시지 생성 요청을 받으면 현재 diff를 확인하고 변경 의도 중심의 한글 메시지를 제안한다.
+- 제목은 간결한 한 문장으로 작성하고, 필요한 경우 본문에 주요 변경점과 검증 결과만 짧게 적는다.
+- 단순 변경은 제목만 제안한다. 민감값, 개인 경로, 임시 파일, 생성 파일은 커밋 메시지에 포함하지 않는다.
+
+## 9. 완료 보고
 
 - 먼저 구현 결과를 짧게 설명하고, 변경한 파일과 핵심 설계 결정을 밝힌다.
 - 실행한 검증 명령과 결과를 정확히 기록한다. 실행하지 못한 검증은 이유와 함께 구분한다.
