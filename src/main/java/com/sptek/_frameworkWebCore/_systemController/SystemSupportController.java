@@ -8,6 +8,7 @@ import com.sptek._frameworkWebCore.springSecurity.CustomAuthenticationSuccessHan
 import com.sptek._frameworkWebCore.springSecurity.spt.RedirectHelperAfterLogin;
 import com.sptek._frameworkWebCore.util.LocaleUtil;
 import com.sptek._frameworkWebCore.util.ResponseUtil;
+import com.sptek._frameworkWebCore.util.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,7 +24,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.nio.file.Path;
 import java.util.Base64;
 
 @Slf4j
@@ -75,7 +75,7 @@ public class SystemSupportController {
     @Operation(summary = "File 에 대한 바이트 스트림 제공 (권한 처리 포함) ", description = "") //swagger
     public Object fileByteFromStorage(@RequestParam("securedFilePath") String securedFilePath)  throws Exception {
         // 테스트 securedFilePath >> SELECT CONCAT(FILE_PATH, '/', FILE_NAME) AS FULL_PATH FROM POST_FILES;
-        return ResponseUtil.makeResponseEntityFromFile(Path.of(securedFilePath));
+        return ResponseUtil.makeResponseEntityFromFile(SecurityUtil.parseSecuredFilePath(securedFilePath));
     }
 
     @Controller

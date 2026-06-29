@@ -53,12 +53,12 @@ public class ResponseUtil {
     }
 
     public static ResponseEntity<byte[]> makeResponseEntityFromFile(Path securedFilePath) throws Exception {
-        if (securedFilePath == null) throw new IllegalArgumentException("securedFilePath is required");
+        if (securedFilePath == null) throw new ServiceException(CommonErrorCodeEnum.BAD_REQUEST_ERROR, "securedFilePath is required");
         if (!SecurityUtil.hasPermissionForSecuredFilePath(securedFilePath)) {
-            throw new ServiceException(CommonErrorCodeEnum.FORBIDDEN_ERROR, "필요한 접근 권한이 없습니다.");
+            throw new ServiceException(CommonErrorCodeEnum.FORBIDDEN_ERROR);
         }
 
-        Path resolvedPath = SecurityUtil.getStorageRootPath(securedFilePath).resolve(securedFilePath);
+        Path resolvedPath = SecurityUtil.resolveStoragePath(securedFilePath);
         File finalFile = resolvedPath.toFile();
         //log.debug("Final request file: {}", finalFile.getAbsolutePath());
 

@@ -119,7 +119,7 @@ public class MultipartFilePostService {
         //Path postOwnFilePath = getPostOwnFilePathForAuth(postBaseDto, Set.of(AuthorityEnum.AUTH_SPECIAL_FOR_TEST, AuthorityEnum.AUTH_RETRIEVE_USER_ALL_FOR_MARKETING));
         //---------------------------------------------------------------------------
 
-        Path realPostFilePath = SecurityUtil.getStorageRootPath(postOwnFilePath).resolve(postOwnFilePath);
+        Path realPostFilePath = SecurityUtil.resolveStoragePath(postOwnFilePath);
         // 멀티 파일의 내용이 uploadFileDtos 에 없으면 uploadFileDtos 에 추가 (fileName 과 fileOrder 값 입력)
         for (int i = 0; i < multipartFiles.size(); i++) {
             MultipartFile multipartFile = multipartFiles.get(i);

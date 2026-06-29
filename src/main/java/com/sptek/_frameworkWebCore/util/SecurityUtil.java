@@ -1,5 +1,7 @@
 package com.sptek._frameworkWebCore.util;
 
+import com.sptek._frameworkWebCore.base.code.CommonErrorCodeEnum;
+import com.sptek._frameworkWebCore.base.exception.ServiceException;
 import com.sptek._frameworkWebCore.springSecurity.AuthorityEnum;
 import com.sptek._projectCommon.commonObject.code.SecureFilePathTypeEnum;
 import lombok.extern.slf4j.Slf4j;
@@ -118,17 +120,55 @@ public class SecurityUtil {
     }
 
     public static Path getStorageRootPath(Path securedFilePath) {
-        if (securedFilePath == null) throw new IllegalArgumentException("securedFilePath is required");
+        if (securedFilePath == null) throw new ServiceException(CommonErrorCodeEnum.BAD_REQUEST_ERROR, "securedFilePath is required");
         try {
             return Path.of(SpringUtil.getApplicationProperty(String.format("storage.%s.localRootPath", securedFilePath.getName(0).toString())).toString());
         } catch (Exception e) {
-            throw new IllegalArgumentException("Unsupported SecurePathEnum value: " + securedFilePath.getName(0).toString());
+            throw new ServiceException(CommonErrorCodeEnum.BAD_REQUEST_ERROR, "Unsupported SecurePathEnum value: " + securedFilePath.getName(0).toString());
+        }
+    }
+
+    public static Path parseSecuredFilePath(String securedFilePath) {
+        if (securedFilePath == null || securedFilePath.isBlank()) {
+            throw new ServiceException(CommonErrorCodeEnum.BAD_REQUEST_ERROR, "securedFilePath is required");
+        }
+
+        Path parsedSecuredFilePath = Path.of(securedFilePath.trim());
+        validateSecuredFilePath(parsedSecuredFilePath);
+        return parsedSecuredFilePath;
+    }
+
+    public static Path resolveStoragePath(Path securedFilePath) {
+        validateSecuredFilePath(securedFilePath);
+
+        Path storageRootPath = getStorageRootPath(securedFilePath).toAbsolutePath().normalize();
+        Path normalizedSecuredFilePath = securedFilePath.normalize();
+        Path resolvedPath = storageRootPath.resolve(normalizedSecuredFilePath).normalize();
+
+        if (!resolvedPath.startsWith(storageRootPath)) {
+            throw new ServiceException(CommonErrorCodeEnum.BAD_REQUEST_ERROR, "Invalid securedFilePath: " + securedFilePath);
+        }
+
+        return resolvedPath;
+    }
+
+    private static void validateSecuredFilePath(Path securedFilePath) {
+        if (securedFilePath == null) throw new ServiceException(CommonErrorCodeEnum.BAD_REQUEST_ERROR, "securedFilePath is required");
+        if (securedFilePath.toString().isBlank()) throw new ServiceException(CommonErrorCodeEnum.BAD_REQUEST_ERROR, "securedFilePath is required");
+        if (securedFilePath.isAbsolute()) throw new ServiceException(CommonErrorCodeEnum.BAD_REQUEST_ERROR, "Absolute securedFilePath is not allowed");
+        if (securedFilePath.getNameCount() == 0) throw new ServiceException(CommonErrorCodeEnum.BAD_REQUEST_ERROR, "securedFilePath is required");
+        if (securedFilePath.normalize().getNameCount() == 0) throw new ServiceException(CommonErrorCodeEnum.BAD_REQUEST_ERROR, "Invalid securedFilePath: " + securedFilePath);
+
+        for (Path pathPart : securedFilePath) {
+            if (".".equals(pathPart.toString()) || "..".equals(pathPart.toString())) {
+                throw new ServiceException(CommonErrorCodeEnum.BAD_REQUEST_ERROR, "Path traversal is not allowed: " + securedFilePath);
+            }
         }
     }
 
     //현재 사용자 가 해당 securedFilePath 에 Access 권한이 있는지 확인 함
     public static boolean hasPermissionForSecuredFilePath(Path securedFilePath) throws Exception {
-        if (securedFilePath == null) throw new IllegalArgumentException("securedFilePath is required");
+        if (securedFilePath == null) throw new ServiceException(CommonErrorCodeEnum.BAD_REQUEST_ERROR, "securedFilePath is required");
 
         try {
             String SecurePathType = securedFilePath.getName(0).toString();
