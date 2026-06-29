@@ -1,62 +1,61 @@
 ---
 name: spt-code-analysis
-description: Analyze SPT Framework Web Core repository code consistently. Use when investigating controllers, services, custom @Enable_* annotations, filters, interceptors, security matchers, profile configuration, resources, request/response behavior, startup errors, or when explaining code based on this repository's AGENT.md and Base code conventions.
+description: SPT Framework Web Core 저장소 코드를 일관된 방식으로 분석합니다. 컨트롤러, 서비스, 커스텀 @Enable_* 애노테이션, 필터, 인터셉터, 보안 matcher, 프로파일 설정, 리소스, 요청/응답 동작, 서버 시작 오류를 조사하거나 AGENT.md와 Base 코드 관례를 기준으로 코드를 설명할 때 사용합니다.
 ---
 
-# SPT Code Analysis
+# SPT 코드 분석
 
-Use this skill for source analysis in the SPT Framework Web Core repository.
+SPT Framework Web Core 저장소의 소스 코드를 분석할 때 이 스킬을 사용한다.
 
-## Core Rules
+## 핵심 규칙
 
-1. Read `AGENT.md` first and follow the Base code priority rules.
-2. Start with `git status --short` and preserve unrelated user changes.
-3. Use `rg` for classes, URLs, annotations, properties, and call sites. Do not rely on memory for repository facts.
-4. Separate conclusions into code-backed facts, explicit inferences, and general guidance.
-5. For project-code answers, start the response with `SPT Framework 를 기준으로한 설명입니다`.
+1. 먼저 `AGENT.md`를 읽고 Base 코드 우선 원칙을 따른다.
+2. `git status --short`로 현재 staged/unstaged 변경을 확인한다. 기본 설명은 현재 작업트리 파일 기준으로 하되, 사용자가 원본·staged diff·변경 전후 비교를 요청하면 그 기준을 명확히 구분한다.
+3. 클래스, URL, 애노테이션, 프로퍼티, 호출자는 `rg`로 찾는다. 저장소 사실관계는 기억에 의존하지 않는다.
+4. 결론은 코드 근거가 있는 사실, 명시적인 추론, 일반적인 권고를 구분한다.
 
-## Analysis Workflow
+## 분석 절차
 
-1. Identify the user-facing surface: URL, class, method, annotation, profile key, template, SQL, or log line.
-2. Find all direct definitions and callers with `rg`.
-3. Open the smallest relevant files with UTF-8 encoding.
-4. Trace framework connection points before concluding:
-   - `SptWfwApplication` activation annotations
-   - custom `@Enable_*` annotations and conditions
+1. 사용자가 언급한 표면을 먼저 식별한다: URL, 클래스, 메소드, 애노테이션, 프로파일 키, 템플릿, SQL, 로그 라인.
+2. 1차 탐색은 `rg`로 직접 정의와 호출자를 찾는다. Java 심볼 관계, 오버로드, AOP/프록시, Bean 등록, 프로파일 조건처럼 문자열 검색만으로 부족한 경우에는 IDE/LSP, Gradle 컴파일, 로그, 설정 파일을 함께 확인한다.
+3. 관련성이 높은 최소 파일을 UTF-8 인코딩으로 연다.
+4. 결론을 내리기 전에 프레임워크 연결 지점을 추적한다.
+   - `SptWfwApplication`의 활성화 애노테이션
+   - 커스텀 `@Enable_*` 애노테이션과 조건
    - `_frameworkWebCoreResources/_frameworkApplicationProperties`
    - `_projectCommonResources/_projectApplicationProperties`
-   - `_projectCommon` extension implementations
-   - `_example` usage examples
-5. Report the concrete file and line references that support the answer.
+   - `_projectCommon` 확장 구현체
+   - `_example` 사용 예제
+5. 답변을 뒷받침하는 구체적인 파일과 라인 근거를 제시한다.
 
-## Controller and Request Analysis
+## 컨트롤러와 요청 분석
 
-When analyzing a controller, endpoint, or view:
+컨트롤러, 엔드포인트, 뷰를 분석할 때는 다음을 확인한다.
 
-1. Check request mapping, HTTP method, and produced media type.
-2. Check controller and method `@Enable_*` annotations.
-3. Check common API success/error response wrapping.
-4. Check `SecurityFilterChainConfig` and framework security matcher order.
-5. Check DTO validation and binding behavior.
-6. Check related Thymeleaf templates or static assets when the endpoint returns a view.
-7. Check `http-client` examples when the API contract changes.
+1. request mapping, HTTP method, produces media type을 확인한다.
+2. 컨트롤러와 메소드의 `@Enable_*` 애노테이션을 확인한다.
+3. API 공통 성공/에러 응답 래핑 여부를 확인한다.
+4. `SecurityFilterChainConfig`와 프레임워크 보안 matcher 순서를 확인한다.
+5. DTO validation과 binding 동작을 확인한다.
+6. 엔드포인트가 view를 반환하면 관련 Thymeleaf 템플릿과 정적 자원을 확인한다.
+7. API 계약이 바뀌면 `http-client` 예제를 확인한다.
 
-## Configuration Analysis
+## 설정 분석
 
-When analyzing settings or startup behavior:
+설정이나 서버 시작 동작을 분석할 때는 다음을 확인한다.
 
-1. Read `application.yml` and all relevant `application-{profile}.yml` files.
-2. Follow `spring.config.import` into `_frameworkWebCoreResources` and `_projectCommonResources`.
-3. For profile-specific changes, review `local`, `dev`, `stg`, and `prd` structure together.
-4. Do not guess production or staging secrets.
-5. For datasource changes, check `SptWfwApplication`, Gradle DB dependencies, and datasource profile properties together.
+1. `application.yml`과 관련된 모든 `application-{profile}.yml` 파일을 읽는다.
+2. `spring.config.import`를 따라 `_frameworkWebCoreResources`와 `_projectCommonResources`를 확인한다.
+3. 프로파일별 변경은 `local`, `dev`, `stg`, `prd` 구조를 함께 검토한다.
+4. 운영이나 스테이징 비밀값을 추측하지 않는다.
+5. 데이터소스 변경은 `SptWfwApplication`, Gradle DB 의존성, datasource 프로파일 설정을 함께 확인한다.
 
-## Security and Sensitive Files
+## 보안과 민감 파일
 
-1. Do not print contents of `http-client/http-client.private.env.json`.
-2. Do not print or replace `src/main/resources/_frameworkWebCoreResources/keystore/keystore.p12`.
-3. Treat `infra/h2DB`, DB init SQL, and `infra/mysql-replication` as data-loss-sensitive.
+1. `http-client/http-client.private.env.json`의 내용을 출력하지 않는다.
+2. `src/main/resources/_frameworkWebCoreResources/keystore/keystore.p12`의 내용을 출력하거나 교체하지 않는다.
+3. `infra/h2DB`, DB 초기화 SQL, `infra/mysql-replication`은 데이터 손실 가능성이 있는 대상으로 취급한다.
 
-## Output
+## 답변 방식
 
-Keep the answer concise and cite files when the conclusion depends on repository code. If evidence is incomplete, state what was checked and what remains unverified.
+답변은 간결하게 작성하고, 저장소 코드에 의존하는 결론은 파일 근거를 제시한다. 근거가 부족하면 확인한 내용과 아직 검증하지 못한 범위를 구분해서 밝힌다.
