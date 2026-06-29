@@ -1,4 +1,4 @@
-package com.sptek._frameworkWebCore._example.unit.LocaleLanguage;
+package com.sptek._frameworkWebCore._example.unit.localeLanguage;
 
 import com.sptek._frameworkWebCore._annotation.Enable_ResponseOfViewGlobalException_At_ViewController;
 import com.sptek._frameworkWebCore.util.AuthenticationUtil;

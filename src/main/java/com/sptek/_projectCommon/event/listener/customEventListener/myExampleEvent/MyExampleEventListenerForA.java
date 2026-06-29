@@ -1,4 +1,4 @@
-package com.sptek._projectCommon.event.listener.customEventListener.MyExampleEvent;
+package com.sptek._projectCommon.event.listener.customEventListener.myExampleEvent;
 
 import com.sptek._projectCommon.event.event.MyExampleEvent;
 import lombok.extern.slf4j.Slf4j;

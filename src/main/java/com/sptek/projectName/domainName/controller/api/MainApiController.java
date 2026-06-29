@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 // @Tag(name = "domainName-main", description = "")
 // 실 Project 쪽의 Security filter chain Test Code
 
-public class mainApiController {
+public class MainApiController {
 
     /*
     @GetMapping("/01/domainName/main/authFree")
