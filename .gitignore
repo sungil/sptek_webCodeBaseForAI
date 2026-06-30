@@ -38,3 +38,7 @@ out/
 
 ### Codex local runtime ###
 .codex/run/
+
+### Local runtime outputs ###
+infra/h2DB/*.db
+log/
