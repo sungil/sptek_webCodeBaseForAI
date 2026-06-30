@@ -3,7 +3,7 @@ storage:
 
   anyone:
     # 이후 path 는 자유 롭게
-    localRootPath: ${user.home}/WEB_FILES/ANYON_ROOT/
+    localRootPath: ${user.home}/WEB_FILES/ANYONE_ROOT/
 
   login:
     # 이후 path 는 자유 롭게
