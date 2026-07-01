@@ -1,10 +1,10 @@
 # SPT Code Analysis Workflow
 
-이 문서는 SPT Framework Web Core 저장소의 소스 코드를 분석할 때 따르는 실행 절차다. 저장소 공통 원칙, 보안/민감 파일 규칙, 프로파일 정책, Base 코드 우선 원칙은 루트 `AGENT.md`를 기준으로 하고 여기서는 반복하지 않는다.
+이 문서는 SPT Framework Web Core 저장소의 소스 코드를 분석할 때 따르는 실행 절차다. 저장소 공통 원칙, 보안/민감 파일 규칙, 프로파일 정책, Base 코드 우선 원칙은 루트 `AI.md`를 기준으로 하고 여기서는 반복하지 않는다.
 
 ## 역할
 
-- `AGENT.md`: 저장소 전체의 원칙과 금지 사항을 정의한다.
+- `AI.md`: 저장소 전체의 원칙과 금지 사항을 정의한다.
 - 이 문서: SPT 코드 분석 요청을 받았을 때 어떤 순서로 근거를 수집하고 결론을 낼지 정의한다.
 - `.codex/skills/spt-code-analysis/SKILL.md`: Codex가 이 workflow를 찾기 위한 얇은 진입점이다.
 

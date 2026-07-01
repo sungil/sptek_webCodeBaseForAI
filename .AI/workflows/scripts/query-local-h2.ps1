@@ -12,7 +12,7 @@ $ErrorActionPreference = 'Stop'
 function Resolve-RepoRoot {
     $current = (Get-Location).Path
     while ($current) {
-        if (Test-Path -LiteralPath (Join-Path $current 'AGENT.md')) {
+        if (Test-Path -LiteralPath (Join-Path $current 'AI.md')) {
             return $current
         }
 
@@ -23,7 +23,7 @@ function Resolve-RepoRoot {
         $current = $parent
     }
 
-    throw 'Cannot find repository root with AGENT.md.'
+    throw 'Cannot find repository root with AI.md.'
 }
 
 function Resolve-H2Jar {

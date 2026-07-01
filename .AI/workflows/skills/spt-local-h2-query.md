@@ -4,7 +4,7 @@
 
 ## 핵심 규칙
 
-1. 루트 `AGENT.md`를 먼저 따른다.
+1. 루트 `AI.md`를 먼저 따른다.
 2. DB 파일을 삭제, 초기화, 재생성하지 않는다.
 3. 조회 요청은 별도 연결 테스트를 먼저 하지 말고 바로 쿼리한다.
 4. 기본 JDBC URL은 `src/main/resources/_frameworkWebCoreResources/_frameworkApplicationProperties/h2DB/h2DB-local.yml`의 값을 따른다.
@@ -16,7 +16,7 @@
 저장소 루트에서 공통 스크립트를 사용한다.
 
 ```powershell
-.\.agents\workflows\scripts\query-local-h2.ps1 "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'PUBLIC' ORDER BY TABLE_NAME"
+.\.AI\workflows\scripts\query-local-h2.ps1 "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'PUBLIC' ORDER BY TABLE_NAME"
 ```
 
 스크립트는 Gradle 캐시의 H2 실행 JAR를 자동 탐색한다. H2 JAR가 없다는 오류가 나면 먼저 다음 명령으로 프로젝트 의존성을 받아온 뒤 다시 실행한다.
@@ -28,13 +28,13 @@
 여러 줄 SQL은 파일로 저장한 뒤 실행한다.
 
 ```powershell
-.\.agents\workflows\scripts\query-local-h2.ps1 -FilePath .\query.sql
+.\.AI\workflows\scripts\query-local-h2.ps1 -FilePath .\query.sql
 ```
 
 사용자가 명시적으로 변경 SQL을 요청한 경우에만 `-AllowWrite`를 붙인다.
 
 ```powershell
-.\.agents\workflows\scripts\query-local-h2.ps1 "UPDATE PUBLIC.TEST SET C1 = 'x'" -AllowWrite
+.\.AI\workflows\scripts\query-local-h2.ps1 "UPDATE PUBLIC.TEST SET C1 = 'x'" -AllowWrite
 ```
 
 ## 자주 쓰는 쿼리
