@@ -2,6 +2,7 @@ package com.sptek._frameworkWebCore.interceptor.config;
 
 
 import com.sptek._frameworkWebCore.interceptor.PreventDuplicateRequestInterceptor;
+import com.sptek._frameworkWebCore.interceptor.ReqResDetailLogDecisionInterceptor;
 import com.sptek._frameworkWebCore.interceptor.ViewXssProtectInterceptor;
 import com.sptek._frameworkWebCore.interceptor.VisitHistoryLoggingInterceptor;
 import com.sptek._frameworkWebCore.interceptor.ViewErrorLogSupportInterceptor;
@@ -15,16 +16,19 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class InterceptorGlobalConfig implements WebMvcConfigurer {
 
     private final PreventDuplicateRequestInterceptor preventDuplicateRequestInterceptor;
+    private final ReqResDetailLogDecisionInterceptor reqResDetailLogDecisionInterceptor;
     private final VisitHistoryLoggingInterceptor visitHistoryLoggingInterceptor;
     private final ViewErrorLogSupportInterceptor viewErrorLogSupportInterceptor;
     private final ViewXssProtectInterceptor viewXssProtectInterceptor;
 
     //조건에 따라 Interceptor 들이 Bean 으로 등독 될수도 안 될수도 있는 상황이 있기 때문에 @Nullable 을 사용한 생성자 를 직접 구현 하였음
     public InterceptorGlobalConfig(@Nullable PreventDuplicateRequestInterceptor preventDuplicateRequestInterceptor
+            , @Nullable ReqResDetailLogDecisionInterceptor reqResDetailLogDecisionInterceptor
             , @Nullable VisitHistoryLoggingInterceptor visitHistoryLoggingInterceptor
             , @Nullable ViewErrorLogSupportInterceptor viewErrorLogSupportInterceptor
             , @Nullable ViewXssProtectInterceptor viewXssProtectInterceptor) {
         this.preventDuplicateRequestInterceptor = preventDuplicateRequestInterceptor;
+        this.reqResDetailLogDecisionInterceptor = reqResDetailLogDecisionInterceptor;
         this.visitHistoryLoggingInterceptor = visitHistoryLoggingInterceptor;
         this.viewErrorLogSupportInterceptor = viewErrorLogSupportInterceptor;
         this.viewXssProtectInterceptor = viewXssProtectInterceptor;
@@ -34,6 +38,13 @@ public class InterceptorGlobalConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry interceptorRegistry) {
 
         // 원하는 순서로 interceptor 등록
+        // ReqResDetailLogDecisionInterceptor 는 다른 인터셉터/컨트롤러에서 사용할 로그 대상 attribute 를 먼저 세팅한다.
+        if(reqResDetailLogDecisionInterceptor != null) {
+            interceptorRegistry.addInterceptor(this.reqResDetailLogDecisionInterceptor).addPathPatterns("/**")
+                    .excludePathPatterns(SecurityUtil.getNotEssentialRequestPatterns())
+                    .excludePathPatterns(SecurityUtil.getStaticResourceRequestPatterns());
+        }
+
         if(preventDuplicateRequestInterceptor != null) {
             interceptorRegistry.addInterceptor(this.preventDuplicateRequestInterceptor).addPathPatterns("/api/**")
                     .excludePathPatterns(SecurityUtil.getNotEssentialRequestPatterns())

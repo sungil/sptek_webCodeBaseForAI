@@ -3,7 +3,6 @@ package com.sptek._frameworkWebCore.util;
 import com.sptek._frameworkWebCore._annotation.Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.base.constant.MainClassAnnotationRegister;
-import com.sptek._frameworkWebCore.base.constant.RequestMappingAnnotationRegister;
 import com.sptek._frameworkWebCore.base.exception.ServiceException;
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.RequestDispatcher;
@@ -125,9 +124,9 @@ public class LoggingUtil {
     public static void reqResDetailLogging(Logger logger, HttpServletRequest request, HttpServletResponse response, @Nullable Object responseBodyDto, String title) throws IOException {
         if (!logger.isEnabledForLevel(Level.INFO)) return;
 
-        // main 과 controller 쪽 양쪽에 적용되어 있는 경우 controller 쪽 annotation 이 우선함 (controller 전체와 controller 메소드 양쪽에 적용되는 경우는 RequestMappingAnnotationRegister 가 메소드쪽 정보를 가지고 있음)
-        String logTag = StringUtils.hasText(Objects.toString(RequestMappingAnnotationRegister.getAnnotationAttributes(request, Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class).get("value"), ""))
-                ? Objects.toString(RequestMappingAnnotationRegister.getAnnotationAttributes(request, Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class).get("value"), "")
+        // main 과 controller 쪽 양쪽에 적용되어 있는 경우 ReqResDetailLogDecisionInterceptor 가 controller 쪽 값을 우선하여 저장한다.
+        String logTag = StringUtils.hasText(Objects.toString(request.getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_REQ_RES_DETAIL_LOG_TAG), ""))
+                ? Objects.toString(request.getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_REQ_RES_DETAIL_LOG_TAG), "")
                 : Objects.toString(MainClassAnnotationRegister.getAnnotationAttributes(Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class).get("value"), "");
 
         String sessionId = request.getSession().getId();

@@ -35,9 +35,12 @@ import java.util.concurrent.CompletionException;
 
 public class ApiCommonResponseHelperAspect {
     private final TaskExecutor taskExecutor;
-    // Bean name 으로 명확히 찾기 위해 생성자 직접 구성
-    public ApiCommonResponseHelperAspect(@Qualifier("sptTaskExecutor") TaskExecutor taskExecutor) {
+    private final RequestMappingAnnotationRegister requestMappingAnnotationRegister;
+    // sptTaskExecutor 는 Bean name 으로 명확히 찾고, 어노테이션 판단은 실제 HandlerMethod 기반 register 를 사용한다.
+    public ApiCommonResponseHelperAspect(@Qualifier("sptTaskExecutor") TaskExecutor taskExecutor
+            , RequestMappingAnnotationRegister requestMappingAnnotationRegister) {
         this.taskExecutor = taskExecutor;
+        this.requestMappingAnnotationRegister = requestMappingAnnotationRegister;
     }
 
     @Pointcut(
@@ -51,7 +54,7 @@ public class ApiCommonResponseHelperAspect {
 
     @Around("pointCut()")
     public Object pointCutAround(ProceedingJoinPoint joinPoint) throws Throwable {
-        if (RequestMappingAnnotationRegister.hasAnnotation(SpringUtil.getRequest(), Enable_AsyncController_At_RestControllerMethod.class)) {
+        if (requestMappingAnnotationRegister.hasAnnotation(SpringUtil.getRequest(), Enable_AsyncController_At_RestControllerMethod.class)) {
             // AsyncResponse 적용시 컨트롤러 작업을 Async 로 처리하고 리턴 값을 CompletableFuture 로 한번더 래핑 해준다.
             // 최종 리턴 인스턴스 타입 : CompletableFuture(ResponseEntity(ApiCommonSuccessResponseDto(result)))
             return CompletableFuture.supplyAsync(() -> {

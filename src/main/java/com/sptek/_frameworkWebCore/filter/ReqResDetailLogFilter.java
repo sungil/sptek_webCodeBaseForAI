@@ -1,13 +1,10 @@
 package com.sptek._frameworkWebCore.filter;
 
 import com.sptek._frameworkWebCore._annotation.Enable_NoFilterAndSessionForMinorRequest_At_Main;
-import com.sptek._frameworkWebCore._annotation.Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.base.constant.MainClassAnnotationRegister;
-import com.sptek._frameworkWebCore.base.constant.RequestMappingAnnotationRegister;
 import com.sptek._frameworkWebCore.util.LoggingUtil;
 import com.sptek._frameworkWebCore.util.SecurityUtil;
-import com.sptek._frameworkWebCore.util.Timer;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -36,10 +33,9 @@ public class ReqResDetailLogFilter extends OncePerRequestFilter {
     public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
         //request, response을 ContentCachingRequestWrapper, ContentCachingResponseWrapper 로 변환 하여 하위 플로우 로 넘긴다.(req, res 의 body를 여러번 읽기 위한 용도로 활용됨)
 
-        // 필터 동작 여부 (제외 케이스)
-        boolean hasNoDetailLogAnnotation = !MainClassAnnotationRegister.hasAnnotation(Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class) && !RequestMappingAnnotationRegister.hasAnnotation(request, Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class);
+        // 필터 제외 케이스. 컨트롤러 어노테이션 여부는 아직 HandlerMethod 가 확정되기 전이라 여기서 판단하지 않는다.
         boolean isMinorRequest = MainClassAnnotationRegister.hasAnnotation(Enable_NoFilterAndSessionForMinorRequest_At_Main.class) && (SecurityUtil.isNotEssentialRequest() || SecurityUtil.isStaticResourceRequest());
-        if (hasNoDetailLogAnnotation || isMinorRequest) {
+        if (isMinorRequest) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -65,8 +61,9 @@ public class ReqResDetailLogFilter extends OncePerRequestFilter {
             // isAsyncDispatch(request) = Async 요청을 마무리하고 돌아온 케이스(두번째 호출) 인지
             // todo: 중요! Async 디스패치의 첫번째 호출일때는 처리 의미 없음
             if (!isAsyncStarted(request) || isAsyncDispatch(request)) {
-                // req 매핑이 없는(404, 405) 케이스는 ApplicationGlobalExceptionHandler 에서 로깅 됨으로 제외 (todo : hasRequestMapping 이 리소스 낭비일까?)
-                if (Timer.measure("hasRequestMapping", () -> RequestMappingAnnotationRegister.hasRequestMapping(request))) {
+                // 로그 대상 여부는 ReqResDetailLogDecisionInterceptor 가 실제 HandlerMethod 기준으로 설정한다.
+                // 필터는 URL 재매칭을 하지 않고 request/response body 캡처와 최종 출력만 담당한다.
+                if (Boolean.TRUE.equals(request.getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_REQ_RES_DETAIL_LOG_ENABLED))) {
                     LoggingUtil.reqResDetailLogging(log, contentCachingRequestWrapper, contentCachingResponseWrapper, "Req Res Detail Log From " + this.getClass().getSimpleName());
                 }
             } else {

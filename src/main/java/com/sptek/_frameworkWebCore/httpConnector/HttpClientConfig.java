@@ -1,5 +1,6 @@
 package com.sptek._frameworkWebCore.httpConnector;
 
+import com.sptek._frameworkWebCore.base.constant.RequestMappingAnnotationRegister;
 import com.sptek._frameworkWebCore.support.OutboundSupport;
 import com.sptek._frameworkWebCore.support.DEPRECATED_RestTemplateSupport;
 import org.apache.hc.client5.http.config.RequestConfig;
@@ -55,8 +56,8 @@ public class HttpClientConfig {
 
     @Bean
     //CloseableHttpClient를 쉽게 쓸수있도록 기능 랩핑한 Bean
-    public OutboundSupport outboundSupport(CloseableHttpClient closeableHttpClient){
-        return new OutboundSupport(closeableHttpClient);
+    public OutboundSupport outboundSupport(CloseableHttpClient closeableHttpClient, RequestMappingAnnotationRegister requestMappingAnnotationRegister){
+        return new OutboundSupport(closeableHttpClient, requestMappingAnnotationRegister);
     }
 
     @Bean

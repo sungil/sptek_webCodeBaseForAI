@@ -1,16 +1,14 @@
 package com.sptek._frameworkWebCore.interceptor;
 
 import com.sptek._frameworkWebCore._annotation.Enable_PreventDuplicateRequest_At_RestController_RestControllerMethod;
-import com.sptek._frameworkWebCore._annotation.TestAnnotation_At_All;
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.base.constant.RequestMappingAnnotationRegister;
 import com.sptek._frameworkWebCore.base.exception.ServiceException;
-import com.sptek._frameworkWebCore.util.ExceptionUtil;
-import com.sptek._frameworkWebCore.util.RequestUtil;
 import com.sptek._projectCommon.commonObject.code.ServiceErrorCodeEnum;
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
@@ -23,15 +21,20 @@ import java.util.concurrent.locks.ReentrantLock;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 
 public class PreventDuplicateRequestInterceptor implements HandlerInterceptor {
     // 사용자(SessionId)별 Syncronized 한 작업이 필요할때 lock 객체로 사용 할수 있다
     private final ConcurrentHashMap<String, ReentrantLock> SESSION_LOCK = new ConcurrentHashMap<>();
+    private final RequestMappingAnnotationRegister requestMappingAnnotationRegister;
 
     @Override
     public boolean preHandle(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler) {
-        if (!RequestMappingAnnotationRegister.hasAnnotation(request, Enable_PreventDuplicateRequest_At_RestController_RestControllerMethod.class)) return true;
-        // todo : (중요) SESSION_LOCK 의 키값이 세션 id 이기 때문에 만약 다른 페이지를 거치지 않고 세션이 없는 상태에서 해당 컨트롤러로 최초 진입하는 케이스라면 중복 허용이 될수 있음 (현실적으로 그런 케이스는 거의 없음, 테스트를 위해 세션을 날리고 바로 req 하는 경우 주의)
+        // 중복 요청 방지는 실제 실행될 컨트롤러 메소드의 어노테이션 기준으로만 적용한다.
+        // URL 패턴을 다시 추정하지 않아 같은 path 의 consumes/params 분기에서도 오동작하지 않는다.
+        if (!(handler instanceof HandlerMethod handlerMethod)
+                || !requestMappingAnnotationRegister.hasAnnotation(handlerMethod, Enable_PreventDuplicateRequest_At_RestController_RestControllerMethod.class)) return true;
+        // NOTE : (중요) SESSION_LOCK 의 키값이 세션 id 이기 때문에 만약 다른 페이지를 거치지 않고 세션이 없는 상태에서 해당 컨트롤러로 최초 진입하는 케이스라면 중복 허용이 될수 있음 (현실적으로 그런 케이스는 거의 없음, 테스트를 위해 세션을 날리고 바로 req 하는 경우 주의)
         ReentrantLock reentrantLock = SESSION_LOCK.computeIfAbsent(request.getSession().getId(), k -> new ReentrantLock());
         try {
             reentrantLock.lock();

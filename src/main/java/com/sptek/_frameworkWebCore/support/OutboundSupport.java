@@ -24,6 +24,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponents;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -40,6 +41,7 @@ closeableHttpClient을 쉽게 사용하기 위한 클레스로 Spring Bean 을 �
 @RequiredArgsConstructor
 public class OutboundSupport {
     private final CloseableHttpClient closeableHttpClient;
+    private final RequestMappingAnnotationRegister requestMappingAnnotationRegister;
 
     public HttpClientResponseDto request(HttpMethod httpMethod, UriComponents uriComponents) throws Exception {return request(httpMethod, uriComponents, null, null);}
     public HttpClientResponseDto request(HttpMethod httpMethod, UriComponents uriComponents, HttpHeaders httpHeaders) throws Exception {return request(httpMethod, uriComponents, httpHeaders, null);}
@@ -97,19 +99,25 @@ public class OutboundSupport {
             log.info(LoggingUtil.makeBaseForm(logTag, "Outbound Support Detail Log", logContent));
         }
 
-        // DetailLog 에 해당 컨트롤러에서 호출한 Outbound 호출 정보를 남겨주기 위해 추가함, Controller를 거친 케이스가 아닌경우(스케줄러등) 내용 생성 안함
-        if (MainClassAnnotationRegister.hasAnnotation(Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class)
-                || RequestMappingAnnotationRegister.hasAnnotation(SpringUtil.getRequest(), Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class)) {
-            try {
+        // DetailLog 대상 컨트롤러에서 호출한 Outbound 정보를 함께 남긴다. 스케줄러처럼 request 가 없는 흐름은 아래 catch 로 제외된다.
+        try {
+            HttpServletRequest currentRequest = SpringUtil.getRequest();
+            // 컨트롤러 요청 중 발생한 outbound 정보만 Req/Res detail log 에 연결한다.
+            // 인터셉터 attribute 가 있으면 우선 사용하고, AOP/예외 흐름 등 보조 케이스는 register 로 한 번 더 확인한다.
+            boolean hasReqResDetailLog = MainClassAnnotationRegister.hasAnnotation(Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class)
+                    || Boolean.TRUE.equals(currentRequest.getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_REQ_RES_DETAIL_LOG_ENABLED))
+                    || requestMappingAnnotationRegister.hasAnnotation(currentRequest, Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class);
+
+            if (hasReqResDetailLog) {
                 List<String> relatedOutbounds = (List<String>) SpringUtil.getRequest().getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_LOGGING_RELATED_OUTBOUNDS);
                 if (relatedOutbounds == null) {
                     relatedOutbounds = new ArrayList<>();
                 }
                 relatedOutbounds.add(outboundId + " " + httpMethod.name() + " " + uriComponents.toString() + " --> " + httpClientResponseDto.code());
                 SpringUtil.getRequest().setAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_LOGGING_RELATED_OUTBOUNDS, relatedOutbounds);
-            } catch (Exception e) {
-                log.debug("Not logging related outbound information.");
             }
+        } catch (Exception e) {
+            log.debug("Not logging related outbound information.");
         }
     }
 
