@@ -44,12 +44,12 @@ Authorization: Bearer {{jwt}}
 Content-Type: application/json
 
 #### 10. 로그인 API (인증 토큰)
-POST {{api-server}}/10/example/authentication/loginxx
+POST {{api-server}}/10/example/authentication/login
 Content-Type: application/json
 
 {
-  "username": "sungilry1@naver.com",
-  "password": "1q2w3e4r5t!Q"
+  "username": "sungilry@naver.com",
+  "password": "1q2w3e4r!Q"
 }
 > {%
     client.global.set("jwt", response.body.result);
