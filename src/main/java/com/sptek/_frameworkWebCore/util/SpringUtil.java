@@ -99,18 +99,28 @@ public class SpringUtil implements ApplicationContextAware {
         return applicationContext.getBean(beanClass);
     }
 
+    public static @Nullable HttpServletRequest getRequestOrNull() {
+        ServletRequestAttributes attrs = getServletRequestAttributesOrNull();
+        return attrs != null ? attrs.getRequest() : null;
+    }
+
     public static HttpServletRequest getRequest() {
-        RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
-        if (attributes instanceof ServletRequestAttributes servletRequestAttributes) {
-            return servletRequestAttributes.getRequest();
+        HttpServletRequest request = getRequestOrNull();
+        if (request != null) {
+            return request;
         }
         throw new IllegalStateException("No request bound to current thread");
     }
 
+    public static @Nullable HttpServletResponse getResponseOrNull() {
+        ServletRequestAttributes attrs = getServletRequestAttributesOrNull();
+        return attrs != null ? attrs.getResponse() : null;
+    }
+
     public static HttpServletResponse getResponse() {
-        RequestAttributes attrs = RequestContextHolder.getRequestAttributes();
-        if (attrs instanceof ServletRequestAttributes sra) {
-            HttpServletResponse response = sra.getResponse();
+        ServletRequestAttributes attrs = getServletRequestAttributesOrNull();
+        if (attrs != null) {
+            HttpServletResponse response = attrs.getResponse();
             if (response != null) {
                 return response;
             }
@@ -119,13 +129,22 @@ public class SpringUtil implements ApplicationContextAware {
         throw new IllegalStateException("No request bound to current thread");
     }
 
+    public static @Nullable HttpSession getSessionOrNull(boolean create) {
+        HttpServletRequest request = getRequestOrNull();
+        return request != null ? request.getSession(create) : null;
+    }
+
     public static HttpSession getSession(boolean create) {
-        RequestAttributes attrs = RequestContextHolder.getRequestAttributes();
-        if (attrs instanceof ServletRequestAttributes sra) {
-            HttpServletRequest request = sra.getRequest();
+        HttpServletRequest request = getRequestOrNull();
+        if (request != null) {
             return request.getSession(create);
         }
         throw new IllegalStateException("No request bound to current thread");
+    }
+
+    private static @Nullable ServletRequestAttributes getServletRequestAttributesOrNull() {
+        RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
+        return attributes instanceof ServletRequestAttributes servletRequestAttributes ? servletRequestAttributes : null;
     }
 
     public static String getApplicationProperty(String key) {

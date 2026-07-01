@@ -102,18 +102,21 @@ public class MyBatisCommonDao {
         //이부분 해결해야 함!!!
         //todo : 전체 row 의 total size 를 매번 구하지 않도록 캐싱 방안을 고려 해야함
 
-        HttpServletRequest httpServletRequest = SpringUtil.getRequest();
-        int currentPageNum = (httpServletRequest.getParameter("currentPageNum") != null
+        HttpServletRequest httpServletRequest = SpringUtil.getRequestOrNull();
+        int currentPageNum = (httpServletRequest != null
+                && httpServletRequest.getParameter("currentPageNum") != null
                 && Integer.parseInt(httpServletRequest.getParameter("currentPageNum")) > 0)
                 ? Integer.parseInt(httpServletRequest.getParameter("currentPageNum"))
                 : defaultCurrentPageNum;
 
-        int setRowSizePerPage = (httpServletRequest.getParameter("setRowSizePerPage") != null
+        int setRowSizePerPage = (httpServletRequest != null
+                && httpServletRequest.getParameter("setRowSizePerPage") != null
                 && Integer.parseInt(httpServletRequest.getParameter("setRowSizePerPage")) > 0)
                 ? Math.min(Integer.parseInt(httpServletRequest.getParameter("setRowSizePerPage")), maxSetRowSizePerPage)
                 : defaultSetRowSizePerPage;
 
-        int setBottomPageNavigationSize = (httpServletRequest.getParameter("setBottomPageNavigationSize") != null
+        int setBottomPageNavigationSize = (httpServletRequest != null
+                && httpServletRequest.getParameter("setBottomPageNavigationSize") != null
                 && Integer.parseInt(httpServletRequest.getParameter("setBottomPageNavigationSize")) > 0)
                 ? Integer.parseInt(httpServletRequest.getParameter("setBottomPageNavigationSize"))
                 : defaultSetBottomPageNavigationSize;

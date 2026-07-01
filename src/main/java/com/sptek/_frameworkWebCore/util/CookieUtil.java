@@ -1,6 +1,7 @@
 package com.sptek._frameworkWebCore.util;
 
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseCookie;
@@ -54,7 +55,11 @@ public class CookieUtil {
     }
 
     public static @NotNull ArrayList<Cookie> getCookies(@NotNull String name) {
-        Cookie[] cookies = SpringUtil.getRequest().getCookies();
+        HttpServletRequest request = SpringUtil.getRequestOrNull();
+        if (request == null) {
+            return new ArrayList<>();
+        }
+        Cookie[] cookies = request.getCookies();
         return cookies == null ? new ArrayList<>() :
                 Arrays.stream(cookies)
                         .filter(cookie -> name.equals(cookie.getName()))

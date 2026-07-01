@@ -150,7 +150,8 @@ public class RequestUtil {
     }
 
     public static ExcuteTimeDto traceRequestDuration() {
-        String startTime = Optional.ofNullable(SpringUtil.getRequest()
+        String startTime = Optional.ofNullable(SpringUtil.getRequestOrNull())
+                .map(request -> request
                         .getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_LOGGING_TIMESTAMP)).map(Object::toString).orElse("");
 
         if (!StringUtils.hasText(startTime)) {

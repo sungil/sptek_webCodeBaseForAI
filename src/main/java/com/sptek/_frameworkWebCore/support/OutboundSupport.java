@@ -99,9 +99,9 @@ public class OutboundSupport {
             log.info(LoggingUtil.makeBaseForm(logTag, "Outbound Support Detail Log", logContent));
         }
 
-        // DetailLog 대상 컨트롤러에서 호출한 Outbound 정보를 함께 남긴다. 스케줄러처럼 request 가 없는 흐름은 아래 catch 로 제외된다.
-        try {
-            HttpServletRequest currentRequest = SpringUtil.getRequest();
+        // DetailLog 대상 컨트롤러에서 호출한 Outbound 정보를 함께 남긴다. 스케줄러처럼 request 가 없는 흐름은 제외한다.
+        HttpServletRequest currentRequest = SpringUtil.getRequestOrNull();
+        if (currentRequest != null) {
             // 컨트롤러 요청 중 발생한 outbound 정보만 Req/Res detail log 에 연결한다.
             // 인터셉터 attribute 가 있으면 우선 사용하고, AOP/예외 흐름 등 보조 케이스는 register 로 한 번 더 확인한다.
             boolean hasReqResDetailLog = MainClassAnnotationRegister.hasAnnotation(Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class)
@@ -109,15 +109,13 @@ public class OutboundSupport {
                     || requestMappingAnnotationRegister.hasAnnotation(currentRequest, Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class);
 
             if (hasReqResDetailLog) {
-                List<String> relatedOutbounds = (List<String>) SpringUtil.getRequest().getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_LOGGING_RELATED_OUTBOUNDS);
+                List<String> relatedOutbounds = (List<String>) currentRequest.getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_LOGGING_RELATED_OUTBOUNDS);
                 if (relatedOutbounds == null) {
                     relatedOutbounds = new ArrayList<>();
                 }
                 relatedOutbounds.add(outboundId + " " + httpMethod.name() + " " + uriComponents.toString() + " --> " + httpClientResponseDto.code());
-                SpringUtil.getRequest().setAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_LOGGING_RELATED_OUTBOUNDS, relatedOutbounds);
+                currentRequest.setAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_LOGGING_RELATED_OUTBOUNDS, relatedOutbounds);
             }
-        } catch (Exception e) {
-            log.debug("Not logging related outbound information.");
         }
     }
 
