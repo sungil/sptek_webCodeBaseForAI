@@ -1,3 +1,0 @@
-display_name: spt-code-analysis
-short_description: 저장소 규칙에 따라 SPT Framework 코드를 분석합니다.
-default_prompt: AI.md와 Base 코드 관례를 기준으로 SPT Framework 코드를 분석해줘.
