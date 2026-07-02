@@ -7,11 +7,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Controller 요청/응답에서 사용하는 DTO 필드 계약을 애노테이션으로 표현하는 예제 DTO.
+ *
+ * <p>필드의 필수 여부, 검증 메시지, Swagger/OpenAPI 설명, 문서 노출 여부처럼
+ * validation 또는 API 문서화에서 소비되는 정보는 가능하면 DTO 필드에 선언형 애노테이션으로 둔다.
+ * 컨트롤러나 서비스에서 같은 의미를 별도 문자열, 조건문, 문서 전용 코드로 중복 관리하지 않기 위한 기준 예제이다.</p>
+ */
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class ExUserDto {
 
     @Schema(description = "사용자 ID", example = "sungilry")

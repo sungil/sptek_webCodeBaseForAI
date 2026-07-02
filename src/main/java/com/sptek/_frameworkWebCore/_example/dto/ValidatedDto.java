@@ -7,9 +7,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/*
-어노테이션을 사용하여 input 값들에 대한 validation을 처리하는 예시 (주로 많이 사용하는 것들 위주)
-이러한 어노테이션을 방식을 많이 활용하도록 권장 (EX 처리등에도 많은 이점이 있다)
+/**
+ * 요청 DTO의 입력값 검증 조건과 API 문서 정보를 필드 애노테이션으로 표현하는 예제 DTO.
+ *
+ * <p>{@code @NotBlank}, {@code @Pattern}, {@code @Size}, {@code @Email} 같은 Bean Validation 애노테이션은
+ * 컨트롤러 진입 전에 입력 계약을 검증하고, 검증 실패 시 공통 예외 처리 흐름에서 일관된 메시지를 사용할 수 있게 한다.
+ * {@code @Schema} 같은 문서화 애노테이션도 같은 필드에 함께 두어 validation 조건과 Swagger/OpenAPI 설명이
+ * 서로 다른 위치에서 중복 관리되지 않도록 한다.</p>
  */
 @Data
 @Builder
