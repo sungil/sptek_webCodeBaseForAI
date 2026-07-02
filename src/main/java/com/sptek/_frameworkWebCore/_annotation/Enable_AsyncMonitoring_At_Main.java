@@ -7,6 +7,16 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
+/**
+ * 메인 클래스에 붙여 async executor 상태 모니터링 스케줄러와 전용 scheduler executor Bean을 활성화하는 애노테이션.
+ *
+ * <p>{@code SchedulerForAsyncMonitoring}과 {@code SpecificSchedulerExecutorConfig}가
+ * {@code HasAnnotationOnMain_At_Bean} 조건으로 이 애노테이션을 확인한다.</p>
+ */
 public @interface Enable_AsyncMonitoring_At_Main {
-    String value() default ""; // 입력 파람 값을 활용할 수 있도록 구성함
+
+    /**
+     * 모니터링 로그에 전달할 선택적 태그 값.
+     */
+    String value() default "";
 }
