@@ -1,4 +1,4 @@
-# Reporting Workflow
+# Commit Reporting Workflow
 
 이 문서는 이 저장소의 커밋 메시지 제안과 완료 보고 절차를 정의한다.
 
