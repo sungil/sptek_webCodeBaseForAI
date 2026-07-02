@@ -1,3 +1,0 @@
-display_name: SPT Local H2 Query
-short_description: SPT local H2 파일 DB를 빠르게 조회합니다.
-default_prompt: SPT local H2 DB에서 필요한 데이터를 조회해줘.

@@ -38,6 +38,7 @@ out/
 
 ### Codex local runtime ###
 .codex/run/
+.AI/workflows/.cache/
 
 ### Local runtime outputs ###
 infra/h2DB/*.db

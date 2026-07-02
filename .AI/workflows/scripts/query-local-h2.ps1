@@ -2,9 +2,7 @@ param(
     [Parameter(Position = 0)]
     [string] $Sql,
 
-    [string] $FilePath,
-
-    [switch] $AllowWrite
+    [string] $FilePath
 )
 
 $ErrorActionPreference = 'Stop'
@@ -49,11 +47,11 @@ function Assert-ReadOnlySql {
 
     $trimmed = $Statement.TrimStart()
     if ($trimmed -notmatch '^(?is)(select|show|with|explain|call\s+information_schema\.)\b') {
-        throw 'Only read-only SQL is allowed by default. Re-run with -AllowWrite only when the user explicitly requested a write or DDL.'
+        throw 'Only read-only SQL is allowed by this support script.'
     }
 
     if ($Statement -match '(?is)\b(insert|update|delete|merge|create|alter|drop|truncate|grant|revoke|runscript|script|backup|shutdown)\b') {
-        throw 'Potential write, DDL, or database control SQL was detected. Re-run with -AllowWrite only when the user explicitly requested it.'
+        throw 'Potential write, DDL, or database control SQL was detected. This support script does not execute it.'
     }
 }
 
@@ -79,12 +77,10 @@ if ($FilePath) {
     $sqlToRun = Get-Content -LiteralPath $resolvedFile -Raw -Encoding UTF8
 }
 
-if (-not $AllowWrite) {
-    Assert-ReadOnlySql -Statement $sqlToRun
-}
+Assert-ReadOnlySql -Statement $sqlToRun
 
 $h2Jar = Resolve-H2Jar
-$jdbcUrl = 'jdbc:h2:file:./infra/h2DB/spt_web_fw;AUTO_SERVER=TRUE'
+$jdbcUrl = 'jdbc:h2:file:./infra/h2DB/spt_web_fw;AUTO_SERVER=TRUE;AUTO_SERVER_PORT=9092'
 
 java -cp $h2Jar org.h2.tools.Shell `
     -url $jdbcUrl `
