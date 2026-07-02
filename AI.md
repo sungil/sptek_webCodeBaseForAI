@@ -7,6 +7,7 @@
 - 반복적으로 사용하는 분석·구현·검증 절차는 `.AI/workflows` 아래에 도구 독립적인 Markdown 문서로 작성한다. Codex skill이나 Claude command가 같은 절차를 사용해야 하면 각 도구별 파일에는 먼저 루트 `AI.md`를 읽고, 그 다음 관련 `.AI/workflows/**` 문서를 따르라는 최소한의 참조만 둔다. 같은 내용을 여러 도구별 폴더에 복사하지 않는다.
 - 신규 Codex skill 또는 Claude command를 만들 때도 상세 절차와 재사용 스크립트는 먼저 `.AI/workflows/**`에 둔다. `.codex/skills/**`, `.claude/commands/**`에는 자동 발견을 위한 메타데이터와 `.AI/workflows/**` 참조, 필요한 경우 얇은 래퍼만 둔다.
 - `.codex/skills`의 repo-local 스킬 진입점은 팀 공통 AI 작업 규칙으로 취급하므로 커밋 대상이다. 반면 `.codex/run`은 Codex 로컬 실행 로그와 임시 출력물이므로 소스 변경으로 취급하지 않고 커밋 대상에 포함하지 않는다.
+- 작업공간에 구성된 Codex skill, Claude command, MCP, plugin, connector 또는 사용자가 추가한 기타 자동화 구성을 활용하는 경우, 작업에 앞서 `XXX를 이용해서 작업합니다.`처럼 어떤 기술 요소를 사용하는지 아주 간략하게 알린다.
 - 이 문서는 저장소 루트와 모든 하위 경로에 적용한다. 하위 디렉터리에 더 구체적인 AI 지침 문서(`AI.md`, `AGENTS.md`, `CLAUDE.md` 등)가 생기면 해당 범위에서는 하위 문서가 우선하되, 루트 `AI.md`의 공통 원칙과 충돌하지 않아야 한다.
 
 ## Base 코드 사용 목적과 우선순위
