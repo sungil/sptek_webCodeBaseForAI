@@ -1,0 +1,4 @@
+interface:
+  display_name: "Write Code Comments"
+  short_description: "저장소 관례에 맞게 코드 주석을 작성하거나 갱신합니다."
+  default_prompt: "선택한 코드에 필요한 주석을 저장소 관례에 맞게 작성해줘."

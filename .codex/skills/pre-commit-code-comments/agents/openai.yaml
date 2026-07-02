@@ -1,3 +1,3 @@
 display_name: Pre-Commit Code Comments
-short_description: 커밋 전 변경 파일과 연관 파일의 클래스/메서드 주석을 점검하고 보강합니다.
-default_prompt: 커밋 전에 변경 파일의 클래스와 메서드 주석을 Base 코드 관례에 맞게 검토하고 보강해줘.
+short_description: 커밋 전 변경 파일의 주석 보강 필요 여부를 점검합니다.
+default_prompt: 커밋 전에 변경 파일의 주석 보강 필요 여부를 점검하고 필요한 경우 write-code-comments 절차를 적용해줘.
