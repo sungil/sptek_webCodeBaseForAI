@@ -37,6 +37,7 @@ out/
 .vscode/
 
 ### Codex local runtime ###
+.codex/config.toml
 .codex/run/
 .AI/workflows/.cache/
 
