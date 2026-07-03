@@ -16,6 +16,12 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.UUID;
 
+/**
+ * 요청 단위 로그 추적을 위해 MDC 값을 설정하고 정리하는 필터.
+ *
+ * <p>로그 패턴에서 memberId, sessionId, correlationId를 사용할 수 있게 하며,
+ * 요청 종료 후에는 thread 재사용에 따른 오염을 막기 위해 MDC를 반드시 비운다.</p>
+ */
 @Slf4j
 //@Profile(value = { "local", "dev", "stg" })
 //@HasAnnotationOnMain_InBean(EnableMdcTagging_InMain.class)
@@ -26,6 +32,9 @@ public class MakeMdcFilter extends OncePerRequestFilter {
         log.info(CommonConstants.SERVER_INITIALIZATION_MARK + this.getClass().getSimpleName() + " is Applied.");
     }
 
+    /**
+     * 현재 요청의 사용자/세션/correlationId를 MDC에 저장하고 다음 필터로 전달한다.
+     */
     @Override
     public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
         // todo : Mapped Diagnostic Context 를 사용하여 Slf4j 의 로깅 패턴에 특정 정보를 포함 할수 있도록 한다. (성능적 측면에서 오버해드가 발생할 수 있음으로 상용 적용시 고려 필요)
@@ -49,6 +58,9 @@ public class MakeMdcFilter extends OncePerRequestFilter {
         }
     }
 
+    /**
+     * async 재디스패치에서도 MDC가 재구성되도록 한다.
+     */
     @Override
     protected boolean shouldNotFilterAsyncDispatch() {
         return false;

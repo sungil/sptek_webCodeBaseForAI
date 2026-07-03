@@ -18,6 +18,12 @@ import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import java.io.IOException;
 
+/**
+ * 요청/응답 body를 캐싱 wrapper로 감싸 상세 로그 출력에 필요한 내용을 보존하는 필터.
+ *
+ * <p>필터 단계에서는 HandlerMethod를 알 수 없으므로 로그 대상 여부를 직접 판단하지 않는다.
+ * {@code ReqResDetailLogDecisionInterceptor}가 request attribute로 남긴 결정값을 기준으로 최종 로그를 출력한다.</p>
+ */
 @Slf4j
 //@Profile(value = { "local", "dev", "stg", "prd" })
 //@WebFilter(urlPatterns = "/*")
@@ -29,6 +35,11 @@ public class ReqResDetailLogFilter extends OncePerRequestFilter {
         //log.info(CommonConstants.SERVER_INITIALIZATION_MARK + this.getClass().getSimpleName() + " is Applied.");
     }
 
+    /**
+     * 요청/응답을 ContentCaching wrapper로 보장하고, 처리 완료 시점에 선택된 요청만 상세 로그로 남긴다.
+     *
+     * <p>async dispatch에서는 첫 번째 응답 객체를 보관해 최종 dispatch에서 body 복사가 누락되지 않게 한다.</p>
+     */
     @Override
     public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
         //request, response을 ContentCachingRequestWrapper, ContentCachingResponseWrapper 로 변환 하여 하위 플로우 로 넘긴다.(req, res 의 body를 여러번 읽기 위한 용도로 활용됨)
@@ -77,6 +88,9 @@ public class ReqResDetailLogFilter extends OncePerRequestFilter {
         }
     }
 
+    /**
+     * async 재디스패치에서도 동일한 상세 로그 처리 흐름을 타게 한다.
+     */
     @Override
     protected boolean shouldNotFilterAsyncDispatch() {
         return false;

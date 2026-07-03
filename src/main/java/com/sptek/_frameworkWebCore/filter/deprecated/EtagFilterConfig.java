@@ -15,6 +15,12 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import java.io.IOException;
 
 //@Profile(value = { "xxx" }) //우선 항상 사용하지 않는 것으로
+/**
+ * API GET 응답에 Shallow ETag를 적용하던 deprecated 필터 설정.
+ *
+ * <p>{@code @Configuration}이 비활성화되어 현재 런타임에는 등록되지 않는다.
+ * ETag 적용은 호출자가 If-None-Match 헤더를 다시 보내는 캐시 흐름까지 함께 검토해야 한다.</p>
+ */
 @Slf4j
 //@Configuration
 //@ConditionalOnProperty(name = "sptFramework.filters.isEnabled.EtagFilter", havingValue = "true", matchIfMissing = false)
@@ -27,6 +33,9 @@ public class EtagFilterConfig {
     request header의 If-None-Match 값으로 다시 Etag값을 넘겨 줄수 있어야 한다.
     */
 
+    /**
+     * 활성화된 경우 /api 하위 GET 요청에 ShallowEtagHeaderFilter를 제한적으로 적용한다.
+     */
     @Bean
     public FilterRegistrationBean<OncePerRequestFilter> shallowEtagHeaderFilter() {
         log.info(CommonConstants.SERVER_INITIALIZATION_MARK + "EtagFilter is Applied.");

@@ -10,6 +10,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+/**
+ * Aspect 기반 method usage 추적 결과를 필터에서 출력하려던 deprecated 필터.
+ *
+ * <p>현재 등록 애노테이션과 내부 처리 코드가 비활성화되어 런타임 기능으로 사용되지 않는다.
+ * 신규 호출 추적은 logging/event의 활성 구조를 우선 검토한다.</p>
+ */
 @Slf4j
 //@Order(Ordered.HIGHEST_PRECEDENCE)
 //@WebFilter(urlPatterns = "/*")
@@ -19,6 +25,9 @@ public class MethodeUsageAuditFilter extends OncePerRequestFilter {
         log.info(CommonConstants.SERVER_INITIALIZATION_MARK + this.getClass().getSimpleName() + " is Applied.");
     }
 
+    /**
+     * 현재는 method usage audit 처리 없이 종료되는 deprecated hook이다.
+     */
     @Override
     public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull jakarta.servlet.FilterChain filterChain) throws ServletException, IOException {
 //

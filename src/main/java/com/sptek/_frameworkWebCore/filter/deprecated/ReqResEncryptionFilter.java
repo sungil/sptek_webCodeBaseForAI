@@ -18,6 +18,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+/**
+ * 요청/응답 body 변환과 암복호화 필터링을 실험하던 deprecated 필터.
+ *
+ * <p>현재는 등록 애노테이션이 비활성화되어 런타임 필터 체인에 포함되지 않는다.
+ * request stream을 controller 이전에 읽어야 하는 경우 참고용으로만 유지한다.</p>
+ */
 @Slf4j
 //@Order(2)
 //@WebFilter(urlPatterns = "/*") //ant 표현식 사용 불가 ex: /**
@@ -28,6 +34,9 @@ public class ReqResEncryptionFilter extends OncePerRequestFilter {
         log.info(CommonConstants.SERVER_INITIALIZATION_MARK + this.getClass().getSimpleName() + " is Applied.");
     }
 
+    /**
+     * 현재 구현은 별도 변환 없이 다음 필터로 위임한다.
+     */
     @Override
     public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
 

@@ -13,6 +13,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 
+/**
+ * 요청/응답 객체를 deprecated wrapper 타입으로 변환하던 필터.
+ *
+ * <p>현재 활성 필터에서는 Spring의 ContentCaching wrapper 또는 전용 support를 사용하므로
+ * 이 필터는 과거 구현 참고용으로만 유지한다.</p>
+ */
 @Slf4j
 //@Order(1) //httpServletResponseWrapperSupport 형태가 최종 response 형태로 나가야 함으로 필터의 마지막에 처리되야함(마지막 처리를 위해선 가장 먼저 저일되야 함)
 //@WebFilter(urlPatterns = "/*") //ant 표현식 사용 불가 ex: /**
@@ -23,6 +29,9 @@ public class DEPRECATED_ConvertReqResToReqResWrapperFilter extends OncePerReques
         log.info(CommonConstants.SERVER_INITIALIZATION_MARK + this.getClass().getSimpleName() + " is Applied.");
     }
 
+    /**
+     * 요청과 응답을 deprecated wrapper로 감싼 뒤 최종 응답 body를 원 response에 다시 기록한다.
+     */
     @Override
     public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
 

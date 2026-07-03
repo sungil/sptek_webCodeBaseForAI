@@ -22,6 +22,12 @@ import java.util.Optional;
 /*
 모든  request, response 에 대한 전체 로그를 남긴다. 성능 및 메모리 소묘가 큼으로 로컬에서 개발 디버깅용으로만 사용하여야 한다. 상용 적용 금지.
 */
+/**
+ * 모든 request/response 내용을 wrapper로 읽어 debug 로그로 남기던 deprecated 필터.
+ *
+ * <p>성능과 메모리 비용이 크고 응답 body 재기록 책임이 있어 운영 사용 대상이 아니다.
+ * 현재 상세 로그는 {@code ReqResDetailLogFilter}와 decision interceptor 조합을 우선 사용한다.</p>
+ */
 @Slf4j
 //@Profile(value = { "local" })
 //@Order(3)
@@ -33,6 +39,9 @@ public class DEPRECATED_ReqResLogFilterForDebugging extends OncePerRequestFilter
         log.info(CommonConstants.SERVER_INITIALIZATION_MARK + this.getClass().getSimpleName() + " is Applied.");
     }
 
+    /**
+     * 요청/응답 wrapper를 통해 API와 View 요청의 상세 정보를 로그로 출력한다.
+     */
     @Override
     public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
 

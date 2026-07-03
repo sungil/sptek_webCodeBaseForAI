@@ -13,6 +13,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+/**
+ * 중요도가 낮은 요청에서 Spring Session 저장소 접근을 줄이는 필터.
+ *
+ * <p>static resource나 favicon 같은 minor request에 대해 Spring Session의 FILTERED attribute를 미리 설정해
+ * Redis 같은 외부 session repository 접근을 건너뛰게 하는 용도다.</p>
+ */
 @Slf4j
 //@Profile(value = { "local", "dev", "stg", "prd" })
 //@HasAnnotationOnMain_InBean(EnableNoFilterAndSessionForMinorRequest_InMain.class)
@@ -28,11 +34,17 @@ public class NoSessionFilterForMinorRequest extends OncePerRequestFilter {
     todo : redis 연동후 실제 동작 확인 필요!!
      */
 
+    /**
+     * minor request이면 Spring Session 필터가 이미 처리된 것처럼 request attribute를 설정한다.
+     */
     @PostConstruct //Bean 생성 이후 호출
     public void init() {
         log.info(CommonConstants.SERVER_INITIALIZATION_MARK + this.getClass().getSimpleName() + " is Applied.");
     }
 
+    /**
+     * static 또는 중요도가 낮은 요청에는 session repository filter 중복 처리를 차단하고 다음 필터로 넘긴다.
+     */
     @Override
      public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
         // 중용하지 않은 req 에 대해 session 비 생성 처리
@@ -44,6 +56,9 @@ public class NoSessionFilterForMinorRequest extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
+    /**
+     * async 재디스패치에서도 minor request 세션 제외 처리가 유지되도록 한다.
+     */
     @Override
     protected boolean shouldNotFilterAsyncDispatch() {
         return false;

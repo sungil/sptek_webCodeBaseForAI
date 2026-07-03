@@ -20,6 +20,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+/**
+ * request body 기반 XSS escape를 수행하던 deprecated 필터.
+ *
+ * <p>현재는 ObjectMapper 설정과 XSS helper 중심으로 처리하므로 중복 적용을 피하기 위해 사용하지 않는다.
+ * request parameter까지 포괄하지 못하고 body stream을 먼저 읽는 제약이 있어 참고용으로만 유지한다.</p>
+ */
 @Slf4j
 //@Order(1)
 //@WebFilter(urlPatterns = "/*") //ant 표현식 사용 불가 ex: /**
@@ -35,6 +41,9 @@ public class DEPRECATED_XssProtectFilter extends OncePerRequestFilter {
         log.info(CommonConstants.SERVER_INITIALIZATION_MARK + this.getClass().getSimpleName() + " is Applied.");
     }
 
+    /**
+     * request body JSON 값을 escape한 뒤 wrapper request로 다음 필터에 전달한다.
+     */
     @Override
     public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
 

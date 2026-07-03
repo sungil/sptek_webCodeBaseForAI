@@ -18,6 +18,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Collections;
 
+/**
+ * 프레임워크 CORS 정책 설정을 API 요청에 적용하는 필터.
+ *
+ * <p>Spring Security의 기본 CORS 처리 대신 프로젝트 설정값을 직접 읽어 응답 헤더를 구성한다.
+ * preflight OPTIONS 요청은 이 필터에서 바로 OK 응답으로 마무리한다.</p>
+ */
 @Slf4j
 @RequiredArgsConstructor
 //@Profile(value = { "local", "dev", "stg", "prd" })
@@ -34,6 +40,9 @@ public class CorsPolicyFilter extends OncePerRequestFilter {
         log.info(CommonConstants.SERVER_INITIALIZATION_MARK + this.getClass().getSimpleName() + " is Applied.");
     }
 
+    /**
+     * Origin 요청 헤더가 있으면 허용 origin을 계산해 CORS 응답 헤더를 설정한다.
+     */
     @Override
     public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
         if (MainClassAnnotationRegister.hasAnnotation(Enable_NoFilterAndSessionForMinorRequest_At_Main.class)) {
@@ -74,6 +83,9 @@ public class CorsPolicyFilter extends OncePerRequestFilter {
         }
     }
 
+    /**
+     * async 재디스패치에서도 CORS 헤더 처리 기회를 유지한다.
+     */
     @Override
     protected boolean shouldNotFilterAsyncDispatch() {
         return false;
