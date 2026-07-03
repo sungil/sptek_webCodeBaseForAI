@@ -18,6 +18,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * API 요청에서 Spring Security 인증 상태와 URL 인가 정책을 확인하는 예제 컨트롤러.
+ *
+ * <p>경로 기반 인가, 메서드 기반 인가, JWT 로그인 처리 흐름을 같은 API 진입점에서 비교할 수 있게 둔다.
+ * 실제 업무 API에서는 예제 경로와 테스트용 권한명을 그대로 사용하지 말고 프로젝트 보안 정책에 맞는 matcher와
+ * 권한 체계를 기준으로 분리한다.</p>
+ */
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -25,7 +32,6 @@ import org.springframework.web.bind.annotation.*;
 @Enable_ResponseOfApiGlobalException_At_RestController
 @RequestMapping(value = {"/api/"}, produces = {MediaType.APPLICATION_JSON_VALUE/*, MediaType.APPLICATION_XML_VALUE*/})
 @Tag(name = "Authentication (authentication.http 을 통해 추가 테스트 가능)", description = "")
-
 public class AuthenticationApiController {
 
     private final AuthenticationManager authenticationManager;
@@ -74,19 +80,30 @@ public class AuthenticationApiController {
         return "you need Auth (Any) when you request with POST";
     }
 
+    /**
+     * URL matcher로는 허용된 API에서 서비스 메서드의 권한 검사를 통과해야 하는 흐름을 보여준다.
+     */
     @GetMapping("/08/example/authentication/authFreeWithAuthCheckMethod")
     @Operation(summary = "08. Auth 경로가 아니지만 내부 적으로 Auth 체크 메소드 를 사용 하는 경우", description = "") //swagger
     public Object authFreeWithAuthCheckMethod() {
         return authenticationService.iNeedAuth();
     }
 
+    /**
+     * URL matcher로는 허용된 API에서 서비스 메서드의 Role 검사를 통과해야 하는 흐름을 보여준다.
+     */
     @GetMapping("/09/example/authentication/authFreeWithRoleCheckMethod")
     @Operation(summary = "09. Auth 경로가 아니지만 내부 적으로 Role 체크 메소드 를 사용 하는 경우", description = "") //swagger
     public Object authFreeWithRoleCheckMethod() {
         return authenticationService.iNeedRole();
     }
 
-    // 보안상 반드시 Post 로 구성할 것
+    /**
+     * 요청 본문의 로그인 정보로 인증을 수행하고, 생성한 JWT를 응답 헤더와 본문으로 반환한다.
+     *
+     * <p>인증 성공 후 현재 요청 내부의 후속 코드에서도 인증 정보를 참조할 수 있도록
+     * {@link SecurityContextHolder}에 직접 저장한다. 보안상 로그인 처리는 POST 요청으로만 구성한다.</p>
+     */
     @PostMapping("/10/example/authentication/login")
     @Operation(summary = "10. 로그인 처리 API (인증 토큰 반환)", description = "") //swagger
     public Object signin(@RequestBody @Valid LoginRequestDto loginRequestDto, HttpServletResponse response) {
