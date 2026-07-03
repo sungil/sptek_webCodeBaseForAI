@@ -1,6 +1,6 @@
-# Pre-Commit Code Comments Workflow
+# Pre-Commit Check Procedure
 
-이 절차는 커밋 전에 변경 대상 파일의 주석 보강 필요 여부를 점검할 때 따른다. 실제 주석 작성 기준은 `.AI/workflows/skills/write-code-comments.md`를 재사용한다.
+이 절차는 커밋 전에 변경 대상 파일의 주석 보강 필요 여부와 검증 상태를 점검할 때 따른다. 실제 주석 작성 기준은 `.AI/procedures/tasks/write-code-comments.md`를 재사용한다.
 
 ## 목표
 
@@ -22,8 +22,8 @@
    - 변경된 클래스, 메서드, 애노테이션, 설정 키, URL, DTO, 예외 코드의 호출자와 사용 예제를 `rg`로 검색한다.
    - 변경된 기능을 사용하는 다른 파일에 관련 JavaDoc, 주석, Markdown 설명, HTTP 예제가 있으면 현재 동작과 맞는지 확인한다.
    - 커밋 대상 밖의 파일 주석도 함께 수정해야 하면, 수정 필요성과 추가될 파일 범위를 사용자에게 설명하고 확인을 받은 뒤 진행한다.
-   - 사용자가 확인하면 해당 파일에도 `.AI/workflows/skills/write-code-comments.md`를 적용하고 최종 커밋 대상에 포함한다.
-5. 주석 보강이 필요하면 `.AI/workflows/skills/write-code-comments.md`를 적용한다.
+   - 사용자가 확인하면 해당 파일에도 `.AI/procedures/tasks/write-code-comments.md`를 적용하고 최종 커밋 대상에 포함한다.
+5. 주석 보강이 필요하면 `.AI/procedures/tasks/write-code-comments.md`를 적용한다.
 6. 주석 변경 후 실제 커밋 전에는 변경 범위가 요청과 맞는지 다시 확인한다.
 
 ## 완료 전 확인

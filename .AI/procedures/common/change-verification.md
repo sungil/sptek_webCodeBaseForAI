@@ -1,4 +1,4 @@
-# Change Verification Workflow
+# Change Verification Procedure
 
 이 문서는 이 저장소의 검증 절차를 정의한다.
 

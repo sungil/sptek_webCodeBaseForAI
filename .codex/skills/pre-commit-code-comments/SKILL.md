@@ -10,6 +10,6 @@ description: 커밋 요청을 받았을 때 변경 대상 파일을 기준으로
 ## 사용 절차
 
 1. 루트 `AI.md`를 먼저 따른다.
-2. 상세 절차는 `.AI/workflows/skills/pre-commit-code-comments.md`를 따른다.
-3. 주석 작성이 필요하면 `write-code-comments` 스킬의 `.AI/workflows/skills/write-code-comments.md` 절차를 적용한다.
+2. 상세 절차는 `.AI/procedures/tasks/pre-commit-check.md`를 따른다.
+3. 주석 작성이 필요하면 `write-code-comments` 스킬의 `.AI/procedures/tasks/write-code-comments.md` 절차를 적용한다.
 4. 실제 커밋을 만들 때는 주석 보강 후 변경 범위와 검증 결과를 확인한다.

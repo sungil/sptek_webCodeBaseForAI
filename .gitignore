@@ -39,7 +39,7 @@ out/
 ### Codex local runtime ###
 .codex/config.toml
 .codex/run/
-.AI/workflows/.cache/
+.AI/assets/.cache/
 
 ### Local runtime outputs ###
 infra/h2DB/*.db

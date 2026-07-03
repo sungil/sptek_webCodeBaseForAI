@@ -1,4 +1,4 @@
-# Summarize Directory Context Workflow
+# Directory Context Summary Procedure
 
 이 문서는 특정 디렉토리의 역할을 요약하는 하위 `AI.md`를 생성하거나 갱신할 때 따르는 절차다. 루트 `AI.md`의 공통 원칙과 충돌하지 않으며, 하위 문서는 해당 디렉토리 범위에서 더 구체적인 작업 맥락을 제공한다.
 

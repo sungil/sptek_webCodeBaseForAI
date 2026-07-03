@@ -324,7 +324,7 @@ if ($Sql -and $FilePath) {
 $repoRoot = Resolve-RepoRoot
 Set-Location -LiteralPath $repoRoot
 
-$cacheDir = Join-Path $repoRoot '.AI\workflows\.cache\query-jdbc'
+$cacheDir = Join-Path $repoRoot '.AI\assets\.cache\query-jdbc'
 $driverCachePath = Join-Path $cacheDir 'driver-cache.json'
 $lastSuccessPath = Join-Path $cacheDir 'last-success.json'
 $schemaCachePath = Join-Path $cacheDir 'schema-cache.json'

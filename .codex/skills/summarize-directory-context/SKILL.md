@@ -10,5 +10,5 @@ description: 특정 디렉토리의 파일과 하위 코드 구성을 분석해 
 ## 사용 절차
 
 1. 루트 `AI.md`를 먼저 따른다.
-2. 상세 절차는 `.AI/workflows/skills/summarize-directory-context.md`를 따른다.
+2. 상세 절차는 `.AI/procedures/tasks/directory-context-summary.md`를 따른다.
 3. 커밋 작업 중 변경 파일이 있는 디렉토리에 이미 `AI.md`가 있거나 새 요약이 필요한 경우, 변경 내용이 디렉토리 역할 설명에 반영되어야 하는지 함께 검토한다.

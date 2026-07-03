@@ -1,6 +1,6 @@
-# Write Code Comments Workflow
+# Write Code Comments Procedure
 
-이 절차는 사용자가 주석 작성을 요청하거나 다른 workflow가 코드 주석 보강 절차를 재사용할 때 따른다.
+이 절차는 사용자가 주석 작성을 요청하거나 다른 절차가 코드 주석 보강 기준을 재사용할 때 따른다.
 
 ## 목표
 

@@ -1,18 +1,18 @@
-# Code Analysis Workflow
+# Code Analysis Procedure
 
-이 문서는 Base 코드와 Base 코드 관례를 바탕으로 작성되는 실제 업무 코드를 분석할 때 따르는 실행 절차다. 저장소 공통 원칙, 보안/민감 파일 규칙, 프로파일 정책, Base 코드 우선 원칙은 루트 `AI.md`를 기준으로 하고 여기서는 반복하지 않는다.
+이 문서는 Base 코드와 Base 코드 관례를 바탕으로 작성되는 실제 업무 코드를 분석할 때 따르는 실행 절차다. 저장소 공통 원칙, 보안/민감 파일 규칙, profile 정책, Base 코드 우선 원칙은 루트 `AI.md`와 `.AI/policies/**`를 기준으로 하고 여기서는 반복하지 않는다.
 
 ## 역할
 
-- `AI.md`: 저장소 전체의 원칙과 금지 사항을 정의한다.
+- `AI.md`: 최상위 bootstrap과 필수 원칙을 정의한다.
 - 이 문서: 코드 분석 요청을 받았을 때 어떤 순서로 근거를 수집하고 결론을 낼지 정의한다.
-- `.codex/skills/code-analysis/SKILL.md`: Codex가 이 workflow를 찾기 위한 얇은 진입점이다.
+- `.codex/skills/code-analysis/SKILL.md`: Codex가 이 procedure를 찾기 위한 얇은 adapter다.
 
 ## 기본 흐름
 
 1. 사용자가 언급한 대상을 먼저 식별한다: 클래스, 메서드, URL, 애노테이션, 프로퍼티, 템플릿, SQL, 로그 라인.
 2. `git status --short`로 현재 작업트리 기준을 확인한다. 원본, staged diff, working tree 중 어떤 기준으로 답하는지 필요한 경우 명시한다.
-3. `rg`로 정의, 호출자, 설정 키, 테스트, 예제를 찾는다. 기억에 의존해 저장소 사실관계를 단정하지 않는다.
+3. `.AI/procedures/common/search-and-navigation.md` 기준으로 정의, 호출자, 설정 키, 테스트, 예제를 찾는다.
 4. 관련성이 높은 최소 파일을 UTF-8로 열고, 문자열 검색만으로 부족하면 컴파일, 테스트, 로그, Spring Bean 등록 흐름까지 확인한다.
 5. 결론은 코드로 확인한 사실, 코드 흐름에서 나온 추론, 일반 권고를 구분한다.
 

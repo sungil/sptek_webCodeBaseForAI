@@ -1,4 +1,4 @@
-# Database Support Workflow
+# Readonly Database Query Procedure
 
 이 문서는 AI가 코드 생성, 분석, 사용자 질의 응답 과정에서 필요한 DB 스키마, 테이블, 컬럼, 기준 데이터, 특정 값을 읽기 전용으로 확인할 때 따르는 실행 절차다. 특정 DB 제품이나 `local` H2에 한정하지 않고, 현재 애플리케이션 설정이 바라보는 DB 또는 사용자가 명시한 DB에서 필요한 사실만 빠르게 확인하는 것을 목표로 한다.
 
@@ -8,7 +8,7 @@
 - 사용자가 단순 데이터 확인을 요청하면 필요한 DB를 식별하고 읽기 쿼리로 빠르게 확인해 보고한다.
 - 반복적으로 쓰는 조회 SQL, 복잡한 부분 쿼리, 분석용 SQL 조각을 파일로 남겨 재사용한다.
 - DB 조회 과정에서 비밀값, 운영 데이터, 과도한 결과 출력으로 인한 위험을 줄인다.
-- 스키마 생성, 데이터 입력, 마이그레이션, 초기화는 이 스킬의 책임이 아니다.
+- 스키마 생성, 데이터 입력, 마이그레이션, 초기화는 이 절차의 책임이 아니다.
 
 ## DB 선택 기준
 
@@ -25,7 +25,7 @@
    - 접속이 필요하면 사용자에게 접속 가능한 JDBC URL, 계정, 비밀번호 또는 실행 환경 제공을 요청한다.
 4. H2 file DB는 새 DB 파일이 생기지 않도록 본체 파일(`*.mv.db`) 존재 여부를 먼저 확인한다.
    - 본체 파일이 없으면 접속하지 않고 중단한다.
-   - DB 생성이나 `_autoSqlInitialize` 적용이 필요하면 이 스킬로 처리하지 말고 애플리케이션 기동, Spring SQL init, Flyway/Liquibase 같은 별도 초기화·마이그레이션 절차로 다룬다.
+   - DB 생성이나 `_autoSqlInitialize` 적용이 필요하면 이 절차로 처리하지 말고 애플리케이션 기동, Spring SQL init, Flyway/Liquibase 같은 별도 초기화·마이그레이션 절차로 다룬다.
 
 ## 조회 원칙
 
@@ -41,7 +41,7 @@
 저장소 루트에서 범용 JDBC 조회 스크립트를 우선 사용한다.
 
 ```powershell
-.\.AI\workflows\scripts\query-jdbc.ps1 `
+.\.AI\assets\scripts\db\query-jdbc.ps1 `
   -DbType h2 `
   -JdbcUrl "jdbc:h2:file:./infra/h2DB/spt_web_fw;AUTO_SERVER=TRUE;AUTO_SERVER_PORT=9092" `
   -User "sa" `
@@ -52,46 +52,46 @@
 MySQL 예시:
 
 ```powershell
-.\.AI\workflows\scripts\query-jdbc.ps1 `
+.\.AI\assets\scripts\db\query-jdbc.ps1 `
   -DbType mysql `
   -JdbcUrl "jdbc:mysql://localhost:3306/spt_web_fw?serverTimezone=UTC" `
   -User "user" `
   -Password "password" `
-  -FilePath .\.AI\workflows\db-query-snippets\common\table-list.mysql.sql
+  -FilePath .\.AI\assets\snippets\sql\common\table-list.mysql.sql
 ```
 
 여러 줄 SQL이나 반복 조회 SQL은 파일로 저장한 뒤 실행한다.
 
 ```powershell
-.\.AI\workflows\scripts\query-jdbc.ps1 `
+.\.AI\assets\scripts\db\query-jdbc.ps1 `
   -DbType h2 `
   -JdbcUrl "jdbc:h2:file:./infra/h2DB/spt_web_fw;AUTO_SERVER=TRUE;AUTO_SERVER_PORT=9092" `
   -User "sa" `
   -Password "" `
-  -FilePath .\.AI\workflows\db-query-snippets\common\table-list.h2.sql
+  -FilePath .\.AI\assets\snippets\sql\common\table-list.h2.sql
 ```
 
 기존 local H2 전용 조회가 필요하면 호환 스크립트를 사용할 수 있다.
 
 ```powershell
-.\.AI\workflows\scripts\query-local-h2.ps1 "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'PUBLIC' ORDER BY TABLE_NAME"
+.\.AI\assets\scripts\db\query-local-h2.ps1 "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'PUBLIC' ORDER BY TABLE_NAME"
 ```
 
-`query-jdbc.ps1`는 마지막 성공 접속 정보, JDBC driver jar 경로, 컴파일된 Java runner를 `.AI/workflows/.cache/query-jdbc` 아래에 저장한다.
+`query-jdbc.ps1`는 마지막 성공 접속 정보, JDBC driver jar 경로, 컴파일된 Java runner를 `.AI/assets/.cache/query-jdbc` 아래에 저장한다.
 같은 DB에 반복 조회할 때는 `-JdbcUrl`을 생략하면 마지막 성공 접속 정보를 우선 사용하고, 실패했을 때만 다시 명시 URL과 driver jar 탐색 경로를 점검한다.
 
-스키마 확인은 먼저 `.AI/workflows/.cache/query-jdbc/schema-cache.json`을 확인한다.
+스키마 확인은 먼저 `.AI/assets/.cache/query-jdbc/schema-cache.json`을 확인한다.
 캐시가 없거나, 사용자가 묻는 테이블/컬럼이 캐시에 없거나, 실제 조회에서 컬럼/테이블 오류가 발생했을 때만 다음 명령으로 갱신한다.
 
 ```powershell
-.\.AI\workflows\scripts\query-jdbc.ps1 -RefreshSchemaCache
+.\.AI\assets\scripts\db\query-jdbc.ps1 -RefreshSchemaCache
 ```
 
 스키마 캐시는 테이블/컬럼 구조를 빠르게 파악하기 위한 보조 자료다. 정확성이 중요하거나 최근 마이그레이션, 앱 재기동, SQL 초기화 이후라면 갱신 후 사용한다.
 
 ## 반복 쿼리 보관
 
-반복적으로 사용하는 SQL은 `.AI/workflows/db-query-snippets` 아래에 저장한다.
+반복적으로 사용하는 SQL은 `.AI/assets/snippets/sql` 아래에 저장한다.
 
 - `common`: DB 구조 확인, 테이블/컬럼 목록, 건수 확인처럼 범용적인 SQL
 - `{domain}`: 특정 업무 도메인 분석에 반복적으로 쓰는 SQL
