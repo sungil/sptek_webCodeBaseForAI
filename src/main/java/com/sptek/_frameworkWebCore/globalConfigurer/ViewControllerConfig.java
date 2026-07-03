@@ -5,11 +5,22 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/**
+ * 별도 Controller 클래스 없이 처리할 수 있는 단순 view route를 등록하는 MVC 전역 설정.
+ *
+ * <p>정적 redirect나 예제 index 같은 단순 화면 매핑만 이곳에 두고,
+ * 모델 구성, 권한 판단, 예외 처리 연계가 필요한 화면은 명시적인 Controller를 사용한다.</p>
+ */
 @Slf4j
 @Configuration
 public class ViewControllerConfig implements WebMvcConfigurer {
 
-    //실제 viewcontroller를 만들지 않고도 간단한 역할을 수행함
+    /**
+     * Swagger redirect와 기본 예제 화면의 view name 매핑을 등록한다.
+     *
+     * <p>ViewControllerRegistry 기반 매핑은 일반 Controller 메서드를 거치지 않으므로
+     * ControllerAdvice 의존 처리가 필요한 화면에는 사용하지 않는다.</p>
+     */
     @Override
     public void addViewControllers(ViewControllerRegistry viewControllerRegistry) {
         //for swagger.

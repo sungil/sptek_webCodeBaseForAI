@@ -13,10 +13,19 @@ import org.springframework.web.servlet.resource.VersionResourceResolver;
 
 import java.time.Duration;
 
+/**
+ * Swagger webjar와 애플리케이션 static resource 경로를 등록하는 MVC 전역 설정.
+ *
+ * <p>메인 클래스의 {@link Enable_HttpCachePublicForStaticResource_At_Main} 적용 여부에 따라
+ * static resource에 장기 public cache와 content hash 기반 URL 버전 전략을 붙일지 결정한다.</p>
+ */
 @Slf4j
 @Configuration
 public class ResourceHandlerConfig implements WebMvcConfigurer {
 
+    /**
+     * SpringDoc/Swagger UI가 사용하는 classpath resource 경로를 등록한다.
+     */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry resourceHandlerRegistry) {
         // Web static 리소스에 대한 설정은 프로퍼티 spring.web.resources.static-locations: 를 통해서도 설정 가능
@@ -29,9 +38,15 @@ public class ResourceHandlerConfig implements WebMvcConfigurer {
         resourceHandlerRegistry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/resources/webjars/");
     }
 
+    /**
+     * static resource에 public cache와 content hash 기반 URL 버전을 적용하는 조건부 설정.
+     */
     @HasAnnotationOnMain_At_Bean(Enable_HttpCachePublicForStaticResource_At_Main.class)
     @Configuration
     public class EnableHttpCachePublicForStaticResource implements WebMvcConfigurer {
+        /**
+         * classpath:/static/ 하위 리소스를 전체 경로에 매핑하고 장기 cache header와 version resolver를 붙인다.
+         */
         @Override
         public void addResourceHandlers(ResourceHandlerRegistry resourceHandlerRegistry) {
 
@@ -50,6 +65,9 @@ public class ResourceHandlerConfig implements WebMvcConfigurer {
             //  resourceHandlerRegistry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/").setCacheControl(cacheControl);
         }
 
+        /**
+         * Thymeleaf가 렌더링하는 static resource URL에 version hash를 인코딩하게 하는 필터를 등록한다.
+         */
         @Bean
         //static resource 의 버전(해싱값) 처리를 위해 필요
         public ResourceUrlEncodingFilter resourceUrlEncodingFilter() {
@@ -58,9 +76,15 @@ public class ResourceHandlerConfig implements WebMvcConfigurer {
 
     }
 
+    /**
+     * static resource public cache 기능을 사용하지 않을 때 기본 classpath:/static/ 매핑만 등록하는 조건부 설정.
+     */
     @HasAnnotationOnMain_At_Bean(value = Enable_HttpCachePublicForStaticResource_At_Main.class, negate = true)
     @Configuration
     public class DisableHttpCachePublicForStaticResource implements WebMvcConfigurer {
+        /**
+         * cache header나 resource chain 없이 static resource 기본 경로를 등록한다.
+         */
         @Override
         public void addResourceHandlers(ResourceHandlerRegistry resourceHandlerRegistry) {
             resourceHandlerRegistry.addResourceHandler("/**").addResourceLocations("classpath:/static/");
