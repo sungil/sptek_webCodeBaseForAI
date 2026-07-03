@@ -10,8 +10,17 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * DTO 간 필드 복사를 위한 전역 ModelMapper Bean 설정.
+ *
+ * <p>기본 매칭 전략과 null skip 정책을 지정하고, 예제 DTO 간 이름이 다른 필드 매핑 사례를 함께 등록한다.
+ * 업무 도메인의 복잡한 매핑은 공통 Bean을 오염시키지 않도록 별도 TypeMap 추가 위치를 검토한다.</p>
+ */
 @Configuration
 public class ModelMapperConfig {
+    /**
+     * 프레임워크 기본 ModelMapper 설정과 예제 TypeMap을 구성한다.
+     */
     @Bean
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
