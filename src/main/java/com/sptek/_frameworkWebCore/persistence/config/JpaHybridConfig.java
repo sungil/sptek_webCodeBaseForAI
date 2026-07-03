@@ -17,12 +17,21 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * MyBatis와 JPA를 함께 사용하는 hybrid persistence 모드의 JPA Bean 설정.
+ *
+ * <p>메인 클래스에 {@link Enable_JpaHybrid_At_Main}가 있을 때만 활성화되며,
+ * 동일한 transactionManager Bean 이름으로 JpaTransactionManager를 등록해 JPA transaction 기준으로 동작하게 한다.</p>
+ */
 @Slf4j
 @RequiredArgsConstructor
 @HasAnnotationOnMain_At_Bean(Enable_JpaHybrid_At_Main.class)
 @Configuration
 public class JpaHybridConfig implements WebMvcConfigurer {
 
+    /**
+     * hybrid 모드에서 사용할 JPA transaction manager를 등록한다.
+     */
     @Bean(name = "transactionManager")
     public PlatformTransactionManager transactionManager(@Qualifier("entityManagerFactory") LocalContainerEntityManagerFactoryBean localContainerEntityManagerFactoryBean) {
         JpaTransactionManager jpaTransactionManager = new JpaTransactionManager();
@@ -33,6 +42,12 @@ public class JpaHybridConfig implements WebMvcConfigurer {
         return jpaTransactionManager;
     }
 
+    /**
+     * 공통 datasource를 사용하는 EntityManagerFactory를 구성한다.
+     *
+     * <p>현재 entity scan 범위는 프레임워크 보안 extras entity 패키지로 제한되어 있다.
+     * 업무 도메인 entity를 JPA로 사용하려면 scan 패키지 확장이 필요하다.</p>
+     */
     @Bean(name = "entityManagerFactory")
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(@Qualifier("dataSource") DataSource dataSource) {
         LocalContainerEntityManagerFactoryBean localContainerEntityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();

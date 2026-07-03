@@ -15,10 +15,13 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-/*
-mybatis를 이용한 db 기본 템플릿을 제공함
- */
 
+/**
+ * MyBatis statementId 기반의 공통 CRUD, stream 처리, 페이징 조회 기능을 제공하는 DAO.
+ *
+ * <p>업무 서비스가 mapper namespace와 statementId를 직접 지정해 호출하는 얇은 템플릿이다.
+ * 복잡한 도메인 규칙은 이 DAO가 아니라 서비스 계층이나 전용 repository/mapper에서 처리한다.</p>
+ */
 @Slf4j
 @Component("myBatisCommonDao")
 public class MyBatisCommonDao {
@@ -42,38 +45,59 @@ public class MyBatisCommonDao {
         this.maxSetRowSizePerPage = maxSetRowSizePerPage1;
     }
 
+    /**
+     * 지정한 MyBatis statement로 insert를 실행한다.
+     */
     public Integer insert(String statementId, @Nullable Object parameter) {
         log.debug("statementId = {}", statementId);
         return this.sqlSessionTemplate.insert(statementId, parameter);
     }
 
+    /**
+     * 지정한 MyBatis statement로 update를 실행한다.
+     */
     public Integer update(String statementId, @Nullable Object parameter) {
         log.debug("statementId = {}", statementId);
         return this.sqlSessionTemplate.update(statementId, parameter);
     }
 
+    /**
+     * 지정한 MyBatis statement로 delete를 실행한다.
+     */
     public Integer delete(String statementId, @Nullable Object parameter) {
         log.debug("statementId = {}", statementId);
         return this.sqlSessionTemplate.delete(statementId, parameter);
     }
 
+    /**
+     * 지정한 MyBatis statement로 단건을 조회한다.
+     */
     public <T> T selectOne(String statementId, @Nullable Object parameter) {
         log.debug("statementId = {}", statementId);
         return (T)(this.sqlSessionTemplate.selectOne(statementId, parameter));
     }
 
+    /**
+     * 지정한 MyBatis statement로 목록을 조회한다.
+     */
     public <T> List<T> selectList(String statementId, @Nullable Object parameter) {
         log.debug("statementId = {}", statementId);
         return  (List<T>) this.sqlSessionTemplate.selectList(statementId, parameter);
     }
 
+    /**
+     * 지정한 컬럼 값을 key로 사용하는 Map 형태로 조회한다.
+     */
     public Map<?, ?> selectMap(String statementId, @Nullable Object parameter, String columnNameForMapkey) {
         log.debug("statementId = {}", statementId);
         return this.sqlSessionTemplate.selectMap(statementId, parameter, columnNameForMapkey);
     }
 
-    // DB로 부터 result row를 하나씩 받아가며 중간처리 작업을 진행할 수 있게 해준다.
-    // 조회 범위를 러프하게 잡고 원하는 요소만 모을수 있다, 메모리 절약가능, 반대로 DB 커넥션을 잡고 있음, 커넥션 타임아웃 주의
+    /**
+     * DB 결과 row를 하나씩 handler에 전달하며 필요한 결과만 모아 반환한다.
+     *
+     * <p>대량 조회에서 메모리를 줄일 수 있지만, 처리 중 DB 커넥션을 점유하므로 handler 작업 시간과 timeout을 함께 고려한다.</p>
+     */
     public <T, R> List<R> selectListWithResultHandler(
             String statementId, Object parameter,
             final MybatisResultHandlerSupport<T, R> mybatisResultHandlerSupport)
@@ -94,7 +118,13 @@ public class MyBatisCommonDao {
 
         return finalHeandledResults;
     }
-    
+
+    /**
+     * 현재 요청의 페이징 파라미터를 읽어 MyBatis 목록 조회에 PageHelper 페이징을 적용한다.
+     *
+     * <p>request thread가 아닌 곳에서는 설정 기본값을 사용한다. {@code setRowSizePerPage}는
+     * 설정된 최대값을 넘지 않도록 제한한다.</p>
+     */
     public <T> PageInfoSupport<T> selectListWithPagination(String statementId, @Nullable Object parameter)
     {
         log.debug("statementId = {}", statementId);

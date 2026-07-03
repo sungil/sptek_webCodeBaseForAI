@@ -17,12 +17,21 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.sql.DataSource;
 
+/**
+ * MyBatis SqlSessionFactory, SqlSessionTemplate, 기본 transaction manager를 구성하는 설정.
+ *
+ * <p>공통 MyBatis 설정 XML과 mapper XML은 _projectCommonResources 하위에서 읽는다.
+ * JPA hybrid 모드가 활성화되지 않은 경우에는 MyBatis/JDBC 기반 transactionManager도 함께 등록한다.</p>
+ */
 @Slf4j
 @RequiredArgsConstructor
 @Configuration
 public class MybatisConfig implements WebMvcConfigurer {
     private final ApplicationContext applicationContext;
 
+    /**
+     * 공통 datasource와 MyBatis XML 설정을 사용해 SqlSessionFactory를 구성한다.
+     */
     @Bean(name = "sqlSessionFactory")
     public SqlSessionFactory sqlSessionFactory(@Qualifier("dataSource") DataSource dataSource) throws Exception {
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
@@ -46,12 +55,17 @@ public class MybatisConfig implements WebMvcConfigurer {
         return sqlSessionFactoryBean.getObject();
     }
 
+    /**
+     * MyBatis DAO에서 사용할 thread-safe SqlSessionTemplate을 등록한다.
+     */
     @Bean(name = "sqlSessionTemplate")
     public SqlSessionTemplate sqlSessionTemplate(@Qualifier("sqlSessionFactory") SqlSessionFactory sqlSessionFactory) {
         return new SqlSessionTemplate(sqlSessionFactory);
     }
 
-    //EnableJpaHybrid_InMain 가 선언되지 않은 경우에 로딩 함(EnableJpaHybrid_InMain 사용시 JpaTransactionManager 가 동작함)
+    /**
+     * JPA hybrid 모드가 아닐 때 JDBC/MyBatis transaction manager를 등록한다.
+     */
     @HasAnnotationOnMain_At_Bean(value = Enable_JpaHybrid_At_Main.class, negate = true)
     @Bean(name = "transactionManager")
     public PlatformTransactionManager transactionManager(@Qualifier("dataSource") DataSource dataSource) {
