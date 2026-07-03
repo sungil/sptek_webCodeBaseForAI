@@ -20,8 +20,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.TimeZone;
 
+/**
+ * locale 변경 처리와 timezone cookie 관리를 함께 수행하는 LocaleChangeInterceptor 확장 구현.
+ *
+ * <p>locale query parameter가 있으면 Spring 기본 locale 변경 흐름을 사용하고,
+ * parameter가 없지만 locale cookie가 있으면 cookie 만료 연장을 위해 다시 설정한다.
+ * timezone은 LocaleContextHolder와 DateTimeContextHolder에 함께 반영한다.</p>
+ */
 public class CustomLocaleChangeInterceptor extends LocaleChangeInterceptor {
 
+    /**
+     * locale/timezone request parameter 또는 cookie를 기준으로 현재 요청의 locale context를 갱신한다.
+     */
     @Override
     public boolean preHandle(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler) throws ServletException {
         if (request.getParameter(getParamName()) != null) {

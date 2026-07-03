@@ -12,6 +12,12 @@ import org.springframework.lang.Nullable;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/**
+ * 프레임워크 공통 MVC interceptor의 등록 순서와 적용 경로를 관리하는 전역 설정.
+ *
+ * <p>각 interceptor는 메인 애노테이션 조건에 따라 Bean 등록이 달라질 수 있으므로 nullable로 주입받는다.
+ * 로그 대상 결정처럼 후속 interceptor나 filter가 의존하는 값은 먼저 등록한다.</p>
+ */
 @Configuration
 public class InterceptorGlobalConfig implements WebMvcConfigurer {
 
@@ -34,6 +40,9 @@ public class InterceptorGlobalConfig implements WebMvcConfigurer {
         this.viewXssProtectInterceptor = viewXssProtectInterceptor;
     }
 
+    /**
+     * 등록된 interceptor Bean만 선택해 API/View 경로별로 적용한다.
+     */
     @Override
     public void addInterceptors(InterceptorRegistry interceptorRegistry) {
 

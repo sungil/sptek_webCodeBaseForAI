@@ -16,11 +16,20 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * 실제 HandlerMethod 기준으로 request/response 상세 로그 출력 여부를 결정하는 interceptor.
+ *
+ * <p>body caching은 DispatcherServlet 이전의 filter에서 수행하지만, 컨트롤러 애노테이션 판단은
+ * HandlerMethod가 확정된 이 단계에서만 가능하므로 결과를 request attribute로 전달한다.</p>
+ */
 @Component
 @RequiredArgsConstructor
 public class ReqResDetailLogDecisionInterceptor implements HandlerInterceptor {
     private final RequestMappingAnnotationRegister requestMappingAnnotationRegister;
 
+    /**
+     * 메인 또는 컨트롤러/메서드 애노테이션을 확인해 상세 로그 활성 여부와 로그 tag를 request에 저장한다.
+     */
     @Override
     public boolean preHandle(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler) {
         if (!(handler instanceof HandlerMethod handlerMethod)) {
@@ -42,6 +51,9 @@ public class ReqResDetailLogDecisionInterceptor implements HandlerInterceptor {
         return true;
     }
 
+    /**
+     * 컨트롤러 애노테이션의 tag가 있으면 우선 사용하고, 없으면 메인 애노테이션 tag를 사용한다.
+     */
     private String resolveLogTag(Map<String, Object> controllerAttributes) {
         String controllerLogTag = Objects.toString(controllerAttributes.get("value"), "");
         if (StringUtils.hasText(controllerLogTag)) {

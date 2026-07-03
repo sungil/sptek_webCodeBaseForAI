@@ -21,12 +21,21 @@ import java.util.Optional;
 /*
 UV 관련 처리를 위한 인터셉터
  */
+/**
+ * View 요청 기준의 방문자 신규/재방문 로그를 남기는 interceptor.
+ *
+ * <p>방문 이력 cookie가 없으면 신규 방문, 있으면 기존 방문으로 판단한다.
+ * cookie는 당일 자정까지 유효하게 갱신해 일 단위 UV 로그 기준으로 사용한다.</p>
+ */
 @HasAnnotationOnMain_At_Bean(Enable_VisitHistoryLog_At_Main.class)
 @Slf4j
 @Component
 
 public class VisitHistoryLoggingInterceptor implements HandlerInterceptor{
 
+    /**
+     * 방문 이력 cookie를 확인해 방문 로그를 남기고, 당일 만료 cookie를 갱신한다.
+     */
     @Override
     public boolean preHandle(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler) {
         String visitHistoryLog = Optional.ofNullable(CookieUtil.getCookies(CommonConstants.VISIT_HISTORY_COOKIE_NAME))
