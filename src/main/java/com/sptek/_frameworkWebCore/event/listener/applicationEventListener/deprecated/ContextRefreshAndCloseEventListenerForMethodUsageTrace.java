@@ -11,6 +11,12 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
+/**
+ * context refresh 시 클래스와 메서드 목록을 파일로 생성하던 deprecated 추적 코드.
+ *
+ * <p>{@code @Component}와 {@code @EventListener}가 비활성화되어 현재 런타임에는 동작하지 않는다.
+ * 파일 시스템을 직접 생성하는 방식이므로 신규 사용보다 logging 패키지의 활성 진단 기능을 우선 검토한다.</p>
+ */
 @Slf4j
 //@Component
 public class ContextRefreshAndCloseEventListenerForMethodUsageTrace {
@@ -18,6 +24,9 @@ public class ContextRefreshAndCloseEventListenerForMethodUsageTrace {
     private static final String BASE_DIR = "/methodUsageLogging/";
 
     //@EventListener
+    /**
+     * 활성화된 경우 com.sptek 하위 classpath를 스캔해 메서드 추적용 파일 구조를 생성한다.
+     */
     public void handleContextRefresh(ContextRefreshedEvent event) {
         try {
             List<Class<?>> classes = getClasses("com.sptek");

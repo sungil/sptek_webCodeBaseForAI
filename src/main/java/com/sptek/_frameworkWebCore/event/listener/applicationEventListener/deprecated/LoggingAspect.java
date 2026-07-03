@@ -4,6 +4,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 
+/**
+ * 메서드 호출 추적을 Aspect 방식으로 실험하던 deprecated 코드.
+ *
+ * <p>{@code @Aspect}와 {@code @Component}가 비활성화되어 현재 런타임에는 등록되지 않는다.
+ * 신규 호출 추적 기능은 filter, interceptor, logging 패키지의 활성 구현을 우선 사용한다.</p>
+ */
 @Slf4j
 //@Aspect
 //@Component
@@ -69,6 +75,9 @@ public class LoggingAspect {
 //        callStack.get().clear();
 //    }
 
+    /**
+     * Aspect가 다시 활성화된 경우 com.sptek 하위 메서드 호출명을 debug 로그로 남긴다.
+     */
     @After("execution(* com.sptek..*(..)) && !within(com.sptek._frameworkWebCore.config.filter..*) && !within(com.sptek._projectCommon.filter..*)")
     public void logMethodCall(JoinPoint joinPoint) {
         // Get the method signature

@@ -8,6 +8,12 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Servlet {@link HttpSessionListener} 이벤트를 Spring application event 형태로 변환하는 어댑터.
+ *
+ * <p>세션 생성/소멸 콜백을 직접 처리하지 않고 별도 이벤트 객체로 발행해,
+ * 프레임워크와 프로젝트 공통 리스너가 {@code @EventListener} 방식으로 동일하게 확장할 수 있게 한다.</p>
+ */
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
@@ -15,7 +21,9 @@ public class HttpSessionListenerAdapter {
 
     private final ApplicationEventPublisher applicationEventPublisher;
 
-    //@Override 에 직접 원하는 처리가 가능하지만 다른 eventLitener 와 사용 방식 통일을 마추기 위해서 Adapter 크래스를 중간에 구현함
+    /**
+     * Servlet container의 세션 생명주기 콜백을 Spring 이벤트로 재발행하는 listener Bean을 등록한다.
+     */
     @Bean
     public HttpSessionListener httpSessionListener() {
         return new HttpSessionListener() {
@@ -32,11 +40,17 @@ public class HttpSessionListenerAdapter {
     }
 
 
-    //session 의 Created / Destroyed 상태를 분리한 메시지 만들기 위한 EventAdapter 클레스 임
+    /**
+     * 세션 생성 콜백을 Spring 이벤트로 전달하기 위한 adapter event.
+     */
     @RequiredArgsConstructor
     public class HttpSessionCreatedEventAdapter {
         public final HttpSessionEvent httpSessionEvent;
     }
+
+    /**
+     * 세션 소멸 콜백을 Spring 이벤트로 전달하기 위한 adapter event.
+     */
     @RequiredArgsConstructor
     public class HttpSessionDestroyedEventAdapter {
         public final HttpSessionEvent httpSessionEvent;
