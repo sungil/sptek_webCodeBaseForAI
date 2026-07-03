@@ -10,18 +10,31 @@ import org.springframework.util.unit.DataSize;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/**
+ * Servlet multipart 요청 처리를 위한 resolver와 업로드 크기 제한을 등록하는 설정.
+ *
+ * <p>Spring MVC가 multipart/form-data 요청을 파일 업로드로 해석하게 하며,
+ * 전역 max size는 넉넉하게 두고 업무 API 내부에서 별도 검증하는 현재 정책을 반영한다.</p>
+ */
 @Slf4j
 @Configuration
 public class MultipartResolverConfig implements WebMvcConfigurer {
 
-    //Multipart 파일을 다루기 위한 Resolver
+    /**
+     * 표준 Servlet multipart resolver를 Spring MVC의 multipartResolver Bean으로 등록한다.
+     */
     @Bean(name = "multipartResolver")
     public StandardServletMultipartResolver multipartResolver() {
         StandardServletMultipartResolver multipartResolver = new StandardServletMultipartResolver();
         return multipartResolver;
     }
 
-    //Multipart config 설정
+    /**
+     * Servlet multipart request/file 최대 크기 제한을 설정한다.
+     *
+     * <p>MaxUploadSizeExceededException이 공통 예외 응답으로 안정적으로 변환되지 않는 제약 때문에
+     * 이 값은 상한 안전장치로 두고, 실제 업무 제한은 각 API 내부에서 검사한다.</p>
+     */
     @Bean
     public MultipartConfigElement multipartConfigElement() {
         // max 초과시 발생하는 MaxUploadSizeExceededException 에 대해서 Ex 핸들러 에서 catch 가 안되는 문제가 있음 (DefaultHandlerExceptionResolver 에서 직접 처리고 response 커밋이 이루어 지는듯)
