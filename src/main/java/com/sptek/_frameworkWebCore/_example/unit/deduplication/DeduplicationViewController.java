@@ -9,6 +9,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+/**
+ * 중복 요청 방지 API를 브라우저에서 반복 호출해 볼 수 있는 예제 화면 컨트롤러.
+ *
+ * <p>Swagger UI로는 브라우저 캐시, timestamp query, GET/POST 연속 클릭 차이를 확인하기 어렵기 때문에
+ * 전용 Thymeleaf 페이지로 라우팅하는 역할만 담당한다.</p>
+ */
 @Slf4j
 @RequiredArgsConstructor
 @Controller
@@ -20,7 +26,9 @@ public class DeduplicationViewController {
     @NonFinal
     private final String htmlBasePath = "pages/_example/unit/";
 
-    // API 테스트를 위한 단순 테스트 페이지 호출용
+    /**
+     * 중복 요청 방지 API 테스트용 Thymeleaf 페이지를 반환한다.
+     */
     @GetMapping("/deduplication/preventDuplicateRequest")
     public String preventDuplicateRequest() {
         return htmlBasePath + "preventDuplicationRequest";
