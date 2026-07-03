@@ -16,8 +16,18 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * 외부 HTTP 호출에 사용할 Apache HttpClient 기반 Bean 구성을 제공한다.
+ *
+ * <p>커넥션 풀, timeout, keep-alive 전략을 공통으로 구성하고,
+ * 신규 outbound 호출은 {@link OutboundSupport}를 우선 사용하게 한다.
+ * {@link RestTemplate}과 {@link DEPRECATED_RestTemplateSupport}는 기존 호환 용도로 남겨둔다.</p>
+ */
 @Configuration
 public class HttpClientConfig {
+    /**
+     * 외부 HTTP 호출 커넥션 풀의 전체/route별 최대 커넥션 수를 설정한다.
+     */
     @Bean
     public PoolingHttpClientConnectionManager poolingHttpClientConnectionManager() {
         int HTTP_CLIENT_MAX_CONN_TOTAL = 100; // pool 의 전체 커넥션 갯수
@@ -29,6 +39,9 @@ public class HttpClientConfig {
         return poolingHttpClientConnectionManager;
     }
 
+    /**
+     * 커넥션 풀 대기, TCP 연결, 응답 대기 timeout 기본값을 설정한다.
+     */
     @Bean
     public RequestConfig requestConfig(){
         int DEFAULT_POOL_REQUEST_TIMEOUT = 5; //connection pool 에서 커넥션을 얻어올때까지의 최대 시간 (시간내 못받으면 에러)
@@ -42,6 +55,9 @@ public class HttpClientConfig {
                 .build();
     }
 
+    /**
+     * 커넥션 풀과 timeout 설정을 적용한 CloseableHttpClient를 등록한다.
+     */
     @Bean
     //HttpClient를 대신할 CloseableHttpClient
     public CloseableHttpClient closeableHttpClient(PoolingHttpClientConnectionManager poolingHttpClientConnectionManager, RequestConfig requestConfig) {
@@ -54,12 +70,18 @@ public class HttpClientConfig {
                 .build();
     }
 
+    /**
+     * 프레임워크 outbound 호출 래퍼를 등록한다.
+     */
     @Bean
     //CloseableHttpClient를 쉽게 쓸수있도록 기능 랩핑한 Bean
     public OutboundSupport outboundSupport(CloseableHttpClient closeableHttpClient, RequestMappingAnnotationRegister requestMappingAnnotationRegister){
         return new OutboundSupport(closeableHttpClient, requestMappingAnnotationRegister);
     }
 
+    /**
+     * 기존 RestTemplate 기반 호출 코드를 위한 호환 Bean을 등록한다.
+     */
     @Bean
     //reqConfig와 pool 관리를 내부적으로 하고 있는 RestTemplate을 @Autowired 해 사용할 수 있도록 Bean 구성함 (OutboundSupport을 더 권장?)
     public RestTemplate restTemplate(CloseableHttpClient closeableHttpClient){
@@ -68,6 +90,9 @@ public class HttpClientConfig {
         return new RestTemplate(httpComponentsClientHttpRequestFactory);
     }
 
+    /**
+     * deprecated RestTemplate 래퍼를 기존 코드 호환 목적으로 등록한다.
+     */
     @Bean
     //restTemplate을 쉽게 쓸수있도록 기능 랩핑한 Bean
     public DEPRECATED_RestTemplateSupport restTemplateSupport(RestTemplate restTemplate){
