@@ -12,7 +12,17 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * 프레임워크 전역에서 여러 문자열 암복호화 모듈을 같은 형식으로 호출하게 하는 진입점.
+ *
+ * <p>각 암호화 모듈은 Spring Bean 초기화 시 자신을 등록하고, 이 클래스는
+ * {@code ENC_sptTYPE(...)} 형식의 wrapper 문자열을 기준으로 복호화 모듈을 선택한다.
+ * DTO 복호화는 명시적으로 표시된 String 필드만 대상으로 삼아 일반 필드 변환과 구분한다.</p>
+ */
 public class GlobalEncryptor {
+    /**
+     * 전역 암복호화 wrapper 에 기록되는 모듈 식별자.
+     */
     public enum Type {
         sptAES, sptDES, sptJASYPT, sptRSA;
     }
@@ -20,10 +30,21 @@ public class GlobalEncryptor {
     private static final String encKeyword = "ENC_";
     private static final Map<String, StringEncryptor> encryptorMap = new ConcurrentHashMap<>();
 
+    /**
+     * 전역 암복호화 호출에 사용할 모듈 구현체를 등록한다.
+     *
+     * <p>각 encryptModule 구현체가 생성 시점에 호출하며, 같은 타입을 다시 등록하면
+     * 이후 호출에서는 마지막으로 등록된 구현체가 사용된다.</p>
+     */
     public static void register(Type encryptorTypeEnum, StringEncryptor stringEncryptor) {
         encryptorMap.put(encryptorTypeEnum.name(), stringEncryptor);
     }
 
+    /**
+     * 지정한 암호화 타입으로 평문을 암호화하고 전역 복호화가 해석할 수 있는 wrapper 문자열로 반환한다.
+     *
+     * <p>반환값은 {@code ENC_sptTYPE(...)} 형식이며, 등록되지 않은 타입이면 예외를 던진다.</p>
+     */
     public static String encrypt(Type encryptorTypeEnum, @NotNull String plainText) {
         StringEncryptor stringEncryptor = encryptorMap.get(encryptorTypeEnum.name());
         if (stringEncryptor == null) {
@@ -59,13 +80,23 @@ public class GlobalEncryptor {
 //        return castedCopy;
 //    }
 
-    //이미 확인한 객체는 다시 확인 하지 않도록 처리
+    /**
+     * DTO 객체를 복사하면서 자동 복호화 대상으로 표시된 String 필드를 복호화한다.
+     *
+     * <p>원본 객체를 직접 수정하지 않고 기본 생성자로 새 객체를 만든다. 순환 참조나 공유 객체가 있을 수 있어
+     * 이미 확인한 객체는 다시 순회하지 않는다.</p>
+     */
     public static <T> T decrypt(@NotNull T dto) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException, InstantiationException {
         Set<Object> visited = Collections.newSetFromMap(new IdentityHashMap<>());
         return decryptInternal(dto, visited);
     }
 
-    //dto 의 필드중 @EnableAutoDecrypt_InDtoString 어노테이션이 적용된 필드에 대해서만 decrypt 하는 방식 (리소스 절약) // todo : 복잡한 DTO 에 대해 성능 확인 필요
+    /**
+     * DTO 필드 중 {@link Enable_DecryptAuto_At_DtoString}이 붙은 암호화 문자열만 복호화한다.
+     *
+     * <p>일반 String 필드는 그대로 복사하고, 사용자 정의 객체 필드는 재귀적으로 복사한다.
+     * 복잡한 DTO 그래프에서는 reflection 순회 비용을 고려해야 한다.</p>
+     */
     private static <T> T decryptInternal(@NotNull T dto, Set<Object> visited)
             throws IllegalAccessException, NoSuchMethodException, InvocationTargetException, InstantiationException {
 
@@ -108,6 +139,11 @@ public class GlobalEncryptor {
         return castedCopy;
     }
 
+    /**
+     * 전역 wrapper 문자열에서 암호화 타입과 실제 암호문을 분리해 복호화한다.
+     *
+     * <p>{@code ENC_sptTYPE(...)} 형식이 아니거나 해당 타입의 구현체가 등록되지 않은 경우 예외를 던진다.</p>
+     */
     public static String decrypt(@NotNull String encryptedText) {
         for (Type encryptorTypeEnum : Type.values()) {
             String prefix = encKeyword + encryptorTypeEnum.name() + "(";

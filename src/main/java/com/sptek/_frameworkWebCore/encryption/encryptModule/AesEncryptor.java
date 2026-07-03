@@ -13,6 +13,13 @@ import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.Base64;
 
+/**
+ * AES/CBC/PKCS5Padding 기반의 문자열 암복호화 모듈.
+ *
+ * <p>설정에서 Base64 인코딩된 대칭키를 받아 사용하고, 암호화 결과에는 매번 생성한 IV와
+ * 암호문을 함께 Base64로 인코딩한다. Spring Bean 생성 시 {@link GlobalEncryptor}에
+ * {@code sptAES} 타입으로 등록된다.</p>
+ */
 @Slf4j
 @Component
 public class AesEncryptor implements StringEncryptor {
@@ -21,7 +28,6 @@ public class AesEncryptor implements StringEncryptor {
 
     private final SecretKeySpec secretKey;
 
-    // secret key 로드
     AesEncryptor(@Value("${aesEncryptor.base64SecretKey}") String base64SecretKey) {
         byte[] secretKeyBytes = Base64.getDecoder().decode(base64SecretKey);
         this.secretKey = new SecretKeySpec(secretKeyBytes, ALGORITHM);
@@ -30,7 +36,11 @@ public class AesEncryptor implements StringEncryptor {
         GlobalEncryptor.register(GlobalEncryptor.Type.sptAES, this);
     }
 
-    // 암호화 메서드 (IV값이 암호화 값에 내려가는 방식, IV 관리하지 않다도 되서 간편하면서도 보안상 단점은 없음)
+    /**
+     * 평문을 AES로 암호화하고 IV와 암호문을 결합한 Base64 문자열을 반환한다.
+     *
+     * <p>IV는 호출마다 새로 생성하며 반환값 앞쪽에 포함되므로 별도 IV 저장소가 필요하지 않다.</p>
+     */
     @Override
     public String encrypt(String plainText) {
         try {
@@ -57,7 +67,9 @@ public class AesEncryptor implements StringEncryptor {
         }
     }
 
-    // 복호화 메서드 (AlltypeDecryptor 로 통합)
+    /**
+     * IV와 암호문이 결합된 Base64 문자열을 AES로 복호화한다.
+     */
     @Override
     public String decrypt(String encryptedText) {
         try {

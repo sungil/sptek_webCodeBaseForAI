@@ -14,21 +14,30 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
 
+/**
+ * 메인 클래스의 Jasypt 활성화 애노테이션이 있을 때 문자열 암호화 Bean을 구성한다.
+ *
+ * <p>정적 설정값이나 property 주요 정보를 암복호화하는 용도의 PBE 기반 모듈이다.
+ * 실시간 대량 데이터 암복호화보다는 설정값 보호에 맞춰 사용하고, 생성한 Bean은
+ * {@link GlobalEncryptor}에 {@code sptJASYPT} 타입으로 등록한다.</p>
+ */
 @Slf4j
 @RequiredArgsConstructor
 @Configuration
 @HasAnnotationOnMain_At_Bean(Enable_EncryptorJasypt_At_Main.class)
 public class JasyptStringEncryptorConfig {
-    // 정적 데이터를 암복호 할수 있는 Encryption 으로 주로 코드내(property) 주요 정보를 암복호화 할때 사용
-    // 간단한 정적 데이터 암호화에 적합함으로 실시간성 데이터 암복호에는 성능상 적합하지 않음
-    // PBE(passwordBasedEncryption) 방식으로 암호화 과정에 주어진 password 값을 활용함 (password 외 랜덤 salt 값과 이에 대한 hashing 반복을 통해 보안을 높임)
 
     final private Environment environment;
 
     //@Primary
+    /**
+     * Jasypt PBE 문자열 암호화 Bean을 만들고 전역 암호화 레지스트리에 등록한다.
+     *
+     * <p>운영 환경에서는 {@code jasypt.encryptor.password}를 환경 변수 등 외부 비밀값으로 주입해야 하며,
+     * password 값은 로그에 남기지 않는다.</p>
+     */
     @Bean(name = "customJasyptStringEncryptor")
     public StringEncryptor stringEncryptor() {
-        // todo: prd 운영시 반드시 환경 변수로 설정해야 함(보안이슈), 로그로 password 노출 하지 말것
         String pbePassword = environment.getProperty("jasypt.encryptor.password");
         String pbeAlgorithm = environment.getProperty("jasypt.encryptor.algorithm", "PBEWITHHMACSHA512ANDAES_256");
         //log.debug("pbePassword({}), pbeAlgorithm({})", StringUtils.hasText(pbePassword) ? pbePassword.substring(0, pbePassword.length()/2)+"..." : "", pbeAlgorithm);
@@ -48,7 +57,11 @@ public class JasyptStringEncryptorConfig {
         return pooledPBEStringEncryptor;
     }
 
-    // todo: 실제 활용 에서는 보안 설정을 더 높일 것
+    /**
+     * Jasypt PBE 구현체에 전달할 기본 암호화 설정을 구성한다.
+     *
+     * <p>프로젝트 보안 기준이 더 높은 환경에서는 반복 횟수, pool 크기, 알고리즘을 환경별로 재검토한다.</p>
+     */
     private static @NotNull SimpleStringPBEConfig getSimpleStringPBEConfig(String pbePassword, String pbeAlgorithm) {
         SimpleStringPBEConfig simpleStringPBEConfig = new SimpleStringPBEConfig();
         simpleStringPBEConfig.setPassword(pbePassword); // 암호화에 사용할 대칭키

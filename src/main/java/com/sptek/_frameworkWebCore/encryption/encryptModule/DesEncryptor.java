@@ -13,16 +13,21 @@ import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.Base64;
 
+/**
+ * DES/CBC/PKCS5Padding 기반의 문자열 암복호화 모듈.
+ *
+ * <p>DES는 보안성이 낮으므로 호환성처럼 꼭 필요한 경우에만 사용한다. 새 데이터 암호화에는
+ * AES 또는 요구사항에 맞는 다른 모듈을 우선 검토한다. Spring Bean 생성 시
+ * {@link GlobalEncryptor}에 {@code sptDES} 타입으로 등록된다.</p>
+ */
 @Slf4j
 @Component
-// todo: DES 는 보안성이 취약함으로 꼭 사용할 이유가 있을때 만 사용 할것
 public class DesEncryptor implements StringEncryptor {
     private final String ALGORITHM = "DES";
     private final String TRANSFORMATION = "DES/CBC/PKCS5Padding";
 
     private final SecretKeySpec secretKey;
 
-    // Secret key 로드
     DesEncryptor(@Value("${desEncryptor.base64SecretKey}") String base64SecretKey) {
         byte[] secretKeyBytes = Base64.getDecoder().decode(base64SecretKey);
         if (secretKeyBytes.length != 8) {
@@ -35,7 +40,9 @@ public class DesEncryptor implements StringEncryptor {
         GlobalEncryptor.register(GlobalEncryptor.Type.sptDES, this);
     }
 
-    // 암호화 메서드
+    /**
+     * 평문을 DES로 암호화하고 IV와 암호문을 결합한 Base64 문자열을 반환한다.
+     */
     @Override
     public String encrypt(String plainText) {
         try {
@@ -62,7 +69,9 @@ public class DesEncryptor implements StringEncryptor {
         }
     }
 
-    // 복호화 메서드 (AllTypeDecryptor 로 통합)
+    /**
+     * IV와 암호문이 결합된 Base64 문자열을 DES로 복호화한다.
+     */
     @Override
     public String decrypt(String encryptedText) {
         try {
