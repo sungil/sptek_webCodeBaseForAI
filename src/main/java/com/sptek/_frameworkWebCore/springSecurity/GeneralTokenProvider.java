@@ -19,6 +19,12 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
 
+/**
+ * Spring Security Authentication과 JWT 문자열 사이의 변환 및 검증을 담당하는 provider.
+ *
+ * <p>JWT payload에는 subject와 authority 문자열만 담고, 위변조 검증은 설정에서 주입된 HMAC secret key로 수행한다.
+ * JWT는 암호화가 아니라 서명된 Base64 구조이므로 민감 정보를 넣지 않는다.</p>
+ */
 @Slf4j
 @Component
 public class GeneralTokenProvider implements InitializingBean {
@@ -32,13 +38,18 @@ public class GeneralTokenProvider implements InitializingBean {
         this.tokenValidityInMilliseconds = tokenValidityInMilliseconds;
     }
 
-    // Bean의 실제 생성(생성자) 이후 동작
+    /**
+     * Base64 secret key를 JWT 서명용 Key 객체로 변환한다.
+     */
     @Override
     public void afterPropertiesSet() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
+    /**
+     * 인증 객체의 name과 authorities를 JWT subject/claim으로 변환해 서명된 token을 생성한다.
+     */
     public String convertAuthenticationToJwt(Authentication authentication){
         log.debug("origin authentication: {}", authentication);
         String authorities = authentication.getAuthorities().stream()
@@ -68,7 +79,9 @@ public class GeneralTokenProvider implements InitializingBean {
          */
     }
 
-    // 토큰에 정보를 이용해 Authentication (UsernamePasswordAuthenticationToken) 변환
+    /**
+     * JWT claims의 subject와 authority claim으로 Spring Security Authentication을 재구성한다.
+     */
     public Authentication convertJwtToAuthentication(String token){
         // 토큰을 이용하여 claim 생성
         Claims claims = Jwts
@@ -88,7 +101,9 @@ public class GeneralTokenProvider implements InitializingBean {
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
     }
 
-    // 토큰의 유효성 검사
+    /**
+     * JWT 서명, 만료, 지원 여부를 검증한다.
+     */
     public boolean validateJwt(String jwt){
         try{
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);

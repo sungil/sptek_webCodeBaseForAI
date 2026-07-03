@@ -5,6 +5,9 @@ import lombok.*;
 
 import java.util.List;
 
+/**
+ * role 관리 화면/API에서 전체 role과 authority 목록을 함께 전달하기 위한 DTO.
+ */
 @Data
 @Builder
 @AllArgsConstructor

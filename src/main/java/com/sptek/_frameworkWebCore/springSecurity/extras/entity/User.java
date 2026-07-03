@@ -9,6 +9,11 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 //Entity를 DTO 용도로 활용하지 말것(Entity는 TB와 연결되는 주채로 TB컬럼외 다른 필드를 가지 안도록 하고 그렇게 때문에 필요에 따라 DTO 처럼 임의 필드를 널수 없다)
 //todo: Entity는 setter를 막는것을 지향하는데 그러면 매번 DTO->Entity 변환을 Mapper를 사용하지 못하고 Builder로 해야하는데 이게 맞을까?
+/**
+ * 프레임워크 보안 예제의 사용자 계정 JPA entity.
+ *
+ * <p>email을 로그인 username으로 사용하며, 주소는 일대다, role과 terms는 다대다 관계로 연결한다.</p>
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

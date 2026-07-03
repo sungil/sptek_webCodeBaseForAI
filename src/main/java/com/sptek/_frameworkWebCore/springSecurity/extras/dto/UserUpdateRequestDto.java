@@ -12,6 +12,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * 사용자 정보 수정 요청과 수정 화면 선택 데이터를 함께 담는 DTO.
+ *
+ * <p>수정 대상 사용자 정보, 선택 role/terms, 화면 표시용 전체 role/terms 목록을 함께 표현한다.</p>
+ */
 @Data
 @Builder
 @AllArgsConstructor
@@ -45,11 +50,19 @@ public class UserUpdateRequestDto {
     private List<TermsDto> allTerms;
 
     private List<String> userRoleNames;
+
+    /**
+     * 선택된 role DTO 목록에서 role name만 추출해 반환한다.
+     */
     public List<String> getUserRoleNames() {
         return Optional.ofNullable(roles).orElseGet(Collections::emptyList).stream().map(RoleDto::getRoleName).collect(Collectors.toList());
     }
 
     private List<String> userTermsNames;
+
+    /**
+     * 선택된 terms DTO 목록에서 terms name만 추출해 반환한다.
+     */
     public List<String> getUserTermsNames() {
         return Optional.ofNullable(terms).orElseGet(Collections::emptyList).stream().map(TermsDto::getTermsName).collect(Collectors.toList());
     }

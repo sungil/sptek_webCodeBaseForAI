@@ -16,6 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Map;
 
+/**
+ * JPA repository 예제를 View로 확인하던 deprecated controller.
+ *
+ * <p>프레임워크 repository 동작 확인용 샘플이며 신규 화면 기능에서는 사용하지 않는다.</p>
+ */
 @Slf4j
 @RequiredArgsConstructor
 @Controller
@@ -27,6 +32,9 @@ public class DEPRECATED_RepositoryViewController {
     private final DEPRECATED_RepositoryService DEPRECATEDRepositoryService;
 
     //for test
+    /**
+     * key 값으로 repository 반환 타입별 예제 결과를 조회해 단순 View에 표시한다.
+     */
     @GetMapping("/test/testRepo1/{key}")
     public String repoTest(@PathVariable("key") String key, Model model) {
         Map<String, Object> resultMap = DEPRECATEDRepositoryService.testRepository(key);
@@ -35,6 +43,9 @@ public class DEPRECATED_RepositoryViewController {
     }
 
     //for test
+    /**
+     * AuthorityEnum을 AuthorityDto로 매핑하는 예제 결과를 단순 View에 표시한다.
+     */
     @GetMapping("/test/testRepo2")
     public String testRepo2(Model model) {
         AuthorityEnum authority = AuthorityEnum.AUTH_RETRIEVE_USER_ALL_FOR_DELIVERY;

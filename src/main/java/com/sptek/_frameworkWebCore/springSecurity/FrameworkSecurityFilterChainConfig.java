@@ -16,6 +16,12 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 
+/**
+ * 프레임워크 기본 Spring Security filter chain들을 경로와 profile별로 나누어 구성한다.
+ *
+ * <p>system support, actuator, Swagger/H2, example View/API 같은 프레임워크 제공 경로의 인증/인가 정책을 담당한다.
+ * 실제 프로젝트 업무 경로 정책은 _projectCommon의 SecurityFilterChain 확장 지점에서 추가한다.</p>
+ */
 @Slf4j
 @RequiredArgsConstructor
 @Configuration
@@ -46,6 +52,9 @@ public class FrameworkSecurityFilterChainConfig {
     public static final String exampleViewPattern = "/view/example/";
     public static final String exampleApiPattern = "/api/*/example/";
 
+    /**
+     * 운영 profile에서 Swagger, H2, 예제 경로를 차단한다.
+     */
     @Bean
     @Order(10)
     @Profile(value = {"prd"})
@@ -60,6 +69,9 @@ public class FrameworkSecurityFilterChainConfig {
         return httpSecurity.build();
     }
 
+    /**
+     * dev/stg profile에서 H2와 예제 경로를 차단한다.
+     */
     @Bean
     @Order(10)
     @Profile(value = {"dev", "stg"})
@@ -75,6 +87,9 @@ public class FrameworkSecurityFilterChainConfig {
     }
 
 
+    /**
+     * 로그인, 로그아웃, index 같은 시스템 View 지원 경로의 form login 정책을 구성한다.
+     */
     @Bean
     @Order(11)
     public SecurityFilterChain securityFilterChainForSystemSupportView(HttpSecurity httpSecurity) throws Exception {
@@ -111,6 +126,9 @@ public class FrameworkSecurityFilterChainConfig {
         return httpSecurity.build();
     }
 
+    /**
+     * 시스템 지원 API와 error 경로를 인증 없이 접근 가능하게 구성한다.
+     */
     @Bean
     @Order(20)
     public SecurityFilterChain securityFilterChainForSystemSupportApi(HttpSecurity httpSecurity) throws Exception {
@@ -125,6 +143,9 @@ public class FrameworkSecurityFilterChainConfig {
         return httpSecurity.build();
     }
 
+    /**
+     * Actuator는 health만 공개하고 나머지는 인증이 필요하게 구성한다.
+     */
     @Bean
     @Order(30)
     public SecurityFilterChain securityFilterChainForActuator(HttpSecurity httpSecurity) throws Exception {
@@ -138,7 +159,10 @@ public class FrameworkSecurityFilterChainConfig {
 
         return httpSecurity.build();
     }
-    
+
+    /**
+     * local/dev/stg profile에서 Swagger/OpenAPI 문서 경로를 공개한다.
+     */
     @Bean
     @Order(40)
     @Profile(value = {"local", "dev", "stg"})
@@ -153,6 +177,9 @@ public class FrameworkSecurityFilterChainConfig {
         return httpSecurity.build();
     }
 
+    /**
+     * local profile에서 H2 console 접근과 frame rendering을 허용한다.
+     */
     @Bean
     @Order(41)
     @Profile(value = {"local"})
@@ -174,6 +201,9 @@ public class FrameworkSecurityFilterChainConfig {
 
 
 
+    /**
+     * local profile 예제 View 경로의 form login, CSRF, role/authority 샘플 정책을 구성한다.
+     */
     @Bean
     @Order(50)
     @Profile(value = {"local"})
@@ -255,6 +285,9 @@ public class FrameworkSecurityFilterChainConfig {
         return httpSecurity.build();
     }
 
+    /**
+     * local profile 예제 API 경로의 JWT 필터와 샘플 role/authority 정책을 구성한다.
+     */
     @Bean
     @Order(60)
     @Profile(value = {"local"})

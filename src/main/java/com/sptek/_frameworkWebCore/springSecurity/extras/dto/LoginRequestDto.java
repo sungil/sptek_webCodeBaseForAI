@@ -8,6 +8,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 로그인 요청에서 전달되는 username/password 값을 담는 DTO.
+ *
+ * <p>View form login 또는 API 로그인 예제에서 인증 요청 payload를 표현한다.</p>
+ */
 @Data
 @Builder
 @AllArgsConstructor

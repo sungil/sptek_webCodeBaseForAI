@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * JPA repository 예제에서 key/value 테스트 데이터를 전달하기 위한 DTO.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

@@ -11,6 +11,12 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * View 로그인 성공 후 이동할 URL을 referer, 세션 저장 URL, Spring SavedRequest 기준으로 결정하는 helper.
+ *
+ * <p>로그인/로그아웃/회원가입처럼 로그인 성공 후 되돌아가면 안 되는 경로는 제외하고,
+ * Spring Security가 보관한 SavedRequest가 유효하면 해당 기본 동작을 우선한다.</p>
+ */
 @Slf4j
 
 // todo: 해당 동작은 기본적으로 링크를 클릭 하여 접속 되는 경우 동작 하며 browser 에 주소를 직접 일력 하는 방식 에서는 동작 하지 않음.
@@ -29,6 +35,11 @@ public class RedirectHelperAfterLogin {
             "signup", "/signup", "/view/signup", "/view/example/authentication/signup", "/view/example/authentication/signupForm"
     );
 
+    /**
+     * 로그인 요청의 referer와 Spring SavedRequest를 비교해 최종 redirect URL을 반환한다.
+     *
+     * <p>null을 반환하면 SavedRequestAwareAuthenticationSuccessHandler의 기본 saved request 처리를 사용한다.</p>
+     */
     public static String getRedirectUrlAfterLogging(HttpServletRequest request, HttpServletResponse response) {
         String referer = request.getHeader("referer");
         String refererPath = "";
@@ -76,6 +87,9 @@ public class RedirectHelperAfterLogin {
         return hasOkRedirectUrlSpringOwn(request, response) ? null :  attrLoginSuccessRedirectUrl;
     }
 
+    /**
+     * Spring Security SavedRequest가 로그인 후 이동해도 되는 경로인지 확인한다.
+     */
     public static boolean hasOkRedirectUrlSpringOwn(HttpServletRequest request, HttpServletResponse response) {
         //Spring-security는 post 요청에 대해서는 인증 후 saveRequest를 생성하지 않는다.. 보안상 민감할수도 있는 데이터를 session 등에 저장 하지 않기 위해.
         //이걸 custom 클레스에서 overwirte 해서 강제로 savedRequest를 만들수도 있지만... CSRF토큰을 사용하는 경우 최초 form 의 csrf 토큰값이 로그인후 변경되기 때문에 또 문제가 있다.
@@ -99,10 +113,16 @@ public class RedirectHelperAfterLogin {
         return (!savedRequestRedirectPath.isEmpty() && RedirectHelperAfterLogin.NOT_REDIRECT_URLS.stream().noneMatch(url -> url.equals(finalSavedRequestRedirectPath)));
     }
 
+    /**
+     * Spring Security가 저장한 redirect URL을 조회한다.
+     */
     public static String getRedirectUrlSpringOwn(HttpServletRequest request, HttpServletResponse response) {
         return requestCache.getRequest(request, response) == null ? null : requestCache.getRequest(request, response).getRedirectUrl();
     }
 
+    /**
+     * Spring Security가 저장한 SavedRequest를 제거한다.
+     */
     public static void removeRedirectUrlSpringOwn(HttpServletRequest request, HttpServletResponse response) {
         //request.getSession().removeAttribute("SPRING_SECURITY_SAVED_REQUEST"); // todo : 어떤게 더 좋은 방법일까?
         requestCache.removeRequest(request, response);

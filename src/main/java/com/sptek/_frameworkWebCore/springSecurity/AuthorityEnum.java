@@ -5,6 +5,12 @@ import lombok.Getter;
 
 import java.util.Arrays;
 
+/**
+ * 프레임워크 예제와 기본 보안 데이터에서 사용하는 권한 코드 enum.
+ *
+ * <p>Spring Security의 authority 문자열로는 enum name을 사용하고,
+ * code/alias/description은 DB 시드나 화면 표시, 관리 기능에서 참조할 수 있는 보조 식별자다.</p>
+ */
 @AllArgsConstructor
 @Getter
 public enum AuthorityEnum implements AuthorityIf {
@@ -17,6 +23,9 @@ public enum AuthorityEnum implements AuthorityIf {
     private final String description;
     private final String status;
 
+    /**
+     * 권한 code 값으로 enum을 역조회한다.
+     */
     public static AuthorityEnum getAuthorityFromCode(String code) {
         return Arrays.stream(values())
                 .filter(authorityEnum -> authorityEnum.getCode().equals(code))
@@ -24,6 +33,9 @@ public enum AuthorityEnum implements AuthorityIf {
                 .orElseThrow(() -> new IllegalArgumentException("Cannot make AuthorityEnum from value. Unknown code: " + code));
     }
 
+    /**
+     * 권한 alias 값으로 enum을 역조회한다.
+     */
     public static AuthorityEnum getAuthorityFromAlias(String alias) {
         return Arrays.stream(values())
                 .filter(authorityEnum -> authorityEnum.getAlias().equals(alias))
@@ -31,6 +43,9 @@ public enum AuthorityEnum implements AuthorityIf {
                 .orElseThrow(() -> new IllegalArgumentException("Cannot make AuthorityEnum from value. Unknown alias: " + alias));
     }
 
+    /**
+     * 권한 description 값으로 enum을 역조회한다.
+     */
     public static AuthorityEnum getAuthorityFromDesc(String description) {
         return Arrays.stream(values())
                 .filter(authorityEnum -> authorityEnum.getDescription().equals(description))

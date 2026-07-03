@@ -10,6 +10,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * role 이름과 연결된 authority 정보를 화면/API 계층으로 전달하기 위한 DTO.
+ *
+ * <p>권한 DTO 목록과 enum 목록을 모두 지원해 role 관리 화면과 Spring Security authority 변환에서 함께 사용한다.</p>
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,6 +31,9 @@ public class RoleDto {
     @Setter(AccessLevel.NONE)
     private List<AuthorityEnum> authorityEnums;
 
+    /**
+     * authority DTO 목록을 Spring Security에서 사용하는 AuthorityEnum 목록으로 변환한다.
+     */
     public List<AuthorityEnum> getAuthorityEnums() {
         return Optional.ofNullable(authorities).orElseGet(Collections::emptyList)
                 .stream().map(AuthorityDto::getAuthority).collect(Collectors.toList());

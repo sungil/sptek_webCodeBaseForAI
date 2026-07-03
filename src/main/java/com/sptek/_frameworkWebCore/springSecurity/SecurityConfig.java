@@ -10,6 +10,12 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
+/**
+ * Spring Security 인증 관리자와 method security 공통 설정을 제공한다.
+ *
+ * <p>개별 SecurityFilterChain은 {@link FrameworkSecurityFilterChainConfig}와 프로젝트 공통 설정에서 구성하고,
+ * 이 클래스는 등록된 AuthenticationProvider들을 사용하는 AuthenticationManager 생성 책임만 가진다.</p>
+ */
 @Slf4j
 @RequiredArgsConstructor
 @Configuration
@@ -17,6 +23,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 @EnableMethodSecurity(prePostEnabled = true) //컨트롤로에서 개별적 권한 관리가 가능
 public class SecurityConfig {
 
+    /**
+     * HttpSecurity가 공유하는 AuthenticationManagerBuilder를 기반으로 AuthenticationManager를 생성한다.
+     */
     @Bean
     //로그인 전체 스텝을 관리할 AuthenticationManager(=ProviderManager)에 AuthenticationProvider을 추가하여 반환. (필요에 따라 만들어진 AuthenticationProvider)
     public AuthenticationManager authManager(HttpSecurity httpSecurity) throws Exception {

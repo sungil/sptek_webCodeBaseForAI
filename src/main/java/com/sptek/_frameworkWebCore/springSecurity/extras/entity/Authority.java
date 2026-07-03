@@ -7,6 +7,12 @@ import lombok.*;
 import java.util.List;
 
 //todo: Entity는 setter를 막는것을 지향하는데 그러면 매번 DTO->Entity 변환을 Mapper를 사용하지 못하고 Builder로 해야하는데 이게 맞을까?
+/**
+ * Spring Security authority enum과 DB 저장 정보를 연결하는 JPA entity.
+ *
+ * <p>authority enum을 저장하면 persist/update 직전에 code, alias, description 파생 필드를 동기화한다.
+ * Role과는 다대다 관계로 연결된다.</p>
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -37,6 +43,9 @@ public class Authority {
 
     //@PostLoad
     //@PostPersist
+    /**
+     * AuthorityEnum의 보조 식별자 필드를 entity 컬럼에 동기화한다.
+     */
     @PrePersist
     @PreUpdate
     private void initializeDerivedFields() {
