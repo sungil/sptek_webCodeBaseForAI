@@ -9,10 +9,12 @@ import org.apache.commons.io.IOUtils;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
-/*
-Controller 이전단계(필터등)에서 request의 ioStream이 읽어진 경우 이를 대체하기 위한 대체 request 용도임
-(한번 읽어진 request는 controller 에서 다시 읽을수 없음)
+/**
+ * @deprecated 요청 본문 캐싱은 Spring의 {@code ContentCachingRequestWrapper} 등 검증된 래퍼 사용을 우선한다.
+ *
+ * <p>필터 등 컨트롤러 이전 단계에서 request body를 먼저 읽은 뒤 다시 읽을 수 있도록 보관하는 기존 래퍼이다.</p>
  */
+@Deprecated
 public class DPRECATED_HttpServletRequestWrapperSupport extends HttpServletRequestWrapper {
 
     private byte[] rawData;
@@ -25,7 +27,9 @@ public class DPRECATED_HttpServletRequestWrapperSupport extends HttpServletReque
         this.servletInputStream = new ResettableServletInputStream();
     }
 
-    //body를 읽어도 소멸되지 않는다.
+    /**
+     * 요청 본문을 문자열로 읽고 내부 입력 스트림을 같은 본문으로 재설정한다.
+     */
     public String getRequestBody() throws IOException {
         String requestBody = IOUtils.toString(this.getReader());
         this.setRequestBody(requestBody);
@@ -33,11 +37,16 @@ public class DPRECATED_HttpServletRequestWrapperSupport extends HttpServletReque
         return requestBody;
     }
 
-    //새로운 body로 저장된다.
+    /**
+     * 이후 {@link #getInputStream()}과 {@link #getReader()}가 읽을 본문을 교체한다.
+     */
     public void setRequestBody(String requestBody) throws IOException {
         this.resetInputStream(requestBody.getBytes());
     }
 
+    /**
+     * 내부 ServletInputStream이 읽을 원본 byte 배열을 새 입력 스트림으로 교체한다.
+     */
     public void resetInputStream(byte[] data) {
         servletInputStream.inputStream = new ByteArrayInputStream(data);
     }

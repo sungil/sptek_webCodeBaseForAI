@@ -11,15 +11,21 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.HashMap;
 
-/*
-RestTemplate을 쉽게 사용하기 위한 클레스로 Spring Bean 을 통해 주입받아 사용할 것
+/**
+ * @deprecated Apache HttpClient 기반 {@link OutboundSupport}로 대체된 RestTemplate 호출 지원 클래스.
+ *
+ * <p>기존 코드 호환을 위해 유지하며, 신규 외부 호출 구현에는 사용하지 않는다.</p>
  */
+@Deprecated
 @Slf4j
 @RequiredArgsConstructor
 public class DEPRECATED_RestTemplateSupport {
 
     private final RestTemplate restTemplate;
 
+    /**
+     * 기존 RestTemplate 기반 GET 호출을 수행한다.
+     */
     public ResponseEntity<String> requestGet(String requestUri, @Nullable LinkedMultiValueMap<String, String> queryParams, @Nullable HttpHeaders httpHeaders) {
         log.debug("requestUri = ({}), queryParams = ({}), httpHeaders = ({})", requestUri, queryParams, httpHeaders);
 
@@ -36,6 +42,9 @@ public class DEPRECATED_RestTemplateSupport {
         return restTemplate.exchange(requestEntity, String.class);
     }
 
+    /**
+     * 기존 RestTemplate 기반 POST 호출을 수행한다.
+     */
     public ResponseEntity<String> requestPost(String requestUri, @Nullable LinkedMultiValueMap<String, String> queryParams, @Nullable HttpHeaders httpHeaders, @Nullable Object requestBody) {
         log.debug("requestUri = ({}), queryParams = ({}), httpHeaders = ({}), requestBody = ({})", requestUri, queryParams, httpHeaders, requestBody);
 
@@ -57,6 +66,9 @@ public class DEPRECATED_RestTemplateSupport {
         return restTemplate.exchange(requestEntity, String.class);
     }
 
+    /**
+     * RestTemplate 문자열 응답 본문을 꺼내 로그로 남긴다.
+     */
     public String convertResponseToString(ResponseEntity<String> responseEntity) {
         String responseString = responseEntity.getBody();
         log.debug("responseBody to String = {}", responseString);

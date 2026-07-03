@@ -5,13 +5,13 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.util.List;
-/*
-온픈 소스인 PageHelper Lib에서 사용하는 변수를 재 정의한 클레스 (변수명이 직관적이지 않아서..)
-게시판등에 활동할 수 있는 페이징 처리가 가능한 result 정보를 얻는데 활용
-특별한 버그가 없는한 수정할 부분은 없다.
-실제 사용은 MybatisCommonDao 의 selectPaginatedList()를 이용하면 됨
- */
 
+/**
+ * PageHelper {@link PageInfo}의 페이징 결과를 화면/응답에서 읽기 쉬운 필드명으로 재구성한 값 객체.
+ *
+ * <p>게시판형 목록의 현재 페이지, 전체 건수, 하단 네비게이션 번호, 조회 결과 목록을 함께 제공한다.
+ * 일반 사용 흐름에서는 {@code MybatisCommonDao.selectPaginatedList()}를 통해 생성된다.</p>
+ */
 @Getter
 @ToString
 public class PageInfoSupport<T> {
@@ -50,10 +50,16 @@ public class PageInfoSupport<T> {
 
     List selectedList; //조회된 실제 데이터 리스트
 
+    /**
+     * PageHelper 결과 객체를 프레임워크 표준 페이징 응답 구조로 변환한다.
+     */
     public PageInfoSupport(PageInfo<T> pageInfo) {
         MappingPageInfoToPageInfoSupport(pageInfo);
     }
 
+    /**
+     * PageInfo의 불명확한 메서드명과 불필요한 내부 데이터를 제거하고 필요한 페이징 값만 복사한다.
+     */
     private void MappingPageInfoToPageInfoSupport(PageInfo pageInfo) {
         //PageInfo의 불명확한 메소드명과 불필요한 데이터를 제거하여 사용자가 이해하기 쉽게하기 위한 처리
         currentPageNum = pageInfo.getPageNum();

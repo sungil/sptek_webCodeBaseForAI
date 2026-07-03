@@ -11,6 +11,12 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 
 
+/**
+ * @deprecated 응답 본문 캐싱은 Spring의 {@code ContentCachingResponseWrapper} 등 검증된 래퍼 사용을 우선한다.
+ *
+ * <p>응답 본문을 메모리 버퍼에 저장해 필터 단계에서 읽거나 교체할 수 있도록 만든 기존 래퍼이다.</p>
+ */
+@Deprecated
 public class DEPRECATED_HttpServletResponseWrapperSupport extends HttpServletResponseWrapper {
 
     private ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -20,13 +26,17 @@ public class DEPRECATED_HttpServletResponseWrapperSupport extends HttpServletRes
         super(response);
     }
 
-    //body를 읽어도 소멸되지 않는다.
+    /**
+     * 현재까지 버퍼에 기록된 응답 본문을 UTF-8 문자열로 반환한다.
+     */
     public String getResponseBody() {
         writer.flush();
         return outputStream.toString(StandardCharsets.UTF_8);
     }
 
-    //새로운 body로 저장된다.
+    /**
+     * 응답 버퍼를 비우고 새 본문을 기록한다.
+     */
     public void setResponseBody(String body) throws IOException {
         outputStream.reset();
         writer.write(body);
@@ -44,6 +54,9 @@ public class DEPRECATED_HttpServletResponseWrapperSupport extends HttpServletRes
     }
 }
 
+/**
+ * 응답 wrapper가 사용하는 메모리 기반 ServletOutputStream 구현체.
+ */
 class DEPRECATED_CustomServletOutputStream extends ServletOutputStream {
 
     private final ByteArrayOutputStream buffer;

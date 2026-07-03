@@ -33,8 +33,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-/*
-closeableHttpClient을 쉽게 사용하기 위한 클레스로 Spring Bean 을 통해 주입받아 사용할 것
+/**
+ * Apache {@link CloseableHttpClient} 기반 외부 HTTP 호출을 프레임워크 표준 DTO와 로깅 규약으로 감싼 지원 클래스.
+ *
+ * <p>요청 헤더와 바디를 공통 유틸로 적용하고, 응답 코드는 {@link HttpClientResponseDto}로 반환한다.
+ * 메인 클래스 어노테이션 설정에 따라 outbound 상세 로그 및 현재 요청의 Req/Res 상세 로그 연계 정보도 남긴다.</p>
  */
 
 @Slf4j
@@ -46,6 +49,10 @@ public class OutboundSupport {
     public HttpClientResponseDto request(HttpMethod httpMethod, UriComponents uriComponents) throws Exception {return request(httpMethod, uriComponents, null, null);}
     public HttpClientResponseDto request(HttpMethod httpMethod, UriComponents uriComponents, HttpHeaders httpHeaders) throws Exception {return request(httpMethod, uriComponents, httpHeaders, null);}
     public HttpClientResponseDto request(HttpMethod httpMethod, UriComponents uriComponents, Object requestBody) throws Exception {return request(httpMethod, uriComponents, null, requestBody);}
+
+    /**
+     * HTTP method, URI, 선택 헤더, 선택 바디를 받아 외부 API를 호출하고 응답 코드/헤더/바디를 반환한다.
+     */
     public HttpClientResponseDto request(HttpMethod httpMethod, UriComponents uriComponents, @Nullable HttpHeaders httpHeaders, @Nullable Object requestBody) throws Exception {
         URI uri = uriComponents.encode().toUri();
         HttpUriRequest request = switch (httpMethod.toString()) {
@@ -75,6 +82,9 @@ public class OutboundSupport {
         }
     }
 
+    /**
+     * 메인 설정과 현재 요청 컨텍스트를 기준으로 outbound 상세 로그와 Req/Res 연계 로그를 기록한다.
+     */
     private void justLogging(Object requestBody, String outboundId, HttpMethod httpMethod, UriComponents uriComponents, HttpHeaders httpHeaders
             , HttpClientResponseDto httpClientResponseDto) throws Exception {
 
@@ -119,6 +129,10 @@ public class OutboundSupport {
         }
     }
 
+    /**
+     * @deprecated {@link HttpClientResponseDto#body()} 사용 흐름으로 대체되었으며 기존 HttpEntity 처리 호환용으로만 남겨둔다.
+     */
+    @Deprecated
     public static String DEPRECATED_convertResponseToString(HttpEntity httpEntity) throws Exception {
         String reponseString =EntityUtils.toString(httpEntity, StandardCharsets.UTF_8);
         log.debug("responseBody to String = {}", reponseString);
