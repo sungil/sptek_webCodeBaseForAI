@@ -17,12 +17,21 @@ import java.util.List;
 
 import static org.springframework.http.MediaType.*;
 
+/**
+ * Spring MVC HTTP message converter 구성을 프레임워크 기본 ObjectMapper와 UTF-8 문자열 처리 기준으로 맞춘다.
+ *
+ * <p>JSON 응답은 {@link MappingJackson2HttpMessageConverter}가 담당하고,
+ * text/html 및 text/plain 응답은 UTF-8 {@link StringHttpMessageConverter}가 담당한다.</p>
+ */
 @Slf4j
 @RequiredArgsConstructor
 @Configuration
 public class MessageConverterConfig implements WebMvcConfigurer {
     private final ObjectMapper objectMapper;
 
+    /**
+     * 프레임워크 ObjectMapper를 사용하는 JSON message converter를 등록한다.
+     */
     @Bean
     //HTTP메시지(req, res) <-> object 변환 (MessageConverter 내부에서 ObjectMapper 사용)
     public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
@@ -37,6 +46,9 @@ public class MessageConverterConfig implements WebMvcConfigurer {
         return mappingJackson2HttpMessageConverter;
     }
 
+    /**
+     * MVC message converter 목록을 JSON converter와 UTF-8 String converter 기준으로 구성한다.
+     */
     @Override
     //framework에서 사용한 messageConvertor 설정
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
