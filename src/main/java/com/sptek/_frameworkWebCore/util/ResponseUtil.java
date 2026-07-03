@@ -17,12 +17,21 @@ import java.nio.file.Path;
 import java.util.*;
 
 @Slf4j
+/**
+ * HTTP 응답 헤더/본문 조회와 보안 파일 다운로드 응답 생성을 지원하는 유틸리티.
+ */
 public class ResponseUtil {
 
+    /**
+     * 응답 헤더를 delimiter 없이 Map으로 복사한다.
+     */
     public static HashMap<String, String> getResponseHeaderMap(HttpServletResponse response) {
         return getResponseHeaderMap(response, "");
     }
 
+    /**
+     * 응답 헤더들을 Map으로 복사하고 각 헤더 값 뒤에 지정 delimiter를 붙인다.
+     */
     public static HashMap<String, String> getResponseHeaderMap(HttpServletResponse response, String delimiter) {
         StringBuilder headerString = new StringBuilder();
         HashMap<String, String> headers = new HashMap<>();
@@ -52,6 +61,9 @@ public class ResponseUtil {
         return headers;
     }
 
+    /**
+     * 보안 경로 권한을 확인한 뒤 실제 저장소 파일을 byte[] ResponseEntity로 만든다.
+     */
     public static ResponseEntity<byte[]> makeResponseEntityFromFile(Path securedFilePath) throws Exception {
         if (securedFilePath == null) throw new ServiceException(CommonErrorCodeEnum.BAD_REQUEST_ERROR, "securedFilePath is required");
         if (!SecurityUtil.hasPermissionForSecuredFilePath(securedFilePath)) {
@@ -69,6 +81,9 @@ public class ResponseUtil {
         return new ResponseEntity<>(fileBytes, headers, HttpStatus.OK);
     }
 
+    /**
+     * ContentCachingResponseWrapper에 저장된 응답 본문을 로그용 문자열로 반환한다.
+     */
     public static String getResponseBody(ContentCachingResponseWrapper contentCachingResponseWrapper) {
         byte[] content = contentCachingResponseWrapper.getContentAsByteArray();
         if (content.length == 0) return "";

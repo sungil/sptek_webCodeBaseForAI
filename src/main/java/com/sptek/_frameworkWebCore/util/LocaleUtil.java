@@ -19,6 +19,9 @@ import java.util.TimeZone;
 
 @Slf4j
 @RequiredArgsConstructor
+/**
+ * 현재 요청/쿠키/기본 Locale을 기준으로 다국어 메시지와 사용자 Locale 정보를 제공하는 유틸리티.
+ */
 public class LocaleUtil {
     private static final MessageSource messageSource;
     private static List<LocaleDto> localeDtos = null;
@@ -28,11 +31,16 @@ public class LocaleUtil {
         messageSource = SpringUtil.getSpringBean(MessageSource.class);
     }
 
-
+    /**
+     * 현재 Locale에 맞는 메시지를 인자 없이 조회한다.
+     */
     public static String getI18nMessage(String code) {
         return LocaleUtil.getI18nMessage(code, null);
     }
 
+    /**
+     * 단일 인자를 포함해 현재 Locale에 맞는 메시지를 조회한다.
+     */
     public static String getI18nMessage(String code, @Nullable Object arg) {
         if (arg == null) {
             return getI18nMessage(code, null);
@@ -41,7 +49,11 @@ public class LocaleUtil {
         }
     }
 
-    //현재 Locale에 해당하는 메시지로 제공한다. (arg 가 객체로 들어올 경우 해당 객체의 toString() 이 적용됨)
+    /**
+     * 현재 Locale에 해당하는 메시지를 조회한다.
+     *
+     * <p>요청의 LocaleResolver가 없으면 locale 쿠키, JVM 기본 언어 순서로 fallback 한다.</p>
+     */
     public static String getI18nMessage(String code, @Nullable Object[] args) {
         String langCode;
         HttpServletRequest request = SpringUtil.getRequestOrNull();
@@ -58,22 +70,37 @@ public class LocaleUtil {
         return messageSource.getMessage(code, args, Locale.forLanguageTag(langCode));
     }
 
+    /**
+     * 현재 사용자 요청에 바인딩된 Locale을 반환한다.
+     */
     public static Locale getCurUserLocale(){
         return LocaleContextHolder.getLocale();
     }
 
+    /**
+     * 현재 사용자 요청에 바인딩된 TimeZone을 반환한다.
+     */
     public static TimeZone getCurUserTimeZone(){
         return LocaleContextHolder.getTimeZone();
     }
 
+    /**
+     * 현재 사용자 Locale을 BCP 47 language tag 문자열로 반환한다.
+     */
     public static String getCurUserLanguageTag(){
         return LocaleContextHolder.getLocale().toLanguageTag();
     }
 
+    /**
+     * 현재 사용자 TimeZone 표시명을 반환한다.
+     */
     public static String getCurUserTimeZoneName(){
         return LocaleContextHolder.getTimeZone().getDisplayName();
     }
 
+    /**
+     * 화면 선택 등에 사용할 주요 국가/언어/시간대 조합을 lazy 초기화해 반환한다.
+     */
     public static List<LocaleDto> getMajorLocales() {
         if(localeDtos == null) {
             localeDtos = Arrays.asList(
@@ -130,6 +157,9 @@ public class LocaleUtil {
 
     @Getter
     @ToString
+    /**
+     * Locale 선택 UI에서 사용할 언어, 국가, 시간대, queryString 묶음.
+     */
     public static class LocaleDto {
         private final String languageCode;
         private final String countryCode;

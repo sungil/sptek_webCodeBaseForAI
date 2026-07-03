@@ -22,21 +22,39 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
+/**
+ * 프레임워크 공통 로그 포맷과 예외/요청-응답 상세 로그 출력을 제공하는 유틸리티.
+ *
+ * <p>{@link CommonConstants#FW_LOG_PREFIX}를 기준으로 로그 모양을 통일하며, 일부 메서드는
+ * SLF4J {@link LoggingEventBuilder}를 사용해 로그 레벨이 비활성화된 경우 메시지 계산 비용을 줄인다.</p>
+ */
 public class LoggingUtil {
 
+    /**
+     * 기본 로그 태그 없이 한 줄 로그 포맷을 만든다.
+     */
     public static String makeSimpleForm(String content) {
         return makeSimpleForm("", content);
     }
 
+    /**
+     * 프레임워크 prefix, 선택 로그 태그, 본문을 한 줄 로그 포맷으로 결합한다.
+     */
     public static String makeSimpleForm(String logTag, String content) {
         // 변경시 주의(아래 형태가 다른 코드에 영향이 있음)
         return "%s%s => %s".formatted(CommonConstants.FW_LOG_PREFIX, logTag, LoggingUtil.removeLastNewline(content));
     }
 
+    /**
+     * 기본 로그 태그 없이 제목과 본문을 포함한 박스형 로그 포맷을 만든다.
+     */
     public static String makeBaseForm(String title, String content) {
         return makeBaseForm("", title, content);
     }
 
+    /**
+     * 프레임워크 prefix, 선택 로그 태그, 제목, 본문을 박스형 로그 포맷으로 결합한다.
+     */
     public static String makeBaseForm(String logTag, String title, String content) {
         // 변경시 주의(아래 형태가 다른 코드에 영향이 있음)
         return """
@@ -50,6 +68,9 @@ public class LoggingUtil {
                 .formatted(CommonConstants.FW_LOG_PREFIX, logTag, title, LoggingUtil.removeLastNewline(content));
     }
 
+    /**
+     * 로그 박스 하단 공백이 늘어나지 않도록 마지막 개행 하나만 제거한다.
+     */
     public static String removeLastNewline(String string) {
         if (string != null && string.endsWith("\n")) {
             return string.substring(0, string.length() - 1);
@@ -69,7 +90,11 @@ public class LoggingUtil {
             --------------------------------------------------------------------------------
             """;
 
-    // args에는 Supplier<?> 또는 값(Object)을 섞어서 넘겨도 됨 (lazy + eager 혼용)
+    /**
+     * Supplier 인자를 지연 평가할 수 있는 한 줄 로그를 지정 레벨로 출력한다.
+     *
+     * <p>args에는 {@code Supplier<?>}와 일반 값을 섞어 넘길 수 있다.</p>
+     */
     public static void logSimpleForm(Logger logger, Level level, String logTag, String bodyTemplate, Object... args) {
         if (!logger.isEnabledForLevel(level)) return;
 
@@ -85,6 +110,9 @@ public class LoggingUtil {
         loggingEventBuilder.log();
     }
 
+    /**
+     * Supplier 인자를 지연 평가할 수 있는 박스형 로그를 지정 레벨로 출력한다.
+     */
     public static void logBaseForm(Logger logger, Level level, String logTag, String title, String bodyTemplate, Object... args) {
         if (!logger.isEnabledForLevel(level)) return;
 
@@ -101,10 +129,16 @@ public class LoggingUtil {
         loggingEventBuilder.log();
     }
 
+    /**
+     * 래핑된 예외를 실제 원인 예외로 풀어 공통 규칙으로 로깅한다.
+     */
     public static void exLogging(Logger logger, Exception ex) {
         exLoggingAndReturnThrowable(logger, ex);
     }
 
+    /**
+     * 래핑된 예외를 실제 원인 예외로 풀어 로깅하고, 호출자가 후속 처리할 수 있도록 반환한다.
+     */
     public static Throwable exLoggingAndReturnThrowable(Logger logger, Exception ex) {
         Throwable t = ExceptionUtil.getRealException(ex);
         String tag = t instanceof ServiceException ? "ServiceException occurred" : "Exception occurred";
@@ -117,10 +151,16 @@ public class LoggingUtil {
         return t;
     }
 
+    /**
+     * 응답 DTO 없이 request/response wrapper 기준으로 요청-응답 상세 로그를 남긴다.
+     */
     public static void reqResDetailLogging(Logger logger, HttpServletRequest request, HttpServletResponse response, String title) throws IOException {
         reqResDetailLogging(logger, request, response, null, title);
     }
 
+    /**
+     * 현재 HTTP 요청의 URL, 파라미터, 헤더, 본문, 응답, outbound 연계 정보를 한 번에 로깅한다.
+     */
     public static void reqResDetailLogging(Logger logger, HttpServletRequest request, HttpServletResponse response, @Nullable Object responseBodyDto, String title) throws IOException {
         if (!logger.isEnabledForLevel(Level.INFO)) return;
 

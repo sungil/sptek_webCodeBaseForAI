@@ -28,22 +28,37 @@ import java.util.Objects;
 @Slf4j
 @Component
 
-// NOTE: 해당 유틸은 Spring Component 로 선언된 클레스임을 알고 주의 해서 코드 수정 및 사용 할것
-// NOTE: RequestContextHolder 를 어디서든 사용하기 위해서는 new org.springframework.web.filter.RequestContextFilter 순서를 최대한 높일것
+/**
+ * Spring ApplicationContext, 현재 request/response/session, 환경 프로퍼티에 정적 접근을 제공하는 유틸리티.
+ *
+ * <p>Spring Component로 등록되어 ApplicationContext와 ObjectMapper를 주입받는다. 현재 요청 정보는
+ * {@link RequestContextHolder}에 바인딩되어 있어야 하며, 이를 위해 {@code RequestContextListener} 또는
+ * {@code RequestContextFilter} 등록이 필요하다.</p>
+ */
 public class SpringUtil implements ApplicationContextAware {
     private static ApplicationContext applicationContext;
 
     @Getter
     private static ObjectMapper objectMapper;
+
+    /**
+     * 프레임워크 표준 ObjectMapper를 정적 유틸에서 사용할 수 있도록 보관한다.
+     */
     public SpringUtil(@Qualifier("objectMapperWithXssProtectHelper") ObjectMapper objectMapper) {
         SpringUtil.objectMapper = objectMapper;
     }
 
+    /**
+     * Spring이 제공하는 ApplicationContext를 정적 보관소에 연결한다.
+     */
     @Override
     public void setApplicationContext(@NotNull ApplicationContext applicationContext) {
         SpringUtil.applicationContext = applicationContext;
     }
 
+    /**
+     * ApplicationContext에서 {@link SpringBootConfiguration}이 붙은 메인 클래스를 찾는다.
+     */
     public static Class<?> findMainClassFromContext(@Nullable ApplicationContext applicationContext) {
         ApplicationContext ctx = (applicationContext != null) ? applicationContext : SpringUtil.applicationContext;
         if (ctx == null) {
@@ -60,7 +75,9 @@ public class SpringUtil implements ApplicationContextAware {
         return mainClass;
     }
 
-    // ConditionContext 기반: main class 반환 (실패 시 IllegalStateException)
+    /**
+     * ConditionContext의 BeanFactory에서 Spring Boot 메인 클래스를 찾는다.
+     */
     public static Class<?> findMainClassFromContext(ConditionContext conditionContext) {
         BeanFactory bf = conditionContext.getBeanFactory();
         if (!(bf instanceof ListableBeanFactory lbf)) {
@@ -71,7 +88,9 @@ public class SpringUtil implements ApplicationContextAware {
         return mainClass;
     }
 
-    // 공통 구현부: @SpringBootConfiguration 붙은 타입을 찾아 CGLIB 상위 클래스로 승격
+    /**
+     * {@link SpringBootConfiguration} bean 타입을 찾고 CGLIB 프록시인 경우 실제 상위 클래스로 보정한다.
+     */
     private static Class<?> resolveMainClass(ListableBeanFactory lbf) {
         String[] names = lbf.getBeanNamesForAnnotation(SpringBootConfiguration.class);
         if (names.length == 0) {
@@ -95,15 +114,24 @@ public class SpringUtil implements ApplicationContextAware {
         return type;
     }
 
+    /**
+     * ApplicationContext에서 지정 타입의 Spring Bean을 조회한다.
+     */
     public static <T> T getSpringBean(Class<T> beanClass) {
         return applicationContext.getBean(beanClass);
     }
 
+    /**
+     * 현재 스레드에 바인딩된 HttpServletRequest를 반환하거나 없으면 null을 반환한다.
+     */
     public static @Nullable HttpServletRequest getRequestOrNull() {
         ServletRequestAttributes attrs = getServletRequestAttributesOrNull();
         return attrs != null ? attrs.getRequest() : null;
     }
 
+    /**
+     * 현재 스레드에 바인딩된 HttpServletRequest를 반환하고 없으면 예외를 던진다.
+     */
     public static HttpServletRequest getRequest() {
         HttpServletRequest request = getRequestOrNull();
         if (request != null) {
@@ -112,11 +140,17 @@ public class SpringUtil implements ApplicationContextAware {
         throw new IllegalStateException("No request bound to current thread");
     }
 
+    /**
+     * 현재 스레드에 바인딩된 HttpServletResponse를 반환하거나 없으면 null을 반환한다.
+     */
     public static @Nullable HttpServletResponse getResponseOrNull() {
         ServletRequestAttributes attrs = getServletRequestAttributesOrNull();
         return attrs != null ? attrs.getResponse() : null;
     }
 
+    /**
+     * 현재 스레드에 바인딩된 HttpServletResponse를 반환하고 없으면 예외를 던진다.
+     */
     public static HttpServletResponse getResponse() {
         ServletRequestAttributes attrs = getServletRequestAttributesOrNull();
         if (attrs != null) {
@@ -129,11 +163,17 @@ public class SpringUtil implements ApplicationContextAware {
         throw new IllegalStateException("No request bound to current thread");
     }
 
+    /**
+     * 현재 request의 session을 반환하거나 요청 컨텍스트가 없으면 null을 반환한다.
+     */
     public static @Nullable HttpSession getSessionOrNull(boolean create) {
         HttpServletRequest request = getRequestOrNull();
         return request != null ? request.getSession(create) : null;
     }
 
+    /**
+     * 현재 request의 session을 반환하고 요청 컨텍스트가 없으면 예외를 던진다.
+     */
     public static HttpSession getSession(boolean create) {
         HttpServletRequest request = getRequestOrNull();
         if (request != null) {
@@ -142,23 +182,38 @@ public class SpringUtil implements ApplicationContextAware {
         throw new IllegalStateException("No request bound to current thread");
     }
 
+    /**
+     * RequestContextHolder에서 Servlet request attribute를 안전하게 꺼낸다.
+     */
     private static @Nullable ServletRequestAttributes getServletRequestAttributesOrNull() {
         RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
         return attributes instanceof ServletRequestAttributes servletRequestAttributes ? servletRequestAttributes : null;
     }
 
+    /**
+     * Spring Environment에서 문자열 프로퍼티를 조회한다.
+     */
     public static String getApplicationProperty(String key) {
         return getEnvironment().getProperty(key);
     }
 
+    /**
+     * Spring Environment에서 지정 타입으로 변환된 프로퍼티를 조회한다.
+     */
     public static <T> T getApplicationProperty(String key, Class<T> targetType) {
         return getEnvironment().getProperty(key, targetType);
     }
 
+    /**
+     * ApplicationContext의 Environment를 반환한다.
+     */
     private static Environment getEnvironment() {
         return Objects.requireNonNull(applicationContext, "ApplicationContext is null").getEnvironment();
     }
 
+    /**
+     * JOL을 사용해 객체 인스턴스 메모리 레이아웃 정보를 문자열로 반환한다.
+     */
     public static String getInstanceMemoryInfo(Object object) {
         // implementation 'org.openjdk.jol:jol-core:0.17' 사용
         return object.getClass().getSimpleName() + " instance memory info\n" + ClassLayout.parseInstance(object).toPrintable();

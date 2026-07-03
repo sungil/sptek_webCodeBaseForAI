@@ -8,17 +8,24 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.function.Supplier;
 
 @Slf4j
+/**
+ * 메인 클래스의 실행 시간 측정 어노테이션 설정에 따라 코드 블록 수행 시간을 로깅하는 유틸리티.
+ */
 public class Timer {
     private Timer() {}
     private static volatile Boolean has_Enable_ExecutionTimer_At_Main = null;
 
-    // 좀더 정확한 시간 측정을 위해 어노테이션 여부도 캐싱하여 사용함
+    /**
+     * 매번 어노테이션 스캔을 하지 않도록 실행 시간 측정 활성화 여부를 캐싱한다.
+     */
     private static boolean checkAnnotation() {
         if (has_Enable_ExecutionTimer_At_Main != null) return has_Enable_ExecutionTimer_At_Main;
         return has_Enable_ExecutionTimer_At_Main = MainClassAnnotationRegister.hasAnnotation(Enable_ExecutionTimer_At_Main.class);
     }
 
-    //return 없을때
+    /**
+     * 반환값 없는 작업을 실행하고, 설정이 활성화되어 있으면 수행 시간을 로그로 남긴다.
+     */
     public static void measure(String logTag, Runnable runnable) {
         if (checkAnnotation()) {
             long start = System.nanoTime();
@@ -34,7 +41,9 @@ public class Timer {
         }
     }
 
-    //return 있을때
+    /**
+     * 반환값 있는 작업을 실행하고, 설정이 활성화되어 있으면 수행 시간을 로그로 남긴다.
+     */
     public static <T> T measure(String logTag, Supplier<T> supplier) {
         if (checkAnnotation()) {
             long start = System.nanoTime();
@@ -49,7 +58,9 @@ public class Timer {
         }
     }
 
-    // Thread.sleep() 의 대용 (ex 처리 래핑)
+    /**
+     * InterruptedException 전파 없이 sleep 하고, interrupt 상태는 복원한다.
+     */
     public static void sleep(long millis) {
         try {
             Thread.sleep(millis);

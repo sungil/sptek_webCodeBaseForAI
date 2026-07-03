@@ -9,18 +9,26 @@ import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 
-/* 
-ModelMapperConfig.java 를 통해 Bean 형태의 컨테이너 관리방식으로 설정되어 있음(둘중 사용성이 뭐가 좋을까??)
-Mapper의 TypeMap을 cache 한 상태로 유지하기 위해 singleton(static) 방식으로만 사용할것
-*/
+/**
+ * 정적 singleton ModelMapper를 사용해 DTO 간 매핑을 수행하는 유틸리티.
+ *
+ * <p>TypeMap cache를 유지하기 위해 내부 ModelMapper는 static 인스턴스로 관리한다. Spring Bean 기반
+ * {@code ModelMapperConfig}와 별도 경로이므로 매핑 규칙 중복 여부를 함께 관리해야 한다.</p>
+ */
 @Slf4j
 public class ModelMapperUtil {
     private static final ModelMapper defaultModelMapper = createDefaultModelMapper();
 
+    /**
+     * TypeMap cache를 유지하는 기본 ModelMapper 인스턴스를 반환한다.
+     */
     private static ModelMapper getdefaultModelMapper() {
         return defaultModelMapper;
     }
 
+    /**
+     * 프레임워크 기본 매핑 전략과 예제 DTO TypeMap을 포함한 ModelMapper를 생성한다.
+     */
     private static ModelMapper createDefaultModelMapper() {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration()
@@ -48,7 +56,9 @@ public class ModelMapperUtil {
         return modelMapper;
     }
 
-    //실행 시간 테스트 를 위해 임시로 만듬
+    /**
+     * 기본 ModelMapper로 source 객체를 destination 타입으로 변환하고 수행 시간을 debug 로그로 남긴다.
+     */
     public static <S, D> D map(S sourceObject, Class<D> destinationType) {
         //for execute time test.
         long starttime = System.currentTimeMillis();

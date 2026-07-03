@@ -21,9 +21,14 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Slf4j
+/**
+ * 현재 HTTP request의 URL, 파라미터, 헤더, 본문, 시간 추적 정보와 outbound 요청 조립을 지원하는 유틸리티.
+ */
 public class RequestUtil {
 
-    //request에서 도메인 정보를 가져옴
+    /**
+     * request scheme, host, port를 조합해 현재 요청 도메인을 반환한다.
+     */
     public static String getRequestDomain(@NotNull HttpServletRequest request) {
         String domain = request.getScheme() + "://" + request.getServerName();
 
@@ -34,7 +39,9 @@ public class RequestUtil {
         return domain;
     }
 
-    //request에서 쿼리를 포함한 전체 uri를 가져옴
+    /**
+     * query string을 포함한 전체 요청 URL을 반환한다.
+     */
     public static @NotNull String getRequestUrlQuery(@NotNull HttpServletRequest request) {
         StringBuilder urlBuilder = new StringBuilder();
         urlBuilder.append(request.getRequestURL());
@@ -45,17 +52,23 @@ public class RequestUtil {
         return urlBuilder.toString();
     }
 
-    //request에서 요청 메소드 가져옴
+    /**
+     * request의 HTTP method 이름을 반환한다.
+     */
     public static String getRequestMethodType(@NotNull HttpServletRequest request) {
         return request.getMethod();
     }
 
-    //request에서 모든 param을 추출해 Map으로 반환
+    /**
+     * request parameter map을 그대로 반환한다.
+     */
     public static Map<String, String[]> getRequestParameterMap(@NotNull HttpServletRequest request) {
         return request.getParameterMap();
     }
 
-    //request에서 클라이언트의 최종 IP를 추출함
+    /**
+     * 프록시 헤더를 순서대로 확인해 클라이언트 IP로 사용할 값을 추출한다.
+     */
     public static String getReqUserIp(@NotNull HttpServletRequest request) {
         String ip = request.getHeader("X-Forwarded-For");
 
@@ -87,10 +100,16 @@ public class RequestUtil {
         return ip;
     }
 
+    /**
+     * 현재 request session을 생성해서라도 지정 attribute 값을 조회한다.
+     */
     public static Object getSessionAttribute(@NotNull HttpServletRequest request, String attributeName) {
         return request.getSession(true).getAttribute(attributeName);
     }
 
+    /**
+     * request session의 모든 attribute를 Map으로 복사한다.
+     */
     public static @NotNull Map<String, Object> getSessionAttributesAll(@NotNull HttpServletRequest request, boolean create) {
         HttpSession session = request.getSession(create);
         Map<String, Object> attributes = new HashMap<>();
@@ -104,10 +123,16 @@ public class RequestUtil {
         return attributes;
     }
 
+    /**
+     * request header를 delimiter 없이 Map으로 복사한다.
+     */
     public static HashMap<String, String> getRequestHeaderMap(HttpServletRequest request){
         return getRequestHeaderMap(request, "");
     }
 
+    /**
+     * request header들을 Map으로 복사하고 각 헤더 값 뒤에 지정 delimiter를 붙인다.
+     */
     public static HashMap<String, String> getRequestHeaderMap(HttpServletRequest request, String delimiter) {
         StringBuilder headerString = new StringBuilder();
         HashMap<String, String> headers = new HashMap<>();
@@ -136,6 +161,9 @@ public class RequestUtil {
         return headers;
     }
 
+    /**
+     * Spring HttpHeaders 값을 Apache HttpClient 요청 객체에 추가한다.
+     */
     public static void applyRequestHeaders(HttpUriRequest httpUriRequest, @Nullable HttpHeaders httpHeaders) {
         if (httpHeaders == null || httpHeaders.isEmpty()) return;
         httpHeaders.forEach((name, values) ->
@@ -143,12 +171,18 @@ public class RequestUtil {
         );
     }
 
+    /**
+     * 문자열 또는 객체 request body를 JSON 문자열로 변환해 Apache HttpClient 요청 entity에 설정한다.
+     */
     public static void applyRequestBody(HttpUriRequest httpUriRequest, @Nullable Object requestBody) throws Exception {
         if (requestBody == null) return;
         String requestBodyString = requestBody instanceof String ? requestBody.toString() : TypeConvertUtil.objectToJsonWithoutRootName(requestBody, false);
         if (StringUtils.hasText(requestBodyString)) httpUriRequest.setEntity(new StringEntity(requestBodyString, StandardCharsets.UTF_8));
     }
 
+    /**
+     * 요청 시작 attribute와 현재 시각을 비교해 요청 처리 시간 DTO를 만든다.
+     */
     public static ExcuteTimeDto traceRequestDuration() {
         String startTime = Optional.ofNullable(SpringUtil.getRequestOrNull())
                 .map(request -> request
@@ -163,6 +197,9 @@ public class RequestUtil {
         return new ExcuteTimeDto(startTime, currentTime, durationMsec);
     }
 
+    /**
+     * ContentCachingRequestWrapper에 저장된 요청 본문을 로그용 문자열로 반환한다.
+     */
     public static String getRequestBody(ContentCachingRequestWrapper contentCachingRequestWrapper) {
         byte[] content = contentCachingRequestWrapper.getContentAsByteArray();
         if (content.length == 0) return "";
@@ -173,6 +210,9 @@ public class RequestUtil {
         }
     }
 
+    /**
+     * 일반 API와 시스템 지원 API 요청인지 URI와 error dispatch URI를 기준으로 판별한다.
+     */
     public static boolean isApiRequest(@NotNull HttpServletRequest request) {
         String requestUri = request.getRequestURI();
         String errorRequestUri = Optional.ofNullable(request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI))
