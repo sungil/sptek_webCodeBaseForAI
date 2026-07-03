@@ -20,6 +20,12 @@ import java.util.Objects;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadPoolExecutor;
 
+/**
+ * 프레임워크 Async executor 상태를 주기적으로 로그로 남기는 모니터링 scheduler.
+ *
+ * <p>{@link Enable_AsyncMonitoring_At_Main}이 활성화된 경우에만 등록되며,
+ * 실제 async 처리 기능 자체를 켜거나 끄지는 않는다.</p>
+ */
 @Slf4j
 @Component
 @HasAnnotationOnMain_At_Bean(Enable_AsyncMonitoring_At_Main.class)
@@ -47,6 +53,9 @@ public class SchedulerForAsyncMonitoring {
         this.fixedDelaySeconds = fixedDelaySeconds;
     }
 
+    /**
+     * context refresh 이후 애노테이션 속성의 로그 tag를 읽고 fixed delay scheduling을 시작한다.
+     */
     @EventListener // @PostConstruct 시점에는 MainClassAnnotationRegister 가 생성되기 전임으로  Event Listen 방식으로 변경함
     public void listen(ContextRefreshedEvent contextRefreshedEvent) {
         if (scheduledFuture != null) return;
@@ -54,6 +63,9 @@ public class SchedulerForAsyncMonitoring {
         scheduledFuture = schedulerExecutorForAsyncMonitoring.scheduleWithFixedDelay(this::doJobs, Duration.ofSeconds(fixedDelaySeconds));
     }
 
+    /**
+     * context 종료 시 진행 중 작업은 기다리되, 이후 반복 scheduling은 중단한다.
+     */
     @PreDestroy
     public void preDestroy() {
         if (scheduledFuture == null) return;
@@ -61,7 +73,9 @@ public class SchedulerForAsyncMonitoring {
         schedulerExecutorForAsyncMonitoring.shutdown();
     }
 
-    // 실제 스케줄 내용
+    /**
+     * Async executor의 max/core/active/queue 상태를 수집해 모니터링 로그로 출력한다.
+     */
     public void doJobs() {
         try {
             String logContent;

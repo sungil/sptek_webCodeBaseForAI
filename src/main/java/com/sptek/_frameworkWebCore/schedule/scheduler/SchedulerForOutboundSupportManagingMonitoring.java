@@ -21,6 +21,12 @@ import java.time.Duration;
 import java.util.Objects;
 import java.util.concurrent.ScheduledFuture;
 
+/**
+ * outbound HttpClient connection pool의 idle/expired connection 정리와 상태 로그를 수행하는 scheduler.
+ *
+ * <p>connection 정리는 관리 목적의 작업이고, 로그 출력은 {@link Enable_OutboundSupportMonitoring_At_Main}
+ * 활성화 여부에 따라 수행된다. Apache HttpClient의 PoolingHttpClientConnectionManager 상태를 기준으로 한다.</p>
+ */
 @Slf4j
 @Component
 
@@ -53,6 +59,9 @@ public class SchedulerForOutboundSupportManagingMonitoring {
         this.fixedDelaySeconds = fixedDelaySeconds;
     }
 
+    /**
+     * context refresh 이후 모니터링 활성 여부와 로그 tag를 확인하고 fixed delay scheduling을 시작한다.
+     */
     @EventListener // 시작에 MainClassAnnotationRegister 가 필요 함으로 ContextRefreshedEvent 을 기다려 시작함
     public void listen(ContextRefreshedEvent contextRefreshedEvent) {
         if (scheduledFuture != null) return;
@@ -61,7 +70,9 @@ public class SchedulerForOutboundSupportManagingMonitoring {
         scheduledFuture = schedulerExecutorForOutboundSupportMonitoring.scheduleWithFixedDelay(this::doJobs, Duration.ofSeconds(fixedDelaySeconds));
     }
 
-    // Spring 이 종료되며 해당 빈을 제거하기 전에 호출됨
+    /**
+     * context 종료 시 outbound pool 관리 반복 작업과 전용 scheduler를 정리한다.
+     */
     @PreDestroy
     public void preDestroy() {
         if (scheduledFuture == null) return;
@@ -69,7 +80,9 @@ public class SchedulerForOutboundSupportManagingMonitoring {
         schedulerExecutorForOutboundSupportMonitoring.shutdown();
     }
 
-    // 실제 스케줄 내용
+    /**
+     * idle/expired connection을 정리하고, 활성화된 경우 전체 및 route별 pool 상태를 로그로 출력한다.
+     */
     public void doJobs() {
         try {
             PoolStats beforeStats = poolingHttpClientConnectionManager.getTotalStats();
@@ -101,6 +114,9 @@ public class SchedulerForOutboundSupportManagingMonitoring {
         }
     }
 
+    /**
+     * route별 pool 상태 로그에 사용할 scheme/host/port 식별자를 만든다.
+     */
     private String getRouteKey(HttpRoute route) { //로깅 보조 함수
         HttpHost targetHost = route.getTargetHost();
         return String.format("%s://%s:%d",

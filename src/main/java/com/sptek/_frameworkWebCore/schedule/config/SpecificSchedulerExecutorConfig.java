@@ -14,6 +14,12 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 import java.time.Duration;
 
+/**
+ * 프레임워크 모니터링 스케줄러가 사용할 전용 ThreadPoolTaskScheduler Bean을 구성한다.
+ *
+ * <p>공용 {@code @Scheduled} scheduler와 분리해 모니터링 작업 간 간섭을 줄이고,
+ * graceful shutdown 시간은 {@code spring.lifecycle.timeout-per-shutdown-phase} 설정을 따른다.</p>
+ */
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
@@ -24,6 +30,9 @@ public class SpecificSchedulerExecutorConfig {
 
     final private Environment environment;
 
+    /**
+     * embedded Tomcat connector worker 모니터링 전용 scheduler를 등록한다.
+     */
     @HasAnnotationOnMain_At_Bean(Enable_HttpConnectorWorkerMonitoring_At_Main.class)
     @Bean(name = "schedulerExecutorForHttpConnectorWorkerMonitoring")
     public ThreadPoolTaskScheduler schedulerExecutorForHttpConnectorWorkerMonitoring() {
@@ -37,6 +46,9 @@ public class SpecificSchedulerExecutorConfig {
         return scheduler;
     }
 
+    /**
+     * HikariDataSource pool 모니터링 전용 scheduler를 등록한다.
+     */
     @HasAnnotationOnMain_At_Bean(Enable_HikariDataSourceMonitoring_At_Main.class)
     @Bean(name = "schedulerExecutorForHikariDataSourceMonitoring")
     public ThreadPoolTaskScheduler schedulerExecutorForHikariDataSourceMonitoring() {
@@ -50,6 +62,9 @@ public class SpecificSchedulerExecutorConfig {
         return scheduler;
     }
 
+    /**
+     * Async executor 모니터링 전용 scheduler를 등록한다.
+     */
     @HasAnnotationOnMain_At_Bean(Enable_AsyncMonitoring_At_Main.class)
     @Bean(name = "schedulerExecutorForAsyncMonitoring")
     public ThreadPoolTaskScheduler schedulerExecutorForAsyncMonitoring() {
@@ -63,6 +78,9 @@ public class SpecificSchedulerExecutorConfig {
         return scheduler;
     }
 
+    /**
+     * outbound HttpClient connection pool 관리/모니터링 전용 scheduler를 등록한다.
+     */
     @HasAnnotationOnMain_At_Bean(Enable_OutboundSupportMonitoring_At_Main.class)
     @Bean(name = "schedulerExecutorForOutboundSupportMonitoring")
     public ThreadPoolTaskScheduler schedulerExecutorForOutboundSupportMonitoring() {

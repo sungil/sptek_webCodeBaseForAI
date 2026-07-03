@@ -22,6 +22,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ScheduledFuture;
 
+/**
+ * 등록된 HikariDataSource들의 pool 상태와 주요 설정값을 주기적으로 로그로 남기는 scheduler.
+ *
+ * <p>{@link Enable_HikariDataSourceMonitoring_At_Main}이 활성화된 경우에만 등록된다.
+ * context refresh 이후 datasource를 한 번 pre-warm 한 뒤 MXBean 값을 조회한다.</p>
+ */
 @Slf4j
 @Component
 @HasAnnotationOnMain_At_Bean(Enable_HikariDataSourceMonitoring_At_Main.class)
@@ -44,6 +50,9 @@ public class SchedulerForHikariDataSourceMonitoring {
         this.fixedDelaySeconds = fixedDelaySeconds;
     }
 
+    /**
+     * context refresh 이후 datasource 목록과 로그 tag를 준비하고 fixed delay scheduling을 시작한다.
+     */
     @EventListener // 시작에 MainClassAnnotationRegister 가 필요 함으로 ContextRefreshedEvent 을 기다려 시작함
     public void listen(ContextRefreshedEvent contextRefreshedEvent) {
         if (scheduledFuture != null) return;
@@ -61,6 +70,9 @@ public class SchedulerForHikariDataSourceMonitoring {
         scheduledFuture = schedulerExecutorForHikariDataSourceMonitoring.scheduleWithFixedDelay(this::doJobs, Duration.ofSeconds(fixedDelaySeconds));
     }
 
+    /**
+     * context 종료 시 Hikari 모니터링 반복 작업과 전용 scheduler를 정리한다.
+     */
     @PreDestroy
     public void preDestroy() {
         if (scheduledFuture == null) return;
@@ -68,7 +80,9 @@ public class SchedulerForHikariDataSourceMonitoring {
         schedulerExecutorForHikariDataSourceMonitoring.shutdown();
     }
 
-    // 실제 스케줄 내용
+    /**
+     * datasource별 connection pool 상태와 Hikari 설정값을 수집해 모니터링 로그로 출력한다.
+     */
     public void doJobs() {
 
         for (HikariDataSource hikariDataSource : hikariDataSources.values()) {
