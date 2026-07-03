@@ -101,17 +101,19 @@ public class RequestUtil {
     }
 
     /**
-     * 현재 request session을 생성해서라도 지정 attribute 값을 조회한다.
+     * 현재 request session이 있으면 지정 attribute 값을 조회하고, 없으면 null을 반환한다.
      */
-    public static Object getSessionAttribute(@NotNull HttpServletRequest request, String attributeName) {
-        return request.getSession(true).getAttribute(attributeName);
+    public static @Nullable Object getSessionAttribute(@NotNull HttpServletRequest request, String attributeName) {
+        HttpSession session = request.getSession(false);
+        return session != null ? session.getAttribute(attributeName) : null;
     }
 
     /**
-     * request session의 모든 attribute를 Map으로 복사한다.
+     * request session의 모든 attribute를 Map으로 복사하고, session이 없으면 빈 Map을 반환한다.
      */
     public static @NotNull Map<String, Object> getSessionAttributesAll(@NotNull HttpServletRequest request, boolean create) {
         HttpSession session = request.getSession(create);
+        if (session == null) return Collections.emptyMap();
         Map<String, Object> attributes = new HashMap<>();
         Enumeration<String> attributeNames = session.getAttributeNames();
 

@@ -45,7 +45,8 @@ public class ReqResDetailLogFilter extends OncePerRequestFilter {
         //request, response을 ContentCachingRequestWrapper, ContentCachingResponseWrapper 로 변환 하여 하위 플로우 로 넘긴다.(req, res 의 body를 여러번 읽기 위한 용도로 활용됨)
 
         // 필터 제외 케이스. 컨트롤러 어노테이션 여부는 아직 HandlerMethod 가 확정되기 전이라 여기서 판단하지 않는다.
-        boolean isMinorRequest = MainClassAnnotationRegister.hasAnnotation(Enable_NoFilterAndSessionForMinorRequest_At_Main.class) && (SecurityUtil.isNotEssentialRequest() || SecurityUtil.isStaticResourceRequest());
+        boolean isMinorRequest = MainClassAnnotationRegister.hasAnnotation(Enable_NoFilterAndSessionForMinorRequest_At_Main.class)
+                && (SecurityUtil.isNotEssentialRequest(request) || SecurityUtil.isStaticResourceRequest(request));
         if (isMinorRequest) {
             filterChain.doFilter(request, response);
             return;

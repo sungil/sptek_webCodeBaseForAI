@@ -2,11 +2,13 @@ package com.sptek._frameworkWebCore.filter;
 
 import com.sptek._frameworkWebCore.base.constant.CommonConstants;
 import com.sptek._frameworkWebCore.util.AuthenticationUtil;
+import com.sptek._frameworkWebCore.util.SecurityUtil;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.MDC;
@@ -39,9 +41,12 @@ public class MakeMdcFilter extends OncePerRequestFilter {
     public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
         // todo : Mapped Diagnostic Context 를 사용하여 Slf4j 의 로깅 패턴에 특정 정보를 포함 할수 있도록 한다. (성능적 측면에서 오버해드가 발생할 수 있음으로 상용 적용시 고려 필요)
         try {
+            boolean isMinorRequest = SecurityUtil.isNotEssentialRequest(request) || SecurityUtil.isStaticResourceRequest(request);
+            HttpSession session = isMinorRequest ? request.getSession(false) : request.getSession(true);
+
             // todo: 로그인 처리 과정 중에 로그를 남기는 경우 아직 CustomUserDetails 객체가 없는 상태일 수 있어 있어서 아래 방식으로 변경함
             MDC.put("memberId", AuthenticationUtil.isRealLogin() ? AuthenticationUtil.getMyName().substring(0,4) + "**" : CommonConstants.ANONYMOUS_USER);
-            MDC.put("sessionId", request.getSession(true).getId().substring(0, 8) + "**");
+            MDC.put("sessionId", session != null ? session.getId().substring(0, 8) + "**" : "");
 
             // 분산 시스템에서 API 호출 흐름을 trace 하기 위한 값으로 추후 사용을 위해 적용함
             String correlationId = request.getHeader("Correlation-Id");

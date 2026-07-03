@@ -8,6 +8,7 @@ import jakarta.servlet.DispatcherType;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.event.Level;
@@ -169,7 +170,9 @@ public class LoggingUtil {
                 ? Objects.toString(request.getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_REQ_RES_DETAIL_LOG_TAG), "")
                 : Objects.toString(MainClassAnnotationRegister.getAnnotationAttributes(Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class).get("value"), "");
 
-        String sessionId = request.getSession().getId();
+        String sessionId = Optional.ofNullable(request.getSession(false))
+                .map(HttpSession::getId)
+                .orElse("");
         String methodType = RequestUtil.getRequestMethodType(request);
         String url = request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI) != null ? RequestUtil.getRequestDomain(request) + (String) request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI) : RequestUtil.getRequestUrlQuery(request);
         String params = TypeConvertUtil.strArrMapToString(RequestUtil.getRequestParameterMap(request));

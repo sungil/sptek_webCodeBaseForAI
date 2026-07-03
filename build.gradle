@@ -24,7 +24,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.boot:spring-boot-starter-aop'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools:3.2.5'
 
 	// MyBatis
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.2'

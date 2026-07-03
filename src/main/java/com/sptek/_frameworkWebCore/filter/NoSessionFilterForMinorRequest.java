@@ -48,7 +48,7 @@ public class NoSessionFilterForMinorRequest extends OncePerRequestFilter {
     @Override
      public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
         // 중용하지 않은 req 에 대해 session 비 생성 처리
-        if (SecurityUtil.isNotEssentialRequest() || SecurityUtil.isStaticResourceRequest()) {
+        if (SecurityUtil.isNotEssentialRequest(request) || SecurityUtil.isStaticResourceRequest(request)) {
             request.setAttribute("org.springframework.session.web.http.SessionRepositoryFilter.FILTERED", Boolean.TRUE); //세션 처리를 끝낸것 처럼 강제 세팅함
             filterChain.doFilter(request, response);
             return;

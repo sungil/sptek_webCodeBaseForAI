@@ -4,8 +4,10 @@ import com.sptek._frameworkWebCore.base.code.CommonErrorCodeEnum;
 import com.sptek._frameworkWebCore.base.exception.ServiceException;
 import com.sptek._frameworkWebCore.springSecurity.AuthorityEnum;
 import com.sptek._projectCommon.commonObject.code.SecureFilePathTypeEnum;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.util.AntPathMatcher;
 
 import java.nio.file.Path;
@@ -65,15 +67,14 @@ public class SecurityUtil {
      * 현재 request path가 필수 처리 제외 패턴에 매칭되는지 확인한다.
      */
     public static boolean isNotEssentialRequest(){
-        List<String> requestPatterns = getNotEssentialRequestPatterns();
-        String requestPath = SpringUtil.getRequest().getServletPath();
-        AntPathMatcher pathMatcher = new AntPathMatcher();
+        return isNotEssentialRequest(SpringUtil.getRequest());
+    }
 
-        for (String requestPattern : requestPatterns) {
-            if(pathMatcher.match(requestPattern, requestPath))
-                return true;
-        }
-        return false;
+    /**
+     * 전달된 request path가 필수 처리 제외 패턴에 매칭되는지 확인한다.
+     */
+    public static boolean isNotEssentialRequest(@NotNull HttpServletRequest request) {
+        return matchesRequestPatterns(request, getNotEssentialRequestPatterns());
     }
 
     /**
@@ -102,8 +103,18 @@ public class SecurityUtil {
      * 현재 request path가 정적 리소스 요청 패턴에 매칭되는지 확인한다.
      */
     public static boolean isStaticResourceRequest(){
-        List<String> requestPatterns = getStaticResourceRequestPatterns();
-        String requestPath = SpringUtil.getRequest().getServletPath();
+        return isStaticResourceRequest(SpringUtil.getRequest());
+    }
+
+    /**
+     * 전달된 request path가 정적 리소스 요청 패턴에 매칭되는지 확인한다.
+     */
+    public static boolean isStaticResourceRequest(@NotNull HttpServletRequest request){
+        return matchesRequestPatterns(request, getStaticResourceRequestPatterns());
+    }
+
+    private static boolean matchesRequestPatterns(@NotNull HttpServletRequest request, List<String> requestPatterns) {
+        String requestPath = request.getServletPath();
         AntPathMatcher pathMatcher = new AntPathMatcher();
 
         for (String requestPattern : requestPatterns) {
