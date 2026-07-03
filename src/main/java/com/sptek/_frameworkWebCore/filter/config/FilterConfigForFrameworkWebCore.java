@@ -32,7 +32,7 @@ public class FilterConfigForFrameworkWebCore {
     @Profile(value = { "local", "dev", "stg", "prd" })
     @Bean
     // todo : 아래 custom 필터 내부에서도 RequestContextHolder 를 통해 정보를 사용할수 있도록 하기 위해 우선 순위를 높여 설정함
-    // 간혹 필터 내부에서 RequestContextHolder 사용시 셋팅 이전 시점이 있을수 있기때문 (async 리 디스패치 시점에 그런 걍향이 있음)
+    // 간혹 필터 내부에서 RequestContextHolder 사용시 셋팅 이전 시점이 있을수 있기때문 (async 디스패치 시점에 그런 걍향이 있음)
     // 가장 좋은 방법은 필터 레이어에서는 RequestContextHolder 를 직접 사용하지 않는 것이 좋음
     public FilterRegistrationBean<RequestContextFilter> requestContextFilter() {
         FilterRegistrationBean<RequestContextFilter> filterRegistrationBean = new FilterRegistrationBean<>();
