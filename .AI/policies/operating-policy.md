@@ -14,6 +14,7 @@
 - 내용 검색은 `rg`를 우선 사용한다.
 - 파일명 탐색은 `fd`가 있으면 `fd`, 없으면 `rg --files`를 사용한다.
 - Windows에서는 현재 제공된 PowerShell 셸을 그대로 사용한다. 한글 문서나 주석을 읽을 때는 `Get-Content -Encoding UTF8`처럼 UTF-8을 명시한다.
+- 새로 생성하거나 수정하는 텍스트 파일은 UTF-8로 저장한다. PowerShell에서 파일을 쓸 때는 가능한 경우 `-Encoding UTF8` 또는 UTF-8 no BOM API를 사용한다.
 - 관련성이 높은 최소 파일만 열고, 큰 디렉터리 전체를 무작정 읽지 않는다.
 - 프레임워크 기능과 연결되면 필요한 항목만 추가로 추적한다.
   - `SptWfwApplication`의 활성화 `@Enable_*` 애노테이션

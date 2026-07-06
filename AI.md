@@ -12,6 +12,7 @@
 
 - 작업 시작 시 `git status --short`로 사용자 변경을 확인하고, 요청과 무관한 변경은 보존한다.
 - 내용 검색은 `rg`, 파일명 탐색은 `fd`가 있으면 `fd`, 없으면 `rg --files`를 우선 사용한다.
+- 새로 생성하거나 수정하는 텍스트 파일은 UTF-8로 저장한다.
 - 필요한 문서와 파일만 읽는다. 저장소 구조 설명이 필요할 때만 `.AI/context/**`를 연다.
 - 이 저장소는 여러 프로젝트가 공통으로 가져갈 SPT Framework Web Core 기준 저장소다. 새 코드는 간결함보다 Base 코드 일관성을 우선한다.
 - `_frameworkWebCore`는 Base 프레임워크, `_projectCommon`은 프로젝트 공통 확장, 실제 업무 코드는 `com.sptek.{project}.{domain}` 패키지를 기준으로 판단한다.
