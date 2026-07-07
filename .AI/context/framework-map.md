@@ -4,7 +4,7 @@
 
 ## `_frameworkWebCore`
 
-- `_annotation`: 메인 클래스, 컨트롤러, 메서드, DTO 필드 등에 적용하는 프레임워크 활성화/조건부 등록용 커스텀 애노테이션
+- `_annotation`: 메인 클래스, 컨트롤러, 메서드, DTO 필드 등에 적용하는 프레임워크 활성화/조건부 등록용 커스텀 애노테이션. 새 기능 개발 전 재사용 기준은 `.AI/context/framework-annotations.md`를 먼저 확인한다.
 - `_example`: 프레임워크 기능 사용 예제. 참고용이며 신규 업무 코드를 추가하지 않는다.
 - `_systemController`: 서버명, 프로젝트 정보, 헬스체크, RSA 공개키, 지원 언어, 파일 스트림, 인덱스, 로그인, 에러 페이지 API/페이지
 - `actuator`: Actuator 정보 노출과 커스텀 헬스체크 지표
@@ -51,4 +51,5 @@
 ## 사용 기준
 
 - 동일 기능을 새로 만들기 전에 Base 코드의 확장 지점, 커스텀 애노테이션, 필터, 인터셉터, Aspect, ControllerAdvice, ArgumentResolver를 먼저 확인한다.
+- CORS, XSS, 공통 응답/예외, 요청/응답 로그, 방문 이력, 중복 요청 방지, 비동기 API, datasource, 암복호화, View model attribute 기능은 `.AI/context/framework-annotations.md`의 기존 애노테이션을 먼저 검토한다.
 - `_example` 코드를 업무 코드로 옮길 때는 예제 URL, 테스트용 권한 완화, 테스트 데이터, 임시 주석, placeholder 이름을 실제 프로젝트 기준으로 정리한다.

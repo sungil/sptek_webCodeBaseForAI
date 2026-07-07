@@ -6,7 +6,7 @@
 
 1. `git status --short`로 사용자 변경을 확인한다.
 2. 요청 대상의 정의, 호출자, 설정, 테스트, 예제를 `rg`로 찾는다.
-3. Base 코드나 프로젝트 공통 확장 지점으로 처리 가능한지 먼저 판단한다.
+3. Base 코드나 프로젝트 공통 확장 지점으로 처리 가능한지 먼저 판단한다. 특히 CORS, XSS, 공통 응답/예외, 로그, 모니터링, datasource, 암복호화, ArgumentResolver, 중복 요청 방지는 `.AI/context/framework-annotations.md`와 `_annotation` 패키지의 커스텀 애노테이션을 먼저 확인한다.
 4. 변경 범위를 요청과 직접 관련된 파일로 제한한다.
 5. 실행 동작이 바뀌는 Base 코드 변경이면 영향 범위와 장단점을 먼저 설명하고 확인을 받는다.
 6. 변경 후 `.AI/procedures/common/change-verification.md` 기준으로 검증한다.
@@ -18,3 +18,4 @@
 - 새 공통 구조는 실제 중복이나 복잡도를 줄일 때만 만든다.
 - 공개 API 변경은 컨트롤러, DTO validation, 공통 응답 래핑, 보안 matcher, HTTP 예제를 함께 검토한다.
 - 설정/profile 변경은 `local/dev/stg/prd` 구조와 `spring.config.import`를 함께 검토한다.
+- 기존 `@Enable_*` 애노테이션으로 활성화 가능한 기능은 새 구현보다 애노테이션 적용과 기존 예제 재사용을 우선한다.
