@@ -1,6 +1,6 @@
 package com.sptek._projectCommon.event.event;
 
-import com.sptek._frameworkWebCore.event.event.SptBaseEvent;
+import com.sptek.__webFramework.event.core.SptBaseEvent;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;

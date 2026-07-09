@@ -23,7 +23,7 @@
 ## Java 주요 경로
 
 - `src/main/java/com/sptek/SptWfwApplication.java`: 애플리케이션 진입점과 프레임워크 기능 활성화 기준
-- `src/main/java/com/sptek/_frameworkWebCore`: Base 프레임워크 코드
+- `src/main/java/com/sptek/__webFramework`: Base 프레임워크 코드. 기능 축 기준으로 `api`, `web`, `view`, `security`, `data`, `observability`, `integration`, `event`, `core`, `bootstrap`, `system`, `example`, `legacy` 등을 둔다.
 - `src/main/java/com/sptek/_projectCommon`: 프로젝트 공통 확장 코드
 - `src/main/java/com/sptek/projectName/domainName`: 업무 코드 작성 위치 예시
 

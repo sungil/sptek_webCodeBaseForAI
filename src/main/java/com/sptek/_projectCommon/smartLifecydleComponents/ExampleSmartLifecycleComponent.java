@@ -1,6 +1,6 @@
 package com.sptek._projectCommon.smartLifecydleComponents;
 
-import com.sptek._frameworkWebCore.persistence.mybatis.dao.MyBatisCommonDao;
+import com.sptek.__webFramework.data.mybatis.MyBatisCommonDao;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.SmartLifecycle;

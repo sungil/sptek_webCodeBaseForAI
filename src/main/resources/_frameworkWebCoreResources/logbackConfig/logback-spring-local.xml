@@ -23,7 +23,7 @@
 
     <!-- Console Appender -->
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
-        <filter class="com.sptek._frameworkWebCore.logging.filter.LogbackFilterForExcept"/>
+        <filter class="com.sptek.__webFramework.observability.logging.LogbackFilterForExcept"/>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>${color_log_pattern}</pattern> <!--서버 적용 시는 default_log_pattern 을 권장-->
         </encoder>
@@ -52,7 +52,7 @@
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>INFO</level> <!--info 상위(info, warn, error)만 찍음-->
         </filter>
-        <filter class="com.sptek._frameworkWebCore.logging.filter.LogbackFilterForExcept"/>
+        <filter class="com.sptek.__webFramework.observability.logging.LogbackFilterForExcept"/>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>${default_log_pattern}</pattern>
         </encoder>
@@ -66,7 +66,7 @@
     </appender>
 
     <!-- 특정 키워드(CommonConstants.SYSTEM_NOTICE_TAG) 로 시작 되는 로그에 대해 동적 으로 Appender 를 구성 해서 로깅함-->
-    <appender name="keywordBaseLog" class="com.sptek._frameworkWebCore.logging.appender.KeywordBaseFileAppender">
+    <appender name="keywordBaseLog" class="com.sptek.__webFramework.observability.logging.KeywordBaseFileAppender">
         <encoderPattern>${keyword_log_pattern}</encoderPattern>
         <baseLogPath>${default_log_base_path}</baseLogPath>
         <rollingFilePattern>${default_log_rolling_file_pattern}</rollingFilePattern>

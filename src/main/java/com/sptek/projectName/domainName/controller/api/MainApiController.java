@@ -1,7 +1,7 @@
 package com.sptek.projectName.domainName.controller.api;
 
-import com.sptek._frameworkWebCore._annotation.Enable_ResponseOfApiCommonSuccess_At_RestController;
-import com.sptek._frameworkWebCore._annotation.Enable_ResponseOfApiGlobalException_At_RestController;
+import com.sptek.__webFramework.api.response.Enable_ResponseOfApiCommonSuccess_At_RestController;
+import com.sptek.__webFramework.api.response.Enable_ResponseOfApiGlobalException_At_RestController;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;

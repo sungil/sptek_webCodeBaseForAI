@@ -1,6 +1,9 @@
 package com.sptek._projectCommon.springSecurity;
 
-import com.sptek._frameworkWebCore.springSecurity.*;
+import com.sptek.__webFramework.security.authorization.*;
+import com.sptek.__webFramework.security.authentication.view.*;
+import com.sptek.__webFramework.security.jwt.*;
+import com.sptek.__webFramework.security.config.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;

@@ -1,6 +1,6 @@
 package com.sptek._projectCommon.event.listener.applicationEventListener.httpSessionEvent;
 
-import com.sptek._frameworkWebCore.event.listener.applicationEventListener.httpSessionEvent.HttpSessionListenerAdapter;
+import com.sptek.__webFramework.event.httpSession.HttpSessionListenerAdapter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;

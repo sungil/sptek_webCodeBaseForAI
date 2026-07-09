@@ -1,2 +1,2 @@
 #Spring Boot 실행 시 ConfigDirectoryLoader가 자동으로 로딩될수 있도록 처리함
-#org.springframework.boot.env.EnvironmentPostProcessor=com.sptek._frameworkWebCore.base.ConfigDataLoader.ConfigDirectoryLoader
+#org.springframework.boot.env.EnvironmentPostProcessor=com.sptek.__webFramework.base.ConfigDataLoader.ConfigDirectoryLoader

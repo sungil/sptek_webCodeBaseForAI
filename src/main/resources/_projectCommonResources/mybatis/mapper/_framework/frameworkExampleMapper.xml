@@ -11,22 +11,22 @@
         ]]>
     </select>
 
-    <select id="selectTbTestWithLimit" parameterType="int" resultType="com.sptek._frameworkWebCore._example.dto.TbTestDto">
+    <select id="selectTbTestWithLimit" parameterType="int" resultType="com.sptek.__webFramework.example.dto.TbTestDto">
         <![CDATA[
         SELECT c1, c2, c3
         FROM test limit #{limit}
         ]]>
     </select>
 
-    <insert id="insertTbTest" parameterType="com.sptek._frameworkWebCore._example.dto.TbTestDto">
+    <insert id="insertTbTest" parameterType="com.sptek.__webFramework.example.dto.TbTestDto">
         <![CDATA[
         INSERT INTO test (c1, c2, c3)
         VALUES (#{c1}, #{c2}, #{c3})
         ]]>
     </insert>
 
-    
-    <update id="updateTbTest" parameterType="com.sptek._frameworkWebCore._example.dto.TbTestDto">
+
+    <update id="updateTbTest" parameterType="com.sptek.__webFramework.example.dto.TbTestDto">
         <![CDATA[
             UPDATE test
             SET c1 = #{c1}, c2 = #{c2}, c3 = #{c3}
@@ -51,21 +51,21 @@
         ]]>
     </update>
 
-    <select id="selectAllTbTest" resultType="com.sptek._frameworkWebCore._example.dto.TbTestDto">
+    <select id="selectAllTbTest" resultType="com.sptek.__webFramework.example.dto.TbTestDto">
         <![CDATA[
         SELECT c1, c2, c3
         FROM test
         ]]>
     </select>
 
-    <insert id="insertExamplePostDto" parameterType="com.sptek._frameworkWebCore._example.dto.ExamplePostDto" useGeneratedKeys="true" keyProperty="postId">
+    <insert id="insertExamplePostDto" parameterType="com.sptek.__webFramework.example.dto.ExamplePostDto" useGeneratedKeys="true" keyProperty="postId">
         <![CDATA[
         INSERT INTO POST_EXAMPLE (BOARD_ID, BOARD_NAME, CREATE_AT, UPDATE_AT, USER_ID, USER_EMAIL, USER_NAME, TITLE, CONTENT)
         VALUES (#{boardId}, #{boardName}, NOW(), NOW(), #{userId}, #{userEmail}, #{userName}, #{title}, #{content})
         ]]>
     </insert>
 
-    <select id="selectExamplePostDto" parameterType="com.sptek._frameworkWebCore._example.dto.ExamplePostDto" resultType="com.sptek._frameworkWebCore._example.dto.ExamplePostDto">
+    <select id="selectExamplePostDto" parameterType="com.sptek.__webFramework.example.dto.ExamplePostDto" resultType="com.sptek.__webFramework.example.dto.ExamplePostDto">
         <![CDATA[
         SELECT *
         FROM POST_EXAMPLE
@@ -93,7 +93,7 @@
         </foreach>
     </insert>
 
-    <select id="selectUploadFileDto" parameterType="com.sptek._frameworkWebCore._example.dto.ExamplePostDto" resultType="com.sptek._frameworkWebCore._example.dto.FileUploadDto">
+    <select id="selectUploadFileDto" parameterType="com.sptek.__webFramework.example.dto.ExamplePostDto" resultType="com.sptek.__webFramework.example.dto.FileUploadDto">
         <![CDATA[
         SELECT *
         FROM POST_FILES

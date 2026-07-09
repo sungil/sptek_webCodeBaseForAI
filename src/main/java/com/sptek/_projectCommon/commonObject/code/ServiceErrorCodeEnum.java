@@ -1,6 +1,6 @@
 package com.sptek._projectCommon.commonObject.code;
 
-import com.sptek._frameworkWebCore.base.code.BaseCode;
+import com.sptek.__webFramework.core.code.BaseCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

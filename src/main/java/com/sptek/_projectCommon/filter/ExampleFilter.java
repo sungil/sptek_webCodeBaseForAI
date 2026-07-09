@@ -1,10 +1,8 @@
 package com.sptek._projectCommon.filter;
 
-import com.sptek._frameworkWebCore.base.constant.CommonConstants;
-import com.sptek._frameworkWebCore.util.SecurityUtil;
+import com.sptek.__webFramework.security.util.SecurityUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;

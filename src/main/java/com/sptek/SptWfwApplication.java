@@ -1,6 +1,27 @@
 package com.sptek;
 
-import com.sptek._frameworkWebCore._annotation.*;
+import com.sptek.__webFramework.data.datasource.Enable_DatasourceOfH2_At_Main;
+import com.sptek.__webFramework.data.jpa.Enable_JpaHybrid_At_Main;
+import com.sptek.__webFramework.observability.logging.Enable_GlobalEnvLog_At_Main;
+import com.sptek.__webFramework.observability.logging.Enable_OutboundSupportDetailLog_At_Main;
+import com.sptek.__webFramework.observability.logging.Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod;
+import com.sptek.__webFramework.observability.logging.Enable_VisitHistoryLog_At_Main;
+import com.sptek.__webFramework.observability.mdc.Enable_MdcTagging_At_Main;
+import com.sptek.__webFramework.observability.monitoring.Enable_HikariDataSourceMonitoring_At_Main;
+import com.sptek.__webFramework.observability.monitoring.Enable_HttpConnectorWorkerMonitoring_At_Main;
+import com.sptek.__webFramework.observability.monitoring.Enable_OutboundSupportMonitoring_At_Main;
+import com.sptek.__webFramework.observability.processTime.Enable_ExecutionTimer_At_Main;
+import com.sptek.__webFramework.security.crypto.Enable_EncryptorJasypt_At_Main;
+import com.sptek.__webFramework.view.model.Enable_PropertiesToModelAttribute_At_Main;
+import com.sptek.__webFramework.view.model.Enable_UserAuthenticationToModelAttribute_At_Main;
+import com.sptek.__webFramework.view.thymeleaf.Enable_ThymeleafSpringSecurityDialect_At_Main;
+import com.sptek.__webFramework.web.asyncResponse.Enable_AsyncMonitoring_At_Main;
+import com.sptek.__webFramework.web.cors.Enable_CorsPolicyFilter_At_Main;
+import com.sptek.__webFramework.web.error.Enable_ResponseOfApplicationGlobalException_At_Main;
+import com.sptek.__webFramework.web.filter.Enable_NoFilterAndSessionForMinorRequest_At_Main;
+import com.sptek.__webFramework.web.publicResourceCache.Enable_HttpCachePublicForStaticResource_At_Main;
+import com.sptek.__webFramework.web.xss.Enable_XssProtectForApi_At_Main;
+import com.sptek.__webFramework.bootstrap.testSupport.TestAnnotation_At_All;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -43,7 +64,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
 /* SECURETY */
 @Enable_EncryptorJasypt_At_Main
 @Enable_CorsPolicyFilter_At_Main
-@Enable_XssProtectForApi_At_Main //Enable_XssProtectForApi_At_Main 가 적용된 경우 Enable_XssProtectForApi_At_ControllerMethod 는 동작하지 않는다.
+@Enable_XssProtectForApi_At_Main
+//Enable_XssProtectForApi_At_Main 가 적용된 경우 Enable_XssProtectForApi_At_ControllerMethod 는 동작하지 않는다.
 @Enable_ThymeleafSpringSecurityDialect_At_Main //thymeleaf 에서 springSecurity 요소를 사용 하기 위한 설정
 @Enable_UserAuthenticationToModelAttribute_At_Main
 

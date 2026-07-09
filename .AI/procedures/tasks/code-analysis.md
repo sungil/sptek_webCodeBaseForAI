@@ -24,7 +24,7 @@
 - 커스텀 `@Enable_*` 애노테이션 정의와 조건 클래스
 - Bean 등록 방식: `@Component`, `@Configuration`, `@Bean`, `@Conditional`
 - 필터, 인터셉터, AOP, ArgumentResolver, ControllerAdvice 적용 순서
-- `_frameworkWebCore`, `_projectCommon`, `_example`의 사용 예제와 확장 지점
+- `__webFramework`, `_projectCommon`, `example`의 사용 예제와 확장 지점
 - 관련 테스트와 `http-client` 공개 예제
 
 ## 요청 유형별 체크리스트

@@ -15,7 +15,7 @@
 - 새로 생성하거나 수정하는 텍스트 파일은 UTF-8로 저장한다.
 - 필요한 문서와 파일만 읽는다. 저장소 구조 설명이 필요할 때만 `.AI/context/**`를 연다.
 - 이 저장소는 여러 프로젝트가 공통으로 사용하는 SPT Framework Web Core(Base 프레임워크)를 활용하여 특정 영역의 비즈니스를 개발하기 위한 프로젝트이다. 새 코드는 단순한 구현보다 Base 프레임워크 코드와의 일관성을 우선한다.
-- 프레임워크 성격이 강한 공통 기술 요소는 Base 프레임워크 영역인 `_frameworkWebCore`에 두고, 비즈니스 전반에서 공유하는 확장 요소는 `_projectCommon`에, 구체적인 비즈니스 업무 코드는 `com.sptek.{project}.{domain}` 패키지 아래에 작성한다.
+- 프레임워크 성격이 강한 공통 기술 요소는 Base 프레임워크 영역인 `__webFramework`에 두고, 비즈니스 전반에서 공유하는 확장 요소는 `_projectCommon`에, 구체적인 비즈니스 업무 코드는 `com.sptek.{project}.{domain}` 패키지 아래에 작성한다.
 - Base 프레임워크 코드의 실행 동작을 바꾸는 변경은 영향 범위와 장단점을 먼저 설명하고 사용자 확인을 받는다. 단순 오타, 주석, 문서, 명백히 잘못된 예제 보정은 필요한 범위에서 바로 수정할 수 있다.
 - 민감값, 비공개 환경 파일, keystore, 운영 설정값, 로컬 DB 파일은 명시적 요청 없이 출력하거나 수정하지 않는다.
 
@@ -26,7 +26,7 @@
 - `.AI/policies/project-boundary-policy.md`: Base 코드, 프로젝트 공통, 업무 코드의 변경 경계
 - `.AI/context/project-overview.md`: 프로젝트 성격, 기술 스택, 빌드 기준
 - `.AI/context/repository-map.md`: 루트 디렉터리와 주요 경로 역할
-- `.AI/context/framework-map.md`: `_frameworkWebCore`, `_projectCommon`, `_example` 구조
+- `.AI/context/framework-map.md`: `__webFramework`, `_projectCommon`, `example` 구조
 - `.AI/context/resource-map.md`: resources, profile, template, static 구조
 - `.AI/context/runtime-map.md`: `SptWfwApplication`, `@Enable_*`, profile, datasource 기준
 - `.AI/procedures/common/search-and-navigation.md`: 빠른 검색과 최소 파일 읽기 기준

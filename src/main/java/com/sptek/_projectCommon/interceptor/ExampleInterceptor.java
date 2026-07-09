@@ -1,7 +1,7 @@
 package com.sptek._projectCommon.interceptor;
 
-import com.sptek._frameworkWebCore._annotation.TestAnnotation_At_All;
-import com.sptek._frameworkWebCore.util.RequestUtil;
+import com.sptek.__webFramework.bootstrap.testSupport.TestAnnotation_At_All;
+import com.sptek.__webFramework.web.util.RequestUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,7 @@ hasMethodAnnotation : false
 @Component
 @Slf4j
 public class ExampleInterceptor implements HandlerInterceptor {
-    
+
     @Override
     //컨트롤러 진입전 (인증, 권한 검사, 로깅 등의 작업 등)
     public boolean preHandle(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler) {

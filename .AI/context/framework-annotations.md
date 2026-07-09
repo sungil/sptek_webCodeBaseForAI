@@ -1,6 +1,6 @@
 # Framework Custom Annotations
 
-이 문서는 `src/main/java/com/sptek/_frameworkWebCore/_annotation`의 커스텀 애노테이션을 새 코드 개발 전에 재사용하기 위한 안내다.
+이 문서는 `src/main/java/com/sptek/__webFramework` 하위 기능 패키지에 함께 배치된 커스텀 애노테이션을 새 코드 개발 전에 재사용하기 위한 안내다.
 
 ## 먼저 볼 기준
 
@@ -8,7 +8,7 @@
 - 이름의 `At_*`는 적용 위치다. `At_Main`은 `SptWfwApplication`, `At_RestController`와 `At_ViewController`는 컨트롤러 클래스, `At_*Method`는 컨트롤러 메서드, `At_Param`은 메서드 파라미터, `At_DtoString`은 DTO `String` 필드에 적용한다.
 - `At_Main` 애노테이션은 기능의 전역 활성화 스위치다. 실제 Bean 등록은 대개 `@HasAnnotationOnMain_At_Bean` 조건, `MainClassAnnotationRegister`, 또는 request mapping 애노테이션 레지스트리를 통해 연결된다.
 - `String value()`가 있는 애노테이션의 값은 대부분 로그/모니터링 태그다. 기능 옵션으로 단정하지 말고 사용처를 확인한다.
-- Base 프레임워크 동작을 새로 만들거나 바꾸기 전에 `_frameworkWebCore/_example`, 현재 `SptWfwApplication` 활성화 상태, 관련 `.AI/procedures/tech/**` 문서를 함께 확인한다.
+- Base 프레임워크 동작을 새로 만들거나 바꾸기 전에 `__webFramework/example`, 현재 `SptWfwApplication` 활성화 상태, 관련 `.AI/procedures/tech/**` 문서를 함께 확인한다.
 
 ## 전역 활성화
 

@@ -18,7 +18,7 @@ import java.lang.reflect.Method;
 public class ExampleAspect {
     @Pointcut(
             "@within(org.springframework.web.bind.annotation.RestController) && " +
-                    "@annotation(com.sptek._frameworkWebCore._annotation.TestAnnotation_At_All)"
+                    "@annotation(com.sptek.__webFramework.bootstrap.testSupport.TestAnnotation_At_All)"
     ) // ex 요건
     public void pointCut() {}
 

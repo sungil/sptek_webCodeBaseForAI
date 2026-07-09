@@ -13,7 +13,7 @@ logging:
 
     com:
       #Framework
-      sptek._frameworkWebCore: debug
+      sptek.__webFramework: debug
       sptek._projectCommon: debug
       sptek.serviceName: debug
 

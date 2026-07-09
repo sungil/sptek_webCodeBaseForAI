@@ -20,7 +20,7 @@
 
     <!-- Console Appender -->
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
-        <filter class="com.sptek._frameworkWebCore.logging.filter.LogbackFilterForExcept"/>
+        <filter class="com.sptek.__webFramework.observability.logging.LogbackFilterForExcept"/>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>${default_log_patternForConsole}</pattern>
         </encoder>
@@ -72,7 +72,7 @@
     </appender>
 
     <appender name="visitHistory" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <filter class="com.sptek._frameworkWebCore.logging.filter.LogbackFilterForVisitHistory"/>
+        <filter class="com.sptek.__webFramework.logging.filter.LogbackFilterForVisitHistory"/>
 
         <file>${default_log_base_path}/visit_history/visit_history.log</file>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
@@ -93,7 +93,7 @@
     </appender>
 
     <!-- 특정 키워드(CommonConstants.SYSTEM_NOTICE_TAG) 로 시작 되는 로그에 대해 동적 으로 Appender 를 구성 해서 로깅함-->
-    <appender name="keywordBaseLog" class="com.sptek._frameworkWebCore.logging.appender.KeywordBaseFileAppender">
+    <appender name="keywordBaseLog" class="com.sptek.__webFramework.observability.logging.KeywordBaseFileAppender">
         <baseLogPath>${default_log_base_path}</baseLogPath>
         <pattern>${default_log_patternForFile}</pattern>
         <fileMaxSize>${default_log_max_filesize}</fileMaxSize>
