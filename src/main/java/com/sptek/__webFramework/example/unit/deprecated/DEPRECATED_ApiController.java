@@ -11,7 +11,7 @@ import com.sptek.__webFramework.system.projectInfo.ProjectInfoVo;
 import com.sptek.__webFramework.event.core.SptEventPublisher;
 import com.sptek.__webFramework.integration.httpClient.OutboundSupport;
 import com.sptek.__webFramework.legacy.integration.httpClient.DEPRECATED_RestTemplateSupport;
-import com.sptek._projectCommon.event.event.MyExampleEvent;
+import com.sptek._projectsCommon.event.event.MyExampleEvent;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

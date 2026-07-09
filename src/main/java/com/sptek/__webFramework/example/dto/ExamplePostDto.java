@@ -1,6 +1,6 @@
 package com.sptek.__webFramework.example.dto;
 
-import com.sptek._projectCommon.commonObject.dto.PostBaseDto;
+import com.sptek._projectsCommon.commonObject.dto.PostBaseDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

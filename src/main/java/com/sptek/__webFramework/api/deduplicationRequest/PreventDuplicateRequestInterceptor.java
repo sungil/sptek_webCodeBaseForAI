@@ -3,7 +3,7 @@ package com.sptek.__webFramework.api.deduplicationRequest;
 import com.sptek.__webFramework.core.constant.CommonConstants;
 import com.sptek.__webFramework.bootstrap.registry.RequestMappingAnnotationRegister;
 import com.sptek.__webFramework.core.exception.ServiceException;
-import com.sptek._projectCommon.commonObject.code.ServiceErrorCodeEnum;
+import com.sptek._projectsCommon.commonObject.code.ServiceErrorCodeEnum;
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

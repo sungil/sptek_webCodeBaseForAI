@@ -2,7 +2,7 @@ package com.sptek.__webFramework.legacy.security.userStore.repository;
 
 import com.sptek.__webFramework.security.userStore.entity.TestJpa;
 import com.sptek.__webFramework.security.userStore.repository.TestJpaRepository;
-import com.sptek._projectCommon.commonObject.code.ServiceErrorCodeEnum;
+import com.sptek._projectsCommon.commonObject.code.ServiceErrorCodeEnum;
 import com.sptek.__webFramework.core.exception.ServiceException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -4,7 +4,7 @@ import com.sptek.__webFramework.core.code.CommonErrorCodeEnum;
 import com.sptek.__webFramework.core.util.SpringUtil;
 import com.sptek.__webFramework.core.exception.ServiceException;
 import com.sptek.__webFramework.security.authorization.AuthorityEnum;
-import com.sptek._projectCommon.commonObject.code.SecureFilePathTypeEnum;
+import com.sptek._projectsCommon.commonObject.code.SecureFilePathTypeEnum;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringEscapeUtils;

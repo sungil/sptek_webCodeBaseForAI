@@ -4,7 +4,7 @@ import com.sptek.__webFramework.core.exception.ServiceException;
 import com.sptek.__webFramework.security.util.AuthenticationUtil;
 import com.sptek.__webFramework.web.locale.LocaleUtil;
 import com.sptek.__webFramework.core.util.Timer;
-import com.sptek._projectCommon.commonObject.code.ServiceErrorCodeEnum;
+import com.sptek._projectsCommon.commonObject.code.ServiceErrorCodeEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.task.TaskExecutor;
