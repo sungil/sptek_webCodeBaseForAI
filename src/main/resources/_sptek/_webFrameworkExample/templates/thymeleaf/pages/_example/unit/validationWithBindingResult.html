@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<!-- Default Layout Import-->
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/common/layout/defaultLayout}"
+      layout:fragment="Content"
+>
+<head>
+  <title>테스트 페이지</title>
+
+  <!-- inline CSS 영역-->
+  <link rel="stylesheet" th:href="@{/css/_example.default.css}">
+  <style th:inline="css" type="text/css">
+  </style>
+
+  <!-- inline JS 영역-->
+  <script th:inline="javascript" type="text/javascript">
+  </script>
+</head>
+
+<body>
+<div class="base-div">
+  <div class="inner-div">
+    <b>view validation with Binding Result</b>
+  </div>
+
+  <form th:action="@{/view/example/validation/withBindingResult}" th:object="${validatedDto}" method="post">
+    <!-- 입력 데이터 에 대한 에러 메시지 가 있을 경우 이영역 보여 준다 -->
+    <div class="inner-div" th:replace="/common/fragment/formError :: FormErrorFragment"></div>
+
+    <div>
+      <label class="label-normal">userId : </label>
+      <input class="input-normal" type="text" style="width: 250px;"th:field="*{userId}">
+
+      <label class="label-normal">userName</label>
+      <input class="input-normal" type="text" style="width: 250px;"th:field="*{userName}">
+
+      <label class="label-normal">age</label>
+      <input class="input-normal" type="text" style="width: 250px;"th:field="*{age}">
+
+      <label class="label-normal">email</label>
+      <input class="input-normal" type="text" style="width: 250px;"th:field="*{email}">
+
+      <label class="label-normal">mobileNumber</label>
+      <input class="input-normal" type="text" style="width: 250px;"th:field="*{mobileNumber}">
+    </div><br>
+
+    <button class="btn-normal" type="submit">submit</button>
+  </form>
+</div>
+</body>
+</html>

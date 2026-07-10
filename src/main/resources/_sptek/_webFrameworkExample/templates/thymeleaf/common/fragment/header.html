@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      th:fragment="HeaderFragment">
+
+<head>
+    <style>
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f8f9fa;
+            padding: 10px 20px;
+            border-bottom: 2px solid #ddd;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-left img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-right p {
+            margin: 0;
+        }
+
+        .header-right a, .header-right button {
+            background: none;
+            border: none;
+            color: #007bff;
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .header-right button:hover,
+        .header-right a:hover {
+            text-decoration: underline;
+        }
+
+        .user-email {
+            font-weight: bold;
+            color: #6f42c1;
+        }
+    </style>
+</head>
+
+<body>
+<div class="header-container">
+
+    <div class="header-left">
+        <span><b><a href="/">SPTEK Web Framework Guide</a></b></span>
+    </div>
+
+    <div class="header-right">
+
+        <!-- 로그인 상태, authentication 는 thymeleaf 로 자동 으로 주입 되는 객체임 -->
+        <p th:if="${#authentication?.getPrincipal() != null and #authentication?.getPrincipal() != 'anonymousUser'}">
+            Welcome, <span th:text="${#authentication.getPrincipal().userDto.email}" class="user-email">User</span> 님!
+        </p>
+        <!--윗쪽 p테그에 한번에 묶지 못한 이유는 p테그안에 form 이 규칙상 못들어가기 때문, spring-security의 로그아웃 처리의 경우 CSRF 가능성있어서 post로 처리되는게 보통, get으로 해야 겠다면 csrf 토큰사용 disable 처리 필요//-->
+        <form th:if="${#authentication?.getPrincipal() != null and #authentication?.getPrincipal() != 'anonymousUser'}"
+              action="/view/logout" method="POST" th:action="@{/view/logout}">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <button type="submit">Logout</button>
+        </form>
+
+        <!-- 비로그인 상태 -->
+        <p th:if="${#authentication?.getPrincipal() == null or #authentication?.getPrincipal() == 'anonymousUser'}">
+            <a th:href="@{/view/login?button}">Login</a>&nbsp;&nbsp;
+            <a th:href="@{/view/example/authentication/signupForm}">Signup</a>
+        </p>
+
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<!-- Default Layout Import-->
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/common/layout/defaultLayout}"
+      layout:fragment="Content"
+>
+<head>
+  <title>테스트 페이지</title>
+
+  <!-- inline CSS 영역-->
+  <link rel="stylesheet" th:href="@{/css/_example.default.css}">
+  <style th:inline="css" type="text/css">
+  </style>
+
+  <!-- inline JS 영역-->
+  <script th:src="@{/js/_framework/jsencrypt.min.js}" charset="UTF-8" defer></script>
+  <script type="module" th:inline="javascript">
+    import { requestFetch, rsaEncrypt, API_BASE_URL} from [[@{/js/_framework/frameworkUtil.js}]];
+    window.requestFetch = requestFetch;
+    window.rsaEncrypt = rsaEncrypt;
+    window.apiBaseUrl = API_BASE_URL;
+  </script>
+</head>
+
+<body>
+<div class="base-div">
+  <div class="inner-div">
+    <b>Post with Files</b>
+  </div>
+
+  <div>
+    <label class="label-normal">title:</label>
+    <input class="input-normal" type="text" style="width: 250px;" id="title" />
+    <label class="label-normal">content:</label>
+    <input class="input-normal" type="text" style="width: 250px;" id="content" />
+    <br><br>
+
+    <input class="input-normal" type="file"  id="files" style="width: 250px;" multiple>
+    <br><br>
+
+    <button class="btn-normal" type="button" id="submitWithFiles">submit</button>
+    <script>
+      document.getElementById('submitWithFiles').addEventListener('click', async function() {
+        const formData = new FormData();
+        const title = document.getElementById("title").value;
+        const content = document.getElementById("content").value;
+        const files = document.getElementById("files").files;
+
+        formData.append("title", title);
+        formData.append("content", content);
+        for (let i = 0; i < files.length; i++) {
+          formData.append("multipartFiles", files[i]); // 서버에서 List<MultipartFile> multipartFiles 로 받을 수 있음
+        }
+
+        try {
+          const data1 = await requestFetch('/01/example/post/createPostWithFile', {
+            method: 'POST',
+            body: formData
+          });
+
+          prettyData1 = typeof data1 === 'string' ? data1 : JSON.stringify(data1, null, 2);
+          console.log('response 1:', prettyData1);
+          //text 내용
+          document.getElementById("textResult").innerHTML
+                  = `<div>
+                        post id : ${data1.result.postId}<br>
+                        name : ${data1.result.userName}<br>
+                        email : ${data1.result.userEmail}<br>
+                        title : ${data1.result.title}<br>
+                        content : ${data1.result.content}
+                     </div>`;
+
+          // 이미지 내용 출력
+          const uploadFileDtos = data1.result.uploadFileDtos;
+
+          if (Array.isArray(uploadFileDtos) && uploadFileDtos.length > 0) {
+            const imageContainer = document.getElementById("imageResult");
+            imageContainer.innerHTML = ""; // 기존 이미지 초기화
+
+            uploadFileDtos.forEach(fileDto => {
+              const requestFile = fileDto.filePath + '/' + fileDto.fileName;
+              const imgElement = document.createElement("img");
+              imgElement.src = "/systemSupportApi/fileByteFromStorage?securedFilePath=" + encodeURIComponent(requestFile);
+              imageContainer.appendChild(imgElement);
+            });
+          }
+        } catch (error) {
+          console.error("Error in requestFetch:", error);
+        }
+      });
+    </script>
+
+    <div class="inner-div" id="textResult">
+    </div>
+    <div class="inner-div" id="imageResult">
+    </div>
+    <div class="inner-div">
+      <pre>
+      [anyone]: https://spt.com/systemSupportApi/fileByteFromStorage?securedFilePath=anyone/{서브경로}/{파일명}
+      ex: https://spt.com/systemSupportApi/fileByteFromStorage?securedFilePath=anyone/sub/abc.jpg
+
+      [login]: https://spt.com/systemSupportApi/fileByteFromStorage?securedFilePath=login/{서브경로}/{파일명}
+      ex: https://spt.com/systemSupportApi/fileByteFromStorage?securedFilePath=login/sub/abc.jpg
+
+      [특정 user]: https://spt.com/systemSupportApi/fileByteFromStorage?securedFilePath=user/{id숫자}/{서브경로}/{파일명}
+      ex: https://spt.com/systemSupportApi/fileByteFromStorage?securedFilePath=user/1/sub/abc.jpg
+
+      [특정 role]: https://spt.com/systemSupportApi/fileByteFromStorage?securedFilePath=role/{role_name}/{서브경로}/{파일명}
+      ex: https://spt.com/systemSupportApi/fileByteFromStorage?securedFilePath=role/ROLE_ADMIN/sub/abc.jpg
+
+      [특정 auth]: https://spt.com/systemSupportApi/fileByteFromStorage?securedFilePath=auth/{auth_name}/{서브경로}/{파일명}
+      ex: https://spt.com/systemSupportApi/fileByteFromStorage?securedFilePath=auth/AUTH_SPECIAL_FOR_TEST/sub/abc.jpg
+      </pre>
+    </div>
+
+  </div><br>
+</div>
+</body>
+</html>

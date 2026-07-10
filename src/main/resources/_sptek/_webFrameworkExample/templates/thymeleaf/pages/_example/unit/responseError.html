@@ -1,0 +1,89 @@
+<!-- Default Layout Import-->
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/common/layout/defaultLayout}"
+      layout:fragment="Content"
+>
+<head>
+    <title>테스트 페이지</title>
+
+    <!-- inline CSS 영역-->
+    <link rel="stylesheet" th:href="@{/css/_example.default.css}">
+    <style th:inline="css" type="text/css">
+    </style>
+
+    <!-- inline JS 영역-->
+    <script th:src="@{/js/_framework/jsencrypt.min.js}" charset="UTF-8" defer></script>
+    <script type="module" th:inline="javascript">
+        import { requestFetch, rsaEncrypt, API_BASE_URL} from [[@{/js/_framework/frameworkUtil.js}]];
+        window.requestFetch = requestFetch;
+        window.rsaEncrypt = rsaEncrypt;
+        window.apiBaseUrl = API_BASE_URL;
+    </script>
+</head>
+
+<body>
+<div class="base-div">
+    <div class="inner-div">
+        <b>Global Error Views</b>
+    </div>
+    <p>400, 401, 403, 404, 405, 500 케이스에 각각의 에러 페이지를 제공하며 http 상태 코드도 그에 따라 제공 합니다.</p>
+    <br>
+
+    <p>• 존재 하지 않는 URL (GET /xxx) :</p>
+    <button class="btn-normal" id="notExist">404 Not Exist URL</button>
+    <script>
+        document.getElementById('notExist').addEventListener('click', function () {
+            const url = '/xxx'; // 원하는 링크로 수정 가능
+            window.location.href = url; // 버튼 클릭 시 해당 URL로 이동
+        });
+    </script><br><br>
+
+    <p>• 지원 하지 않는 Request Method (POST /index) :</p>
+    <button class="btn-normal" id="notSupportMethod">405 Not Support Method</button>
+    <script>
+        document.getElementById('notSupportMethod').addEventListener('click', function () {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/'; // 여기에 원하는 URL 지정
+            document.body.appendChild(form);
+            form.submit();
+        });
+    </script><br><br>
+
+    <p>• Runtime Exception (GET /runtimeException) :</p>
+    <button class="btn-normal" id="runtimeException">500 Runtime Exception</button>
+    <script>
+        document.getElementById('runtimeException').addEventListener('click', function () {
+            const url = '/view/example/responseError/runtimeException'; // 원하는 링크로 수정 가능
+            window.location.href = url; // 버튼 클릭 시 해당 URL로 이동
+        });
+    </script><br><br>
+
+    <p>• Service Exception (GET /serviceException) :</p>
+    <button class="btn-normal" id="serviceException">400 Service Exception</button>
+    <script>
+        document.getElementById('serviceException').addEventListener('click', function () {
+            const url = '/view/example/responseError/serviceException'; // 원하는 링크로 수정 가능
+            window.location.href = url; // 버튼 클릭 시 해당 URL로 이동
+        });
+    </script><br><br>
+
+    <p>• Authentication Exception (GET /authException) :</p>
+    <button class="btn-normal" id="authException">401/403 Authentication Exception</button>
+    <script>
+        document.getElementById('authException').addEventListener('click', function () {
+            const url = '/view/example/responseError/authException'; // 원하는 링크로 수정 가능
+            window.location.href = url; // 버튼 클릭 시 해당 URL로 이동
+        });
+    </script><br><br>
+
+    <p>
+        프로파일에 따라 프로퍼티 " ignoreCustomErrorViewForDebug: true " 를 적용 하여 디버깅용 에러 페이지로 전환 가능 합니다.<br>
+    </p>
+</div>
+<br>
+
+</body>
+</html>

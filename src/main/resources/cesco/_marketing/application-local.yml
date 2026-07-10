@@ -1,0 +1,47 @@
+project-info:
+  app:
+    name: CESCO Marketing
+    version: v1.0.0
+    description : CESCO Marketing application
+
+server:
+  name: ${HOSTNAME:${COMPUTERNAME:unknown}}
+  port: 443
+  shutdown: graceful
+  tomcat:
+    threads:
+      max: 10 # 동시에 처리할 수 있는 서블릿 디스패처 최대 worker thread 수 (기본 200)
+      min-spare: 10 # 최소로 항상 유지하는 서블릿 디스패처 최대 worker thread 수 (기본 10)
+
+spring:
+  lifecycle:
+    timeout-per-shutdown-phase: 60s #graceful 최대 대기 시간 (반드시 s를 붙일것)
+  devtools:
+    livereload.enabled: true
+    restart.enabled: true
+  config:
+    import:
+      #_sptek/__webFramework
+      - optional:classpath:_autoSqlInitialize/autoSqlInitialize.yml
+      - optional:classpath:_sptek/__webFramework/_frameworkApplicationProperties/actuator/actuator.yml
+      - optional:classpath:_sptek/__webFramework/_frameworkApplicationProperties/globalError/globalError.yml
+      - optional:classpath:_sptek/__webFramework/_frameworkApplicationProperties/h2DB/h2DB.yml
+      - optional:classpath:_sptek/__webFramework/_frameworkApplicationProperties/jsp/jsp.yml
+      - optional:classpath:_sptek/__webFramework/_frameworkApplicationProperties/pageHelper/pageHelper.yml
+      - optional:classpath:_sptek/__webFramework/_frameworkApplicationProperties/ssl/ssl.yml
+      - optional:classpath:_sptek/__webFramework/_frameworkApplicationProperties/thymeleaf/thymeleaf.yml
+      #cesco/__projectsCommon(_system)
+      - optional:classpath:cesco/__projectsCommon/_projectApplicationProperties/_framework/cors/corsPolicy.yml
+      - optional:classpath:cesco/__projectsCommon/_projectApplicationProperties/_framework/daoPagination/daoPagination.yml
+      - optional:classpath:cesco/__projectsCommon/_projectApplicationProperties/_framework/datasource/datasource.yml
+      - optional:classpath:cesco/__projectsCommon/_projectApplicationProperties/_framework/encryption/encryption.yml
+      - optional:classpath:cesco/__projectsCommon/_projectApplicationProperties/_framework/jpa/jpa.yml
+      - optional:classpath:cesco/__projectsCommon/_projectApplicationProperties/_framework/jwt/jwt.yml
+      - optional:classpath:cesco/__projectsCommon/_projectApplicationProperties/_framework/logging/logging.yml
+      - optional:classpath:cesco/__projectsCommon/_projectApplicationProperties/_framework/session/session.yml
+      - optional:classpath:cesco/__projectsCommon/_projectApplicationProperties/_framework/swagger/swagger.yml
+      #- optional:classpath:cesco/__projectsCommon/_projectApplicationProperties/_framework/_frameworkOption/frameworkOption.yml
+      - optional:classpath:cesco/__projectsCommon/_projectApplicationProperties/_framework/storage/storage.yml
+      - optional:classpath:cesco/__projectsCommon/_projectApplicationProperties/_framework/propertyForModelAttribute/propertyForModelAttribute.yml
+      #cesco/__projectsCommon(extra)
+      - optional:classpath:cesco/__projectsCommon/_projectApplicationProperties/example1/example1.yml

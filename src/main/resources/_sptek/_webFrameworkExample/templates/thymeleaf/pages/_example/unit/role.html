@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<!-- Default Layout Import-->
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/common/layout/defaultLayout}"
+      layout:fragment="Content"
+>
+<head>
+  <title>테스트 페이지</title>
+
+  <!-- inline CSS 영역-->
+  <link rel="stylesheet" th:href="@{/css/_example.default.css}">
+  <style th:inline="css" type="text/css">
+  </style>
+
+  <!-- inline JS 영역-->
+  <script th:inline="javascript" type="text/javascript">
+  </script>
+</head>
+
+<body>
+<div class="base-div">
+  <div class="inner-div">
+    <b>Role Update</b>
+  </div>
+
+  <form th:action="@{/view/example/role-system/authentication/roleUpdate}" th:object="${roleMngRequestDto}" method="post">
+    <div class="inner-div" th:replace="~{/common/fragment/formError :: FormErrorFragment}"></div> <!--컨트롤러 BindingResult 에 에러가 있는 경우 이곳에 표기-->
+
+    <div th:each="role : ${roleMngRequestDto.allRoles}">
+      <label class="label-normal">role Name : </label>
+      <input type="hidden"  th:name="${'allRoles[' + roleStat.index + '].id'}" th:value="${role.id}"/>
+      <input class="input-normal" type="text" style="width: 250px;" th:field="${roleMngRequestDto.allRoles[__${roleStat.index}__].roleName}" /><br>
+
+      <div th:each="authority : ${roleMngRequestDto.allAuthorities}">
+        <input type="checkbox" th:name="${'allRoles[' + roleStat.index + '].authorities[' + authorityStat.index + '].authority'}" th:value="${authority.authority}" th:checked="${#lists.contains(role.authorityEnums, authority.authority)}"/>
+        <label th:text="${authority.authority}"></label>
+        <!--label th:text="${authority.authority + '(' + authority.authority.description + ')'}"--></label>
+      </div><br>
+    </div>
+
+    <button class="btn-normal" type="submit">submit</button>
+  </form>
+</div>
+
+</body>
+</html>

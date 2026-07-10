@@ -1,0 +1,107 @@
+.base-div {
+    background-color: #f0f8ff;
+    padding: 10px;
+    border-radius: 10px;
+    line-height: 1.6;
+    font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+    font-weight: 350;
+}
+.inner-div {
+    background-color: #F9F0FFFF;
+    padding: 5px;
+    border-radius: 5px;
+    margin: 16px 0;
+    font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+    font-weight: 400;
+}
+.btn-normal {
+    background-color: #e9ecef;
+    color: #212529;
+    border: 1px solid #ced4da;
+    padding: 2px 8px;
+    font-size: 0.8rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-normal:hover {
+    background-color: #e3e7ea; /* 아주 미묘하게 밝기 조정 */
+}
+
+.btn-normal:active {
+    background-color: #dfe3e6;
+}
+
+.btn-normal:disabled {
+    background-color: #f1f3f5;
+    color: #adb5bd;
+    cursor: not-allowed;
+}
+
+.input-normal {
+    padding: 6px 6px;
+    font-size: 0.70rem;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    background-color: #ffffff;
+    color: #212529;
+    font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    width: 100%;
+    max-width: 400px;
+    box-sizing: border-box;
+}
+
+.input-normal:focus {
+    outline: none;
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+}
+
+.input-normal::placeholder {
+    color: #adb5bd;
+}
+
+.label-normal {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #495057;
+    font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+}
+
+.p-normal {
+    font-size: 0.9rem;
+    color: #343a40;
+    line-height: 1.7;
+    margin-bottom: 12px;
+    font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+}
+
+.select-normal {
+    padding: 6px 6px;
+    font-size: 0.70rem;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    background-color: #ffffff;
+    color: #212529;
+    font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    width: 100%;
+    max-width: 400px;
+    box-sizing: border-box;
+    appearance: none; /* 브라우저 기본 스타일 제거 (화살표 등) */
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 140 140' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolyline points='20,50 70,100 120,50' fill='none' stroke='%23666' stroke-width='15'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 12px;
+}
+
+.select-normal:focus {
+    outline: none;
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+}
+

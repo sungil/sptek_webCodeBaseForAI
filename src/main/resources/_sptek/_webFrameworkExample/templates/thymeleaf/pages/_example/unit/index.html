@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<!-- Default Layout Import-->
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/common/layout/defaultLayout}"
+      layout:fragment="Content"
+>
+<head>
+    <title></title>
+
+    <!-- inline CSS 영역-->
+    <link rel="stylesheet" th:href="@{/css/_example.default.css}">
+    <style th:inline="css" type="text/css">
+    </style>
+
+    <!-- inline JS 영역-->
+    <script th:inline="javascript" type="text/javascript">
+    </script>
+</head>
+
+<body>
+<div class="base-div">
+    <div class="inner-div">
+        <b>Home!</b>
+    </div>
+
+    SPT Web Framework 와 관련한 Example 코드를 제공 합니다.<br>
+    개발자 들이 Framework 구조를 더 빠르게 이해 하고 실전에 적용할 수 있도록 상황에 따른 예제 들을 포함 하고 있습니다.
+</div>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!-- templates/framework/autoMetaSetMaker.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="AutoMetaSetFragment">
+
+<!--
+Model 로 넘어온 autoMetaSet Map을 document의 meta 정보로 자동 등록해 준다.
+-->
+<th:block th:if="${autoMetaSet != null}">
+    <th:block th:each="meta : ${autoMetaSet}">
+        <meta th:attr="name=${meta.key}, content=${meta.value}" />
+    </th:block>
+</th:block>
+
+<!--
+meta 자동 등록 방식이 아니라 필요시 js에서 사용하고 싶은경우는 아래 방식
+<script th:inline="javascript">
+    const exKey = /*[[${exKey}]]*/ 'default';
+</script>
+-->
+
+</html>

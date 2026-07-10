@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      th:fragment="NavigationFragment">
+<head>
+    <style>
+        .nav-group-header {
+            font-weight: bold;
+            padding: 8px 16px;
+            background-color: #e9ecef;
+            color: #495057;
+        }
+
+        .nav-section {
+            border-bottom: 1px solid #dee2e6;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+        }
+
+        .navbar-nav .nav-link {
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="border-bottom">
+    <nav th:fragment="navbarFragment" class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav w-100">
+
+                    <li class="nav-group-header">Base</li>
+                    <li class="nav-item nav-section">
+                        <a class="nav-link" href="/view/example/responseError">• Global Error Views</a>
+                    </li>
+
+                    <li class="nav-group-header">User & Auth</li>
+                    <li class="nav-item nav-section">
+                        <a class="nav-link" href="/view/example/authentication/curAuthentication">• 현 세션의 Authentication 정보</a>
+                        <a class="nav-link" href="/view/example/login/authentication/userInfoView">• User Info<br>(자신 or admin Role)</a>
+                        <a class="nav-link" href="/view/example/login/authentication/userUpdateForm">• User update<br>(자신 or AUTH_SPECIAL_FOR_TEST Auth)</a>
+                        <a class="nav-link" href="/view/example/role-system/authentication/roleUpdateForm">• Role-Auth update<br>(system Role)</a>
+                    </li>
+
+                    <li class="nav-group-header">ETC</li>
+                    <li class="nav-item nav-section">
+                        <a class="nav-link" href="/view/index">• Daily Unique Visitor -> 홈으로 이동<br>(VisitHistoryLogInterceptor)</a>
+                        <a class="nav-link" href="/view/example/validation/withBindingResultForm">• Form Data Validation<br>(BindingResult)</a>
+                        <a class="nav-link" href="/view/example/deduplication/preventDuplicateRequest">• API 중복 요청 방지<br>(PreventDuplicateRequestAspect)</a>
+                        <a class="nav-link" href="/view/example/jsApiCall/requestFetch">• JS Fetch 사용<br>(frameworkUtil.js)</a>
+                        <a class="nav-link" href="/view/example/xss/xssProtectOn">• Xss Protect For View</a>
+                        <a class="nav-link" href="/view/example/encryption/encryptionForWeb">• Text Encryption For Web<br></a>
+                        <a class="nav-link" href="/view/example/localeLanguage/myLocaleLanguage">• My Locale and Language<br>(CustomLocaleChangeInterceptor)</a>
+                        <a class="nav-link" href="/view/example/post/postWithFile">• Post with MultipartFiles</a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+</body>
+</html>

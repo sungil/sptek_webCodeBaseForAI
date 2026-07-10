@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<!-- Default Layout Import-->
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/common/layout/defaultLayout}"
+      layout:fragment="Content"
+>
+<head>
+  <title>테스트 페이지</title>
+
+  <!-- inline CSS 영역-->
+  <link rel="stylesheet" th:href="@{/css/_example.default.css}">
+  <style th:inline="css" type="text/css">
+  </style>
+
+  <!-- inline JS 영역-->
+  <script th:src="@{/js/_framework/jsencrypt.min.js}" charset="UTF-8" defer></script>
+  <script type="module" th:inline="javascript">
+    import { requestFetch, rsaEncrypt } from [[@{/js/_framework/frameworkUtil.js}]];
+    window.requestFetch = requestFetch;
+    window.rsaEncrypt = rsaEncrypt;
+  </script>
+</head>
+
+<body>
+<div class="base-div">
+  <div class="inner-div">
+    <b>Prevent Duplicate Request</b>
+  </div>
+
+  <div>
+    <label class="label-normal">async fetch GET request: 브라우저가 중복 요청을 강제적으로 순차 처리함</label> <button class="btn-normal" id="request0">request</button>
+    <script>
+      document.getElementById('request0').addEventListener('click', async function() {
+        try {
+          const data = await requestFetch('/01/example/deduplication/preventDuplicateRequest', {
+          });
+          console.log('response:', typeof data === 'string' ? data : JSON.stringify(data, null, 2));
+        } catch (error) {
+          console.error("Error requestFetch:", error);
+        }
+      });
+    </script>
+  </div>
+  <br>
+
+  <div>
+    <label class="label-normal">async fetch GET request with time Stamp query : 강제 순차 처리가 방지됨</label> <button class="btn-normal" id="request1">request</button>
+    <script>
+      document.getElementById('request1').addEventListener('click', async function() {
+        try {
+          const data = await requestFetch('/01/example/deduplication/preventDuplicateRequest', {
+            useTimestamp: true,
+          });
+          console.log('response:', typeof data === 'string' ? data : JSON.stringify(data, null, 2));
+        } catch (error) {
+          console.error("Error requestFetch:", error);
+        }
+      });
+    </script>
+  </div>
+  <br>
+
+  <div>
+    <label class="label-normal">async fetch POST request: post 는 강제 순차 처리 되지 않음</label> <button class="btn-normal" id="request2">request</button>
+    <script>
+      document.getElementById('request2').addEventListener('click', async function() {
+        try {
+          const data = await requestFetch('/01/example/deduplication/preventDuplicateRequest', {
+            method: 'POST',
+          });
+          console.log('response:', typeof data === 'string' ? data : JSON.stringify(data, null, 2));
+        } catch (error) {
+          console.error("Error requestFetch:", error);
+        }
+      });
+    </script>
+  </div>
+  <br>
+
+  <div>
+    <label class="label-normal">async fetch GET request with time Stamp query : 강제 순차 처리가 방지됨</label> <button class="btn-normal" id="request3">request</button>
+    <script>
+      document.getElementById('request3').addEventListener('click', async function() {
+        try {
+          const data = await requestFetch('/07/example/async/recommendAsyncJoinWithAsyncController', {
+            useTimestamp: true,
+          });
+          console.log('response:', typeof data === 'string' ? data : JSON.stringify(data, null, 2));
+        } catch (error) {
+          console.error("Error requestFetch:", error);
+        }
+      });
+    </script>
+  </div>
+  <br>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<!-- Default Layout Import-->
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/common/layout/defaultLayout}"
+      layout:fragment="Content"
+>
+<head>
+    <title>테스트 페이지</title>
+
+    <!-- inline CSS 영역-->
+    <link rel="stylesheet" th:href="@{/css/_example.default.css}">
+    <style th:inline="css" type="text/css">
+    </style>
+
+    <!-- inline JS 영역-->
+    <script th:src="@{/js/_framework/jsencrypt.min.js}" charset="UTF-8" defer></script>
+    <script type="module" th:inline="javascript">
+        import { requestFetch, rsaEncrypt, API_BASE_URL} from [[@{/js/_framework/frameworkUtil.js}]];
+        window.requestFetch = requestFetch;
+        window.rsaEncrypt = rsaEncrypt;
+        window.apiBaseUrl = API_BASE_URL;
+    </script>
+</head>
+
+<body>
+<div class="base-div">
+    <div class="inner-div">
+        <b>Locale (LanguageTag) and Time Zone</b>
+    </div>
+    <p th:text="|현재 Locale (LanguageTag) : ${userLanguageTag}|"></p>
+    <p th:text="|현재 Time Zone : ${userTimeZone}|"></p>
+
+
+    <div class="inner-div">
+        <b>Locale 이 반영된 i18n 메시지 </b>
+    </div>
+    <p>• 서버 에서 다국어 처리 하는 방식</p>
+    <p th:text="|language : ${language}|"></p>
+    <p th:text="|welcome : ${welcome}|"></p>
+    <br>
+    <p>• view 에서 다국어 처리 하는 방식</p>
+    <p th:text="|systemTime : #{systemTime(${systemFormattedDateTime})}|"></p>
+    <p th:text="|userTime : #{userTime(${userFormattedDateTime})}|"></p>
+
+    <div class="inner-div">
+        <b>Supported Locale List (queryString 적용시 CustomLocaleChangeInterceptor 에서 Cookie(name->locale, timezone) 방식으로 처리됨 ex: ?locale=en-US&timezone=America/New_York) </b>
+    </div>
+    <button class="btn-normal" id="systemSupportedLocaleList">request</button>
+    <script>
+        document.getElementById('systemSupportedLocaleList').addEventListener('click', async function() {
+            try {
+                const data1 = await requestFetch('/systemSupportApi/supportedLocaleLanguage', {
+                    baseUrl: apiBaseUrl.replace("/api", ""),
+                    method: 'GET',
+                });
+
+                prettyData1 = typeof data1 === 'string' ? data1 : JSON.stringify(data1, null, 2);
+                console.log('response 1:', prettyData1);
+                document.getElementById("localeList").innerHTML = `<pre>${prettyData1}</pre>`;
+
+            } catch (error) {
+                console.error("Error in requestFetch:", error);
+            }
+        });
+    </script>
+
+    <div id="localeList"></div>
+    <br>
+</div>
+
+</body>
+</html>
