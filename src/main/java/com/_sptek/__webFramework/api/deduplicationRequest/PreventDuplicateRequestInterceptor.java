@@ -14,26 +14,26 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * 중복 요청 방지 애노테이션이 붙은 API HandlerMethod에 세션 단위 de-duplication을 적용하는 interceptor.
+ * 중복 요청 방지 애노테이션이 붙은 API HandlerMethod에 요청 단위 de-duplication을 적용하는 interceptor.
  *
  * <p>URL 재매칭이 아니라 {@link RequestMappingAnnotationRegister}가 수집한 HandlerMethod 애노테이션을 기준으로 판단한다.
- * 같은 세션의 연속 요청은 짧은 시간 창 안에서 ServiceException으로 차단한다.</p>
+ * 같은 세션 안에서도 HandlerMethod, HTTP method, URI, query string이 같은 요청만 중복으로 차단한다.</p>
  */
 @Component
 @Slf4j
 @RequiredArgsConstructor
 
 public class PreventDuplicateRequestInterceptor implements HandlerInterceptor {
-    // 사용자(SessionId)별 Syncronized 한 작업이 필요할때 lock 객체로 사용 할수 있다
-    private final ConcurrentHashMap<String, ReentrantLock> SESSION_LOCK = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, ReentrantLock> sessionLocks = new ConcurrentHashMap<>();
     private final RequestMappingAnnotationRegister requestMappingAnnotationRegister;
 
     /**
-     * 대상 HandlerMethod이면 세션별 lock과 만료 시각을 확인해 중복 요청을 차단한다.
+     * 대상 HandlerMethod이면 요청별 key의 만료 시각을 확인해 동일 API 중복 요청만 차단한다.
      */
     @Override
     public boolean preHandle(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler) {
@@ -41,15 +41,15 @@ public class PreventDuplicateRequestInterceptor implements HandlerInterceptor {
         // URL 패턴을 다시 추정하지 않아 같은 path 의 consumes/params 분기에서도 오동작하지 않는다.
         if (!(handler instanceof HandlerMethod handlerMethod)
                 || !requestMappingAnnotationRegister.hasAnnotation(handlerMethod, Enable_PreventDuplicateRequest_At_RestController_RestControllerMethod.class)) return true;
-        // NOTE : (중요) SESSION_LOCK 의 키값이 세션 id 이기 때문에 만약 다른 페이지를 거치지 않고 세션이 없는 상태에서 해당 컨트롤러로 최초 진입하는 케이스라면 중복 허용이 될수 있음 (현실적으로 그런 케이스는 거의 없음, 테스트를 위해 세션을 날리고 바로 req 하는 경우 주의)
-        ReentrantLock reentrantLock = SESSION_LOCK.computeIfAbsent(request.getSession().getId(), k -> new ReentrantLock());
+        DuplicateRequestKey duplicateRequestKey = DuplicateRequestKey.from(request, handlerMethod);
+        ReentrantLock reentrantLock = sessionLocks.computeIfAbsent(request.getSession().getId(), k -> new ReentrantLock());
         try {
             reentrantLock.lock();
-            long deDuplicateExpiredTimeMs = request.getSession().getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_CHECKING_DUPLICATION) == null ?
-                    0L : (long) request.getSession().getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_CHECKING_DUPLICATION);
+            Map<DuplicateRequestKey, Long> duplicateRequestExpireTimes = getDuplicateRequestExpireTimes(request);
+            long deDuplicateExpiredTimeMs = duplicateRequestExpireTimes.getOrDefault(duplicateRequestKey, 0L);
 
             if (deDuplicateExpiredTimeMs < System.currentTimeMillis()) {
-                request.getSession().setAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_CHECKING_DUPLICATION, System.currentTimeMillis() + CommonConstants.DUPLICATION_PREVENT_MAX_MS);
+                duplicateRequestExpireTimes.put(duplicateRequestKey, System.currentTimeMillis() + CommonConstants.DUPLICATION_PREVENT_MAX_MS);
                 // NOTE : (중요) Async Response 에서는 여기서 true 를 리턴해도 첫번째 호출에서는 실제 컨트롤러를 진입을 하지 않는다. (그래서 아래 두번째 호출때 처리함)
                 return true;
 
@@ -68,12 +68,46 @@ public class PreventDuplicateRequestInterceptor implements HandlerInterceptor {
      */
     @Override
     public void afterCompletion(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler, Exception ex) throws InterruptedException {
-        ReentrantLock reentrantLock = SESSION_LOCK.computeIfAbsent(request.getSession().getId(), k -> new ReentrantLock());
+        if (!(handler instanceof HandlerMethod handlerMethod)
+                || !requestMappingAnnotationRegister.hasAnnotation(handlerMethod, Enable_PreventDuplicateRequest_At_RestController_RestControllerMethod.class)) return;
+
+        DuplicateRequestKey duplicateRequestKey = DuplicateRequestKey.from(request, handlerMethod);
+        ReentrantLock reentrantLock = sessionLocks.computeIfAbsent(request.getSession().getId(), k -> new ReentrantLock());
         try {
             reentrantLock.lock();
-            request.getSession().setAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_CHECKING_DUPLICATION, System.currentTimeMillis() + CommonConstants.DUPLICATION_PREVENT_MIN_MS);
+            getDuplicateRequestExpireTimes(request).put(duplicateRequestKey, System.currentTimeMillis() + CommonConstants.DUPLICATION_PREVENT_MIN_MS);
         } finally {
             reentrantLock.unlock();
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<DuplicateRequestKey, Long> getDuplicateRequestExpireTimes(HttpServletRequest request) {
+        Object sessionAttribute = request.getSession().getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_CHECKING_DUPLICATION);
+        if (sessionAttribute instanceof Map<?, ?> duplicateRequestExpireTimes) {
+            return (Map<DuplicateRequestKey, Long>) duplicateRequestExpireTimes;
+        }
+
+        Map<DuplicateRequestKey, Long> duplicateRequestExpireTimes = new ConcurrentHashMap<>();
+        request.getSession().setAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_CHECKING_DUPLICATION, duplicateRequestExpireTimes);
+        return duplicateRequestExpireTimes;
+    }
+
+    private record DuplicateRequestKey(
+            String handlerClassName,
+            String handlerMethodName,
+            String httpMethod,
+            String requestUri,
+            String queryString
+    ) {
+        private static DuplicateRequestKey from(HttpServletRequest request, HandlerMethod handlerMethod) {
+            return new DuplicateRequestKey(
+                    handlerMethod.getBeanType().getName(),
+                    handlerMethod.getMethod().getName(),
+                    request.getMethod(),
+                    request.getRequestURI(),
+                    request.getQueryString()
+            );
         }
     }
 }
