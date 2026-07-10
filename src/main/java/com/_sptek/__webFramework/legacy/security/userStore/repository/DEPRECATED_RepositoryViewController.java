@@ -3,10 +3,10 @@ package com._sptek.__webFramework.legacy.security.userStore.repository;
 import com._sptek.__webFramework.view.error.Enable_ResponseOfViewGlobalException_At_ViewController;
 import com._sptek.__webFramework.security.authorization.AuthorityEnum;
 import com._sptek.__webFramework.security.userStore.dto.AuthorityDto;
-import com._sptek.__webFramework.core.modelMapper.ModelMapperUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,6 +30,7 @@ public class DEPRECATED_RepositoryViewController {
     @NonFinal //생성자 주입 대상에서 제외
     private final String htmlBasePath = "pages/_example/html/";
     private final DEPRECATED_RepositoryService DEPRECATEDRepositoryService;
+    private final ModelMapper modelMapper;
 
     //for test
     /**
@@ -49,7 +50,7 @@ public class DEPRECATED_RepositoryViewController {
     @GetMapping("/test/testRepo2")
     public String testRepo2(Model model) {
         AuthorityEnum authority = AuthorityEnum.AUTH_RETRIEVE_USER_ALL_FOR_DELIVERY;
-        AuthorityDto authDto = ModelMapperUtil.map(authority, AuthorityDto.class);
+        AuthorityDto authDto = modelMapper.map(authority, AuthorityDto.class);
         model.addAttribute("result", authDto);
         return htmlBasePath + "simpleModelView";
     }

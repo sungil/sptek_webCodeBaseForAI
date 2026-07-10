@@ -2,8 +2,8 @@ package com._sptek.__webFramework.api.deduplicationRequest;
 
 import com._sptek.__webFramework.core.constant.CommonConstants;
 import com._sptek.__webFramework.bootstrap.registry.RequestMappingAnnotationRegister;
+import com._sptek.__webFramework.core.code.CommonErrorCodeEnum;
 import com._sptek.__webFramework.core.exception.ServiceException;
-import com.cesco.__projectsCommon.commonObject.code.ServiceErrorCodeEnum;
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -56,7 +56,7 @@ public class PreventDuplicateRequestInterceptor implements HandlerInterceptor {
             } else {
                 // NOTE : (중요) 유효한 deDuplicateExpiredTimeMs 이 있다 하더라도 이번 요청이 Async Response 두 번째 호출이라면 이번 요청이 실제 처리 요청 임으로 진행시킨다.
                 if (request.getDispatcherType() == DispatcherType.ASYNC) return true;
-                throw new ServiceException(ServiceErrorCodeEnum.DUPLICATION_REQUEST_ERROR);
+                throw new ServiceException(CommonErrorCodeEnum.DUPLICATE_REQUEST_ERROR);
             }
         } finally {
             reentrantLock.unlock();

@@ -1,8 +1,8 @@
 package com._sptek.__webFramework.legacy.security.userStore.repository;
 
+import com._sptek.__webFramework.core.code.CommonErrorCodeEnum;
 import com._sptek.__webFramework.security.userStore.entity.TestJpa;
 import com._sptek.__webFramework.security.userStore.repository.TestJpaRepository;
-import com.cesco.__projectsCommon.commonObject.code.ServiceErrorCodeEnum;
 import com._sptek.__webFramework.core.exception.ServiceException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -83,7 +83,7 @@ public class DEPRECATED_RepositoryService {
 
         //존재하지 않을때의 Exception 처리
         try {
-            testOpt.orElseThrow(() -> new ServiceException(ServiceErrorCodeEnum.NO_RESOURCE_ERROR));
+            testOpt.orElseThrow(() -> new ServiceException(CommonErrorCodeEnum.NOT_FOUND_ERROR));
         } catch (ServiceException ex) {
             log.debug(ex.getMessage());
         }

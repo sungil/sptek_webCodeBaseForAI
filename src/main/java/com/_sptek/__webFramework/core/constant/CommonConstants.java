@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CommonConstants {
     // project
-    public static final String PROJECT_PACKAGE_NAME = "com.sptek.";
+    public static final String PROJECT_PACKAGE_NAME = "com._sptek.";
     public static final String FRAMEWORK_WEBCORE_PACKAGE_NAME = PROJECT_PACKAGE_NAME + "__webFramework.";
     public static final String FRAMEWORK_ANNOTATION_PACKAGE_NAME = FRAMEWORK_WEBCORE_PACKAGE_NAME;
 

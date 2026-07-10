@@ -1,12 +1,12 @@
 package com._sptek._webFrameworkExample.unit.deprecated;
 
 import com._sptek.__webFramework.view.error.Enable_ResponseOfViewGlobalException_At_ViewController;
-import com._sptek.__webFramework.core.modelMapper.ModelMapperUtil;
 import com._sptek._webFrameworkExample.dto.*;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 public class DEPRECATED_ViewController {
     @NonFinal
     private final String htmlBasePath = "pages/_example/unit/";
+    private final ModelMapper modelMapper;
 
     //todo : Document에 대한 cache 처리를 위한건데.. 현재 cache 가 동작하지 않음(이유 확인이 필요함)
     @RequestMapping("/httpCache")
@@ -55,17 +56,17 @@ public class DEPRECATED_ViewController {
                 .build();
 
         //example 1
-        ExampleGoodsDto exampleGoodsDto = ModelMapperUtil.map(exampleProductDto, ExampleGoodsDto.class);
+        ExampleGoodsDto exampleGoodsDto = modelMapper.map(exampleProductDto, ExampleGoodsDto.class);
 
         //example 2
-        ExampleGoodsNProductDto exampleGoodsNProductDto = ModelMapperUtil.map(exampleProductDto, ExampleGoodsNProductDto.class);
+        ExampleGoodsNProductDto exampleGoodsNProductDto = modelMapper.map(exampleProductDto, ExampleGoodsNProductDto.class);
         ExampleADto exampleADto = ExampleADto.builder()
                 .aDtoLastName("이")
                 .aDtoFirstName("성일")
                 .build();
 
         //example 3
-        ExampleBDto exampleBDto = ModelMapperUtil.map(exampleADto, ExampleBDto.class);
+        ExampleBDto exampleBDto = modelMapper.map(exampleADto, ExampleBDto.class);
         Map<String, Object> result = new HashMap();
         result.put("ExampleProductDto-origin", exampleProductDto);
         result.put("ExampleProductDto-exampleGoodsDto", exampleGoodsDto);
