@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="framework_example">
+
+    <select id="return1" resultType="int">
+        <![CDATA[
+        SELECT 1
+        FROM dual
+        ]]>
+    </select>
+
+    <select id="selectTbTestWithLimit" parameterType="int" resultType="com._sptek._webFrameworkExample.dto.TbTestDto">
+        <![CDATA[
+        SELECT c1, c2, c3
+        FROM test limit #{limit}
+        ]]>
+    </select>
+
+    <insert id="insertTbTest" parameterType="com._sptek._webFrameworkExample.dto.TbTestDto">
+        <![CDATA[
+        INSERT INTO test (c1, c2, c3)
+        VALUES (#{c1}, #{c2}, #{c3})
+        ]]>
+    </insert>
+
+
+    <update id="updateTbTest" parameterType="com._sptek._webFrameworkExample.dto.TbTestDto">
+        <![CDATA[
+            UPDATE test
+            SET c1 = #{c1}, c2 = #{c2}, c3 = #{c3}
+            WHERE c1 = (
+                SELECT max_c1 FROM
+                    (
+                        SELECT MAX(c1) AS max_c1 FROM test
+                    ) AS sub
+            )
+            ]]>
+    </update>
+
+    <update id="deleteTbTest">
+        <![CDATA[
+        DELETE FROM test
+        WHERE c1 = (
+            SELECT max_c1 FROM
+            (
+                SELECT MAX(c1) AS max_c1 FROM test
+            ) AS sub
+        )
+        ]]>
+    </update>
+
+    <select id="selectAllTbTest" resultType="com._sptek._webFrameworkExample.dto.TbTestDto">
+        <![CDATA[
+        SELECT c1, c2, c3
+        FROM test
+        ]]>
+    </select>
+
+    <insert id="insertExamplePostDto" parameterType="com._sptek._webFrameworkExample.dto.ExamplePostDto" useGeneratedKeys="true" keyProperty="postId">
+        <![CDATA[
+        INSERT INTO POST_EXAMPLE (BOARD_ID, BOARD_NAME, CREATE_AT, UPDATE_AT, USER_ID, USER_EMAIL, USER_NAME, TITLE, CONTENT)
+        VALUES (#{boardId}, #{boardName}, NOW(), NOW(), #{userId}, #{userEmail}, #{userName}, #{title}, #{content})
+        ]]>
+    </insert>
+
+    <select id="selectExamplePostDto" parameterType="com._sptek._webFrameworkExample.dto.ExamplePostDto" resultType="com._sptek._webFrameworkExample.dto.ExamplePostDto">
+        <![CDATA[
+        SELECT *
+        FROM POST_EXAMPLE
+        <where>
+            POST_ID = #{postId}
+        </where>
+        ]]>
+    </select>
+
+    <insert id="insertUploadFileDtos" parameterType="java.util.List">
+        INSERT INTO POST_FILES (
+            POST_ID, BOARD_ID, FILE_NAME, FILE_ORDER, FILE_PATH
+        )
+        VALUES
+        <foreach collection="list" item="uploadFileDto" separator=",">
+            <![CDATA[
+            (
+            #{uploadFileDto.postId},
+            #{uploadFileDto.boardId},
+            #{uploadFileDto.fileName},
+            #{uploadFileDto.fileOrder},
+            #{uploadFileDto.filePath}
+            )
+            ]]>
+        </foreach>
+    </insert>
+
+    <select id="selectUploadFileDto" parameterType="com._sptek._webFrameworkExample.dto.ExamplePostDto" resultType="com._sptek._webFrameworkExample.dto.FileUploadDto">
+        <![CDATA[
+        SELECT *
+        FROM POST_FILES
+        <where>
+            BOARD_ID = #{boardId} and POST_ID = #{postId}
+        </where>
+        ]]>
+    </select>
+</mapper>

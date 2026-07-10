@@ -11,7 +11,7 @@
 ## 빌드와 런타임 기준
 
 - Gradle 루트 프로젝트명: `spt-webfw1`
-- group: `com.sptek`
+- group: `com._sptek`
 - Java 기준: 17
 - Spring Boot 기준: 3.2.5
 - Gradle Wrapper 기준: 7.6.1
@@ -37,4 +37,4 @@
 - `_projectCommon`: 프로젝트 공통 확장 지점
 - `projectName/domainName`: 업무 코드 작성 방식을 보여주는 placeholder
 
-신규 업무 기능은 `__webFramework`나 `example`이 아니라 실제 프로젝트명과 도메인명을 반영한 `com.sptek.{project}.{domain}` 패키지 아래에 작성한다.
+신규 업무 기능은 `__webFramework`나 `example`이 아니라 실제 프로젝트명과 도메인명을 반영한 `com._sptek.{project}.{domain}` 패키지 아래에 작성한다.

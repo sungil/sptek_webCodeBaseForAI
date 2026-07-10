@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds"> <!--설정 갱신-->
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+
+    <!--스프링 프로파일별 개별 프로퍼티 구성시 설정(필요시사용)
+    <springProfile name="local">
+    <property resource="logback-local.properties"/>
+    </springProfile>
+    <springProfile name="dev">
+    <property resource="logback-dev.properties"/>
+    </springProfile-->
+
+    <springProperty scope="context" name="root_log_level" source="logging.level.root"/> <!--logging-xxx.yml 파일에 선언됨-->
+
+    <property name="default_log_base_path"              value="./log/logback"/>
+    <property name="default_log_rolling_file_pattern"   value=".%d{yyyy-MM-dd}_%i.log"/> <!-- 압축은 .log.gz -->
+    <property name="default_log_max_history"            value="1"/>
+    <property name="default_log_max_filesize"           value="100MB"/>
+    <property name="default_log_total_filesizeCap"      value="10GB"/>
+    <property name="default_log_pattern"                value="%-5level %d{yy-MM-dd HH:mm:ss.SSS} [%thread] [%logger{0}.%method:%line] [MDC: %X{memberId}, %X{sessionId}, %X{correlationId}] - %msg%n"/>
+    <property name="color_log_pattern"                  value="%clr(%-5level){faint} %d{yy-MM-dd HH:mm:ss.SSS} %clr([%thread]){blue} %clr(%logger{36}){green}.%method:%line %clr([MDC: %X{memberId}, %X{sessionId}, %X{correlationId}]){yellow} - %msg%n"/>
+    <property name="keyword_log_pattern"                value="%d{yy-MM-dd HH:mm:ss.SSS} [MDC: %X{memberId}, %X{sessionId}, %X{correlationId}] - %msg%n"/>
+
+    <!-- Console Appender -->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="com._sptek.__webFramework.observability.logging.LogbackFilterForExcept"/>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${color_log_pattern}</pattern> <!--서버 적용 시는 default_log_pattern 을 권장-->
+        </encoder>
+    </appender>
+
+    <!-- File Appender -->
+    <appender name="error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>error</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${default_log_pattern}</pattern>
+        </encoder>
+        <file>${default_log_base_path}/error/error.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${default_log_base_path}/error/error${default_log_rolling_file_pattern}</fileNamePattern> <!-- 압축은 .log.gz -->
+            <maxFileSize>${default_log_max_filesize}</maxFileSize>
+            <maxHistory>${default_log_max_history}</maxHistory>
+            <totalSizeCap>${default_log_total_filesizeCap}</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="service" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level> <!--info 상위(info, warn, error)만 찍음-->
+        </filter>
+        <filter class="com._sptek.__webFramework.observability.logging.LogbackFilterForExcept"/>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${default_log_pattern}</pattern>
+        </encoder>
+        <file>${default_log_base_path}/service/service.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${default_log_base_path}/service/service${default_log_rolling_file_pattern}</fileNamePattern>
+            <maxFileSize>${default_log_max_filesize}</maxFileSize>
+            <maxHistory>${default_log_max_history}</maxHistory>
+            <totalSizeCap>${default_log_total_filesizeCap}</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <!-- 특정 키워드(CommonConstants.SYSTEM_NOTICE_TAG) 로 시작 되는 로그에 대해 동적 으로 Appender 를 구성 해서 로깅함-->
+    <appender name="keywordBaseLog" class="com._sptek.__webFramework.observability.logging.KeywordBaseFileAppender">
+        <encoderPattern>${keyword_log_pattern}</encoderPattern>
+        <baseLogPath>${default_log_base_path}</baseLogPath>
+        <rollingFilePattern>${default_log_rolling_file_pattern}</rollingFilePattern>
+        <fileMaxSize>${default_log_max_filesize}</fileMaxSize>
+        <maxHistory>${default_log_max_history}</maxHistory>
+        <totalSizeCap>${default_log_total_filesizeCap}</totalSizeCap>
+    </appender>
+
+    <!-- root레벨 설정 -->
+    <root level="${root_log_level}">
+        <appender-ref ref="console"/>
+        <appender-ref ref="error"/>
+        <appender-ref ref="service"/>
+        <appender-ref ref="keywordBaseLog"/>
+    </root>
+
+</configuration>

@@ -1,0 +1,45 @@
+################################################################
+# fixed properties
+log4jdbc:
+  spylogdelegator:
+    name: net.sf.log4jdbc.log.slf4j.Slf4jSpyLogDelegator
+    #name: net.sf.log4jdbc.log.log4j2.Log4j2SpyLogDelegator #(log4j2를 사용하는 경우)
+
+################################################################
+
+logging:
+  level: #log level은 logback config 파일에 그대로 반영됨
+    root: info
+
+    com:
+      #Framework
+      _sptek.__webFramework: debug
+      sptek._projectCommon: debug
+      sptek.serviceName: debug
+
+      #HikariPool DB 커넥션 풀
+      zaxxer.hikari.pool.HikariPool: debug
+
+    org:
+      #Mybatis
+      mybatis: error #(debug -> sqlSession 처리 과정 확인)
+      apache.ibatis: error
+
+      #JPA
+      hibernate.SQL: error
+      hibernate.type.descriptor.sql.BasicBinder: error
+
+      #Spring
+      springframework:
+        security: info
+
+    #JDBC (JDBC 및 DB 처리 관련 상세 로그 확인이 필요한 경우 DB 드라이버를 DriverSpy 로 변경 필요)
+    jdbc.connection: error
+    jdbc.audit: error
+    jdbc.sqltiming: error
+    jdbc.sqlonly: error
+    jdbc.resultset: error
+    jdbc.resultsettable: error
+
+  config: classpath:_sptek/__webFramework/logbackConfig/logback-spring-local.xml
+

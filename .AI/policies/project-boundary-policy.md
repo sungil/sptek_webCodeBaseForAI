@@ -15,7 +15,7 @@
 
 - `__webFramework`: Base 프레임워크다. 명시적인 프레임워크 변경 요청이 없으면 실행 동작을 수정하지 않는다.
 - `_projectCommon`: 여러 도메인에서 공유하는 프로젝트 공통 확장 지점이다. 도메인 전용 로직을 넣지 않는다.
-- `projectName/domainName`: 업무 코드 작성 위치를 안내하는 placeholder다. 실제 기능은 `com.sptek.{project}.{domain}` 패키지로 만든다.
+- `projectName/domainName`: 업무 코드 작성 위치를 안내하는 placeholder다. 실제 기능은 `com._sptek.{project}.{domain}` 패키지로 만든다.
 - `_example`: 사용법을 보여주는 기준 자료다. 신규 업무 코드를 추가하지 않는다.
 
 ## Base 코드 변경 판단

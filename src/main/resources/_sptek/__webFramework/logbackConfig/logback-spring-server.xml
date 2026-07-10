@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds"> <!--설정 갱신-->
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+
+    <!--스프링 프로파일별 개별 프로퍼티 구성시 설정(필요시사용)
+    <springProfile name="local">
+    <property resource="logback-local.properties"/>
+    </springProfile>
+    <springProfile name="dev">
+    <property resource="logback-dev.properties"/>
+    </springProfile-->
+
+    <springProperty scope="context" name="root_log_level" source="logging.level.root"/> <!--logging-xxx.yml 파일에 선언됨-->
+
+    <property name="default_log_base_path" value="./log/logback"/>
+    <property name="default_log_max_history" value="1"/>
+    <property name="default_log_max_filesize" value="10MB"/>
+    <property name="default_log_patternForConsole" value="%clr(%-5level){faint} %d{yy-MM-dd HH:mm:ss.SSS} %clr([%thread]){blue} %clr(%logger{36}){green}.%method:%line %clr([MDC: %X{memberId}, %X{sessionId}, %X{correlationId}]){yellow} - %msg%n"/>
+    <property name="default_log_patternForFile" value="%-5level %d{yy-MM-dd HH:mm:ss.SSS} [%thread] [%logger{0}.%method:%line] [MDC: %X{memberId}, %X{sessionId}, %X{correlationId}] - %msg%n"/>
+
+    <!-- Console Appender -->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="com._sptek.__webFramework.observability.logging.LogbackFilterForExcept"/>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${default_log_patternForConsole}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- File Appender -->
+    <appender name="service" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${default_log_base_path}/service/service.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${default_log_patternForFile}</pattern>
+        </encoder>
+
+        <!-- Rolling 정책 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- .gz,.zip 등을 넣으면 자동 일자별 로그파일 압축 -->
+            <fileNamePattern>
+                ${default_log_base_path}/service/service.%d{yyyy-MM-dd}_%i.log
+            </fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${default_log_max_filesize}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>${default_log_max_history}</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>error</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+
+        <file>${default_log_base_path}/error/error.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${default_log_patternForFile}</pattern>
+        </encoder>
+
+        <!-- Rolling 정책 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- .gz,.zip 등을 넣으면 자동 일자별 로그파일 압축 -->
+            <fileNamePattern>
+                ${default_log_base_path}/error/error.%d{yyyy-MM-dd}_%i.log
+            </fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${default_log_max_filesize}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>${default_log_max_history}</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="visitHistory" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="com._sptek.__webFramework.logging.filter.LogbackFilterForVisitHistory"/>
+
+        <file>${default_log_base_path}/visit_history/visit_history.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${default_log_patternForFile}</pattern>
+        </encoder>
+
+        <!-- Rolling 정책 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- .gz,.zip 등을 넣으면 자동 일자별 로그파일 압축 -->
+            <fileNamePattern>
+                ${default_log_base_path}/visit_history/visit_history.%d{yyyy-MM-dd}_%i.log
+            </fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${default_log_max_filesize}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>${default_log_max_history}</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <!-- 특정 키워드(CommonConstants.SYSTEM_NOTICE_TAG) 로 시작 되는 로그에 대해 동적 으로 Appender 를 구성 해서 로깅함-->
+    <appender name="keywordBaseLog" class="com._sptek.__webFramework.observability.logging.KeywordBaseFileAppender">
+        <baseLogPath>${default_log_base_path}</baseLogPath>
+        <pattern>${default_log_patternForFile}</pattern>
+        <fileMaxSize>${default_log_max_filesize}</fileMaxSize>
+        <maxHistory>${default_log_max_history}</maxHistory>
+    </appender>
+
+    <!-- root레벨 설정 -->
+    <root level="${root_log_level}">
+        <appender-ref ref="console"/>
+        <appender-ref ref="service"/>
+        <appender-ref ref="error"/>
+        <appender-ref ref="visitHistory"/>
+        <appender-ref ref="keywordBaseLog"/>
+    </root>
+
+</configuration>
