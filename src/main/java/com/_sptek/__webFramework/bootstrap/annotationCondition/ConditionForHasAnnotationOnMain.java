@@ -10,7 +10,6 @@ import org.springframework.core.type.AnnotatedTypeMetadata;
 import java.lang.annotation.Annotation;
 import java.util.Map;
 
-@Slf4j
 /**
  * {@link HasAnnotationOnMain_At_Bean} 조건을 평가해 Bean 등록 여부를 결정하는 Spring Condition.
  *
@@ -18,6 +17,7 @@ import java.util.Map;
  * 프레임워크 설정 Bean은 이 조건을 통해 메인 클래스의 {@code @Enable_*_At_Main} 선언과
  * 실제 Bean 등록 시점을 연결한다.</p>
  */
+@Slf4j
 public class ConditionForHasAnnotationOnMain implements Condition {
 
     /**
@@ -33,6 +33,7 @@ public class ConditionForHasAnnotationOnMain implements Condition {
 
         Class<?> mainClass = SpringUtil.findMainClassFromContext(context);
         boolean hasAnnotation = mainClass.isAnnotationPresent((Class<? extends Annotation>) annotationClass);
-        return negate != hasAnnotation;
+        return negate ? !hasAnnotation : hasAnnotation;
     }
 }
+
