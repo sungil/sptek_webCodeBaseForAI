@@ -35,33 +35,32 @@
     <input class="input-normal" type="text" style="width: 250px;" id="rsaEncryptionText" />
     <button class="btn-normal" id="rsaEncryptBtn">RSA Encrypt</button>
     <script>
-      document.getElementById('rsaEncryptBtn').addEventListener('click', async function() {
-        try {
-          const plainText = document.getElementById('rsaEncryptionText').value;
-          if (!plainText) {
-            alert("PlainText is required");
-            return;
-          }
-          document.getElementById('rsaEncryptionText').value = await rsaEncrypt(plainText);
-        } catch (error) {
-          console.error("Error in requestFetch:", error);
+      document.getElementById('rsaEncryptBtn').addEventListener('click', function() {
+        const plainText = document.getElementById('rsaEncryptionText').value;
+        if (!plainText) {
+          alert("PlainText is required");
+          return;
         }
+
+        rsaEncrypt(plainText).then(function(encryptedText) {
+          document.getElementById('rsaEncryptionText').value = encryptedText;
+        }).catch(function(error) {
+          console.error("Error in rsaEncrypt:", error);
+        });
       });
     </script>
 
     <button class="btn-normal" id="sendToServer">Send To Server</button>
     <script>
-      document.getElementById('sendToServer').addEventListener('click', async function() {
-        try {
-          const data1 = await requestFetch('/03/example/encryption/allTypeDecryptForString', {
-            method: 'POST',
-            body: document.getElementById('rsaEncryptionText').value,
-          });
-
+      document.getElementById('sendToServer').addEventListener('click', function() {
+        requestFetch('/03/example/encryption/allTypeDecryptForString', {
+          method: 'POST',
+          body: document.getElementById('rsaEncryptionText').value,
+        }).then(function(data1) {
           console.log('response 1:', typeof data1 === 'string' ? data1 : JSON.stringify(data1, null, 2));
-        } catch (error) {
+        }).catch(function(error) {
           console.error("Error in requestFetch:", error);
-        }
+        });
       });
     </script>
   </div><br>

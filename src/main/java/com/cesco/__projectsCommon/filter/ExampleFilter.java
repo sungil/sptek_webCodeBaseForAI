@@ -16,7 +16,7 @@ import java.io.IOException;
 //@Profile(value = { "xxx" })
 @Slf4j
 @Order(Ordered.LOWEST_PRECEDENCE)
-//@WebFilter(urlPatterns = "/*", asyncSupported = true) //ant 표현식 사용 불가 ex: /**
+//@WebFilter(urlPatterns = "/*") //ant 표현식 사용 불가 ex: /**
 public class ExampleFilter extends OncePerRequestFilter {
 
     public ExampleFilter() {
@@ -36,8 +36,5 @@ public class ExampleFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    @Override
-    protected boolean shouldNotFilterAsyncDispatch() {
-        return false;
-    }
 }
+

@@ -49,12 +49,5 @@ public class MakeRequestTimestampFilter extends OncePerRequestFilter {
         request.setAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_LOGGING_TIMESTAMP, LocalDateTime.now());
         filterChain.doFilter(request, response);
     }
-
-    /**
-     * async 재디스패치에서도 request timestamp attribute를 사용할 수 있게 한다.
-     */
-    @Override
-    protected boolean shouldNotFilterAsyncDispatch() {
-        return false;
-    }
 }
+

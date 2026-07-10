@@ -30,71 +30,52 @@
   </div>
 
   <div>
-    <label class="label-normal">async fetch GET request: 브라우저가 중복 요청을 강제적으로 순차 처리함</label> <button class="btn-normal" id="request0">request</button>
+    <label class="label-normal">fetch GET request: 브라우저가 중복 요청을 강제적으로 순차 처리함</label> <button class="btn-normal" id="request0">request</button>
     <script>
-      document.getElementById('request0').addEventListener('click', async function() {
-        try {
-          const data = await requestFetch('/01/example/deduplication/preventDuplicateRequest', {
-          });
+      document.getElementById('request0').addEventListener('click', function() {
+        requestFetch('/01/example/deduplication/preventDuplicateRequest', {
+        }).then(function(data) {
           console.log('response:', typeof data === 'string' ? data : JSON.stringify(data, null, 2));
-        } catch (error) {
+        }).catch(function(error) {
           console.error("Error requestFetch:", error);
-        }
+        });
       });
     </script>
   </div>
   <br>
 
   <div>
-    <label class="label-normal">async fetch GET request with time Stamp query : 강제 순차 처리가 방지됨</label> <button class="btn-normal" id="request1">request</button>
+    <label class="label-normal">fetch GET request with time Stamp query : 강제 순차 처리가 방지됨</label> <button class="btn-normal" id="request1">request</button>
     <script>
-      document.getElementById('request1').addEventListener('click', async function() {
-        try {
-          const data = await requestFetch('/01/example/deduplication/preventDuplicateRequest', {
-            useTimestamp: true,
-          });
+      document.getElementById('request1').addEventListener('click', function() {
+        requestFetch('/01/example/deduplication/preventDuplicateRequest', {
+          useTimestamp: true,
+        }).then(function(data) {
           console.log('response:', typeof data === 'string' ? data : JSON.stringify(data, null, 2));
-        } catch (error) {
+        }).catch(function(error) {
           console.error("Error requestFetch:", error);
-        }
+        });
       });
     </script>
   </div>
   <br>
 
   <div>
-    <label class="label-normal">async fetch POST request: post 는 강제 순차 처리 되지 않음</label> <button class="btn-normal" id="request2">request</button>
+    <label class="label-normal">fetch POST request: post 는 강제 순차 처리 되지 않음</label> <button class="btn-normal" id="request2">request</button>
     <script>
-      document.getElementById('request2').addEventListener('click', async function() {
-        try {
-          const data = await requestFetch('/01/example/deduplication/preventDuplicateRequest', {
-            method: 'POST',
-          });
+      document.getElementById('request2').addEventListener('click', function() {
+        requestFetch('/01/example/deduplication/preventDuplicateRequest', {
+          method: 'POST',
+        }).then(function(data) {
           console.log('response:', typeof data === 'string' ? data : JSON.stringify(data, null, 2));
-        } catch (error) {
+        }).catch(function(error) {
           console.error("Error requestFetch:", error);
-        }
+        });
       });
     </script>
   </div>
   <br>
 
-  <div>
-    <label class="label-normal">async fetch GET request with time Stamp query : 강제 순차 처리가 방지됨</label> <button class="btn-normal" id="request3">request</button>
-    <script>
-      document.getElementById('request3').addEventListener('click', async function() {
-        try {
-          const data = await requestFetch('/07/example/async/recommendAsyncJoinWithAsyncController', {
-            useTimestamp: true,
-          });
-          console.log('response:', typeof data === 'string' ? data : JSON.stringify(data, null, 2));
-        } catch (error) {
-          console.error("Error requestFetch:", error);
-        }
-      });
-    </script>
-  </div>
-  <br>
 
 </div>
 

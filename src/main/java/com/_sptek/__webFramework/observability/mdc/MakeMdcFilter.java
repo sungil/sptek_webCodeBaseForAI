@@ -62,12 +62,5 @@ public class MakeMdcFilter extends OncePerRequestFilter {
             MDC.clear(); // 요청이 끝난 뒤 반드시 MDC 정리
         }
     }
-
-    /**
-     * async 재디스패치에서도 MDC가 재구성되도록 한다.
-     */
-    @Override
-    protected boolean shouldNotFilterAsyncDispatch() {
-        return false;
-    }
 }
+

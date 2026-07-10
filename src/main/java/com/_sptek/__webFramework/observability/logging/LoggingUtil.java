@@ -7,7 +7,6 @@ import com._sptek.__webFramework.core.exception.ServiceException;
 import com._sptek.__webFramework.web.util.RequestUtil;
 import com._sptek.__webFramework.web.util.ResponseUtil;
 import com._sptek.__webFramework.core.util.TypeConvertUtil;
-import jakarta.servlet.DispatcherType;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -189,7 +188,6 @@ public class LoggingUtil {
         String durationMsec = RequestUtil.traceRequestDuration().getDurationMsec();
         String exceptionMsgForView = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_LOGGING_EXCEPTION_MESSAGE)).map(Object::toString).orElse("");
         int responseStatus = response.getStatus();
-        String isAsyncDispatch = request.getDispatcherType() == DispatcherType.ASYNC ? "Async Response" : "Sync Response";
 
         // View 요청의 경우 Response body는 html 페이지임으로 제외 함
         String responseBody = "";
@@ -210,13 +208,14 @@ public class LoggingUtil {
                 responseTime(real): %s
                 durationMsec(real): %s
                 exceptionMsg(view): %s
-                responseStatus: %s, %s
+                responseStatus: %s
                 modelAndView(view): %s
                 responseBody: %s
                 """
                 .formatted(sessionId, methodType, url, params, requestHeader, requestBody, responseHeader, relatedOutbounds
-                        , requestTime, responseTime, durationMsec, exceptionMsgForView, responseStatus, isAsyncDispatch, modelAndView, responseBody);
+                        , requestTime, responseTime, durationMsec, exceptionMsgForView, responseStatus, modelAndView, responseBody);
         log.info(LoggingUtil.makeBaseForm(logTag, title, logContent));
     }
 }
+
 

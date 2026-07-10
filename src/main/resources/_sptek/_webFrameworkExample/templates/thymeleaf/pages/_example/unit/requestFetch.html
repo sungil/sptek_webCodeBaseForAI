@@ -31,87 +31,65 @@
   </div>
 
   <div>
-    <label class="label-normal">fetch request with All opts (js async), 모든 옵션 사용의 예시</label> <button class="btn-normal" id="request0">request</button>
+    <label class="label-normal">fetch request with all opts, 모든 옵션 사용의 예시</label> <button class="btn-normal" id="request0">request</button>
     <script>
-      document.getElementById('request0').addEventListener('click', async function() {
-        try {
-          const data1 = await requestFetch('/systemSupportApi/projectInfo', {
-            baseUrl: apiBaseUrl.replace("/api", ""), // systemSupportApi 는 base 경로가 다름
-            method: 'GET', // 요청 방식 지정
-            headers: {
-              'Authorization': 'Bearer your-token-here', // 커스텀 헤더 추가
-              'X-Custom-Header': 'my-value'
-            },
-            body: {
-              name: 'Lee sung il',
-            },
-            query: {
-              myParam: 'happy',
-            },
-            useTimestamp: true, // 캐시 회피용
-            timeout: 5000, // 5초 초과 시 Abort
-            rawResponseOpt: false, // 원본 아닌 JSON 파싱된 응답 사용
-            showErrorAlertOpt: true, // 오류 발생 시 alert 띄움
-            credentialsOpt: 'include' // 쿠키 포함 요청 (예: 인증용)
-          });
-
+      document.getElementById('request0').addEventListener('click', function() {
+        requestFetch('/systemSupportApi/projectInfo', {
+          baseUrl: apiBaseUrl.replace("/api", ""),
+          method: 'GET',
+          headers: {
+            'Authorization': 'Bearer your-token-here',
+            'X-Custom-Header': 'my-value'
+          },
+          body: {
+            name: 'Lee sung il',
+          },
+          query: {
+            myParam: 'happy',
+          },
+          useTimestamp: true,
+          timeout: 5000,
+          rawResponseOpt: false,
+          showErrorAlertOpt: true,
+          credentialsOpt: 'include'
+        }).then(function(data1) {
           console.log('response 1:', typeof data1 === 'string' ? data1 : JSON.stringify(data1, null, 2));
-        } catch (error) {
+        }).catch(function(error) {
           console.error("Error in requestFetch:", error);
-        }
+        });
       });
     </script>
   </div>
   <br>
 
   <div>
-    <label class="label-normal">fetch multy request At once (js async), 여러 요청을 동시에 실행 (모두 응답을 받아야 리턴)</label> <button class="btn-normal" id="request1">request</button>
+    <label class="label-normal">fetch multiple requests at once, 여러 요청을 동시에 실행</label> <button class="btn-normal" id="request1">request</button>
     <script>
-      document.getElementById('request1').addEventListener('click', async function() {
-        try {
-          // 요청을 동시에 실행 (모두 응답을 받아야 리턴)
-          const [data1, data2, data3] = await Promise.all([
-            requestFetch('/93/example/async/justSleep3', {
-            }),
-            requestFetch('/91/example/async/justSleep1', {
-            }),
-            requestFetch('/92/example/async/justSleep2', {
-            }),
-          ]);
+      document.getElementById('request1').addEventListener('click', function() {
+        Promise.all([
+          requestFetch('/systemSupportApi/projectInfo', {
+          }),
+          requestFetch('/systemSupportApi/projectInfo', {
+          }),
+          requestFetch('/systemSupportApi/projectInfo', {
+          }),
+        ]).then(function(results) {
+          const data1 = results[0];
+          const data2 = results[1];
+          const data3 = results[2];
 
           alert("All request done")
           console.log('response 1:', typeof data1 === 'string' ? data1 : JSON.stringify(data1, null, 2));
           console.log('response 2:', typeof data2 === 'string' ? data2 : JSON.stringify(data2, null, 2));
           console.log('response 3:', typeof data3 === 'string' ? data3 : JSON.stringify(data3, null, 2));
-        } catch (error) {
+        }).catch(function(error) {
           console.error("Error in requestFetch:", error);
-        }
+        });
       });
     </script>
   </div>
   <br>
 
-  <div>
-    <label class="label-normal">fetch request to AsyncController (js async), Async Controller 로 동작 하는 서버로 요청</label> <button class="btn-normal" id="request3">request</button>
-    <script>
-      document.getElementById('request3').addEventListener('click', async function() {
-        try {
-          const data1 = await requestFetch('/07/example/async/recommendAsyncJoinWithAsyncController', {
-            method: 'GET', // 요청 방식 지정
-            useTimestamp: true, // 캐시 회피용
-            rawResponseOpt: false, // 원본 아닌 JSON 파싱된 응답 사용
-            showErrorAlertOpt: true, // 오류 발생 시 alert 띄움
-            credentialsOpt: 'include' // 쿠키 포함 요청 (예: 인증용)
-          });
-
-          console.log('response 1:', typeof data1 === 'string' ? data1 : JSON.stringify(data1, null, 2));
-        } catch (error) {
-          console.error("Error in requestFetch:", error);
-        }
-      });
-    </script>
-  </div>
-  <br>
 
 </div>
 

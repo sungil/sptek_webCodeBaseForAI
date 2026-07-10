@@ -81,14 +81,7 @@ public class CorsPolicyFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response); // 다른 요청은 그대로 통과
         }
     }
-
-    /**
-     * async 재디스패치에서도 CORS 헤더 처리 기회를 유지한다.
-     */
-    @Override
-    protected boolean shouldNotFilterAsyncDispatch() {
-        return false;
-    }
 }
+
 
 

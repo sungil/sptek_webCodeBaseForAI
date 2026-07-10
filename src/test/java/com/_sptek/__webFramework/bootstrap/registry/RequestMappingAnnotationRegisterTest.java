@@ -1,6 +1,5 @@
 package com._sptek.__webFramework.bootstrap.registry;
 
-import com._sptek.__webFramework.web.asyncResponse.Enable_AsyncController_At_RestControllerMethod;
 import com._sptek.__webFramework.api.deduplicationRequest.Enable_PreventDuplicateRequest_At_RestController_RestControllerMethod;
 import com._sptek.__webFramework.observability.logging.Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod;
 import jakarta.servlet.ServletException;
@@ -54,10 +53,10 @@ class RequestMappingAnnotationRegisterTest {
         HandlerMethod formHandler = findHandler("samePathForm");
 
         assertThat(register.hasAnnotation(jsonHandler, Enable_PreventDuplicateRequest_At_RestController_RestControllerMethod.class)).isTrue();
-        assertThat(register.hasAnnotation(jsonHandler, Enable_AsyncController_At_RestControllerMethod.class)).isFalse();
+        assertThat(register.hasAnnotation(jsonHandler, Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class)).isFalse();
 
         assertThat(register.hasAnnotation(formHandler, Enable_PreventDuplicateRequest_At_RestController_RestControllerMethod.class)).isFalse();
-        assertThat(register.hasAnnotation(formHandler, Enable_AsyncController_At_RestControllerMethod.class)).isTrue();
+        assertThat(register.hasAnnotation(formHandler, Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class)).isTrue();
     }
 
     @Test
@@ -103,9 +102,10 @@ class RequestMappingAnnotationRegisterTest {
         }
 
         @PostMapping(value = "/same-path", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-        @Enable_AsyncController_At_RestControllerMethod
+        @Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod("form-tag")
         String samePathForm() {
             return "form";
         }
     }
 }
+

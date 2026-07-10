@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.StringUtils;
 
 @Slf4j
 //@Profile(value = {"local", "dev", "stg"})
@@ -17,7 +18,8 @@ import org.springframework.context.annotation.Configuration;
  * SpringDoc OpenAPI 문서의 기본 메타 정보를 프로젝트 설정값으로 채우는 설정.
  *
  * <p>Swagger UI와 api-docs 노출 여부는 SpringDoc 설정값에서 제어하고,
- * 이 클래스는 문서 title/version/description 같은 표시 정보를 구성하는 책임만 가진다.</p>
+ * 이 클래스는 문서 title/version/description 같은 표시 정보를 구성하는 책임만 가진다.
+ * 프로젝트 설정값이 없으면 프레임워크 기본값으로 문서를 생성한다.</p>
  */
 @RequiredArgsConstructor
 @Configuration
@@ -35,10 +37,24 @@ public class SwaggerOpenApiConfig {
     public OpenAPI openAPI() {
         //default url : http://localhost:8080/swagger-ui.html
 
+        String title = "API";
+        String version = "unknown";
+        String description = "";
+
+        if (projectInfoVo.getApp() != null) {
+            title = valueOrDefault(projectInfoVo.getApp().getName(), title);
+            version = valueOrDefault(projectInfoVo.getApp().getVersion(), version);
+            description = valueOrDefault(projectInfoVo.getApp().getDescription(), description);
+        }
+
         Info info = new Info()
-                .title(projectInfoVo.getApp().getName())
-                .version(projectInfoVo.getApp().getVersion())
-                .description(projectInfoVo.getApp().getDescription());
+                .title(title)
+                .version(version)
+                .description(description);
         return new OpenAPI().components(new Components()).info(info);
+    }
+
+    private String valueOrDefault(String value, String defaultValue) {
+        return StringUtils.hasText(value) ? value : defaultValue;
     }
 }

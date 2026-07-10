@@ -55,12 +55,5 @@ public class NoSessionFilterForMinorRequest extends OncePerRequestFilter {
         }
         filterChain.doFilter(request, response);
     }
-
-    /**
-     * async 재디스패치에서도 minor request 세션 제외 처리가 유지되도록 한다.
-     */
-    @Override
-    protected boolean shouldNotFilterAsyncDispatch() {
-        return false;
-    }
 }
+

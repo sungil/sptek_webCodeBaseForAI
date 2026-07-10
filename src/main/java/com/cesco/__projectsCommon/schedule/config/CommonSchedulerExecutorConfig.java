@@ -14,7 +14,7 @@ import java.time.Duration;
 public class CommonSchedulerExecutorConfig {
     final private Environment environment;
 
-    // Spring 공용 ThreadPoolTaskScheduler 수정 셋팅 (@Async 내부에서 사용)
+    // Spring 공용 ThreadPoolTaskScheduler 설정
     @Bean(name = "taskScheduler")
     public ThreadPoolTaskScheduler taskScheduler() {
         ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
@@ -27,3 +27,4 @@ public class CommonSchedulerExecutorConfig {
         return scheduler;
     }
 }
+

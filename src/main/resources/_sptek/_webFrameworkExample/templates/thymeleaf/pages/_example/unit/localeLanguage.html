@@ -49,20 +49,17 @@
     </div>
     <button class="btn-normal" id="systemSupportedLocaleList">request</button>
     <script>
-        document.getElementById('systemSupportedLocaleList').addEventListener('click', async function() {
-            try {
-                const data1 = await requestFetch('/systemSupportApi/supportedLocaleLanguage', {
-                    baseUrl: apiBaseUrl.replace("/api", ""),
-                    method: 'GET',
-                });
-
-                prettyData1 = typeof data1 === 'string' ? data1 : JSON.stringify(data1, null, 2);
+        document.getElementById('systemSupportedLocaleList').addEventListener('click', function() {
+            requestFetch('/systemSupportApi/supportedLocaleLanguage', {
+                baseUrl: apiBaseUrl.replace("/api", ""),
+                method: 'GET',
+            }).then(function(data1) {
+                const prettyData1 = typeof data1 === 'string' ? data1 : JSON.stringify(data1, null, 2);
                 console.log('response 1:', prettyData1);
                 document.getElementById("localeList").innerHTML = `<pre>${prettyData1}</pre>`;
-
-            } catch (error) {
+            }).catch(function(error) {
                 console.error("Error in requestFetch:", error);
-            }
+            });
         });
     </script>
 

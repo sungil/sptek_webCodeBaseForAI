@@ -42,7 +42,7 @@
 
     <button class="btn-normal" type="button" id="submitWithFiles">submit</button>
     <script>
-      document.getElementById('submitWithFiles').addEventListener('click', async function() {
+      document.getElementById('submitWithFiles').addEventListener('click', function() {
         const formData = new FormData();
         const title = document.getElementById("title").value;
         const content = document.getElementById("content").value;
@@ -54,15 +54,12 @@
           formData.append("multipartFiles", files[i]); // 서버에서 List<MultipartFile> multipartFiles 로 받을 수 있음
         }
 
-        try {
-          const data1 = await requestFetch('/01/example/post/createPostWithFile', {
-            method: 'POST',
-            body: formData
-          });
-
-          prettyData1 = typeof data1 === 'string' ? data1 : JSON.stringify(data1, null, 2);
+        requestFetch('/01/example/post/createPostWithFile', {
+          method: 'POST',
+          body: formData
+        }).then(function(data1) {
+          const prettyData1 = typeof data1 === 'string' ? data1 : JSON.stringify(data1, null, 2);
           console.log('response 1:', prettyData1);
-          //text 내용
           document.getElementById("textResult").innerHTML
                   = `<div>
                         post id : ${data1.result.postId}<br>
@@ -72,23 +69,22 @@
                         content : ${data1.result.content}
                      </div>`;
 
-          // 이미지 내용 출력
           const uploadFileDtos = data1.result.uploadFileDtos;
 
           if (Array.isArray(uploadFileDtos) && uploadFileDtos.length > 0) {
             const imageContainer = document.getElementById("imageResult");
-            imageContainer.innerHTML = ""; // 기존 이미지 초기화
+            imageContainer.innerHTML = "";
 
-            uploadFileDtos.forEach(fileDto => {
+            uploadFileDtos.forEach(function(fileDto) {
               const requestFile = fileDto.filePath + '/' + fileDto.fileName;
               const imgElement = document.createElement("img");
               imgElement.src = "/systemSupportApi/fileByteFromStorage?securedFilePath=" + encodeURIComponent(requestFile);
               imageContainer.appendChild(imgElement);
             });
           }
-        } catch (error) {
+        }).catch(function(error) {
           console.error("Error in requestFetch:", error);
-        }
+        });
       });
     </script>
 

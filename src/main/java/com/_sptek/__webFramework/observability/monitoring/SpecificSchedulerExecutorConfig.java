@@ -1,6 +1,5 @@
 package com._sptek.__webFramework.observability.monitoring;
 
-import com._sptek.__webFramework.web.asyncResponse.Enable_AsyncMonitoring_At_Main;
 import com._sptek.__webFramework.bootstrap.annotationCondition.HasAnnotationOnMain_At_Bean;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -59,21 +58,6 @@ public class SpecificSchedulerExecutorConfig {
         return scheduler;
     }
 
-    /**
-     * Async executor 모니터링 전용 scheduler를 등록한다.
-     */
-    @HasAnnotationOnMain_At_Bean(Enable_AsyncMonitoring_At_Main.class)
-    @Bean(name = "schedulerExecutorForAsyncMonitoring")
-    public ThreadPoolTaskScheduler schedulerExecutorForAsyncMonitoring() {
-        ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
-        scheduler.setPoolSize(1);
-        scheduler.setThreadNamePrefix("from schedulerExecutorForAsyncMonitoring-");
-        scheduler.setRemoveOnCancelPolicy(true);
-        scheduler.setWaitForTasksToCompleteOnShutdown(true);
-        scheduler.setAwaitTerminationSeconds((int)environment.getProperty(
-                "spring.lifecycle.timeout-per-shutdown-phase", Duration.class, Duration.ofSeconds(30)).getSeconds());
-        return scheduler;
-    }
 
     /**
      * outbound HttpClient connection pool 관리/모니터링 전용 scheduler를 등록한다.
@@ -92,3 +76,4 @@ public class SpecificSchedulerExecutorConfig {
     }
 
 }
+

@@ -34,13 +34,11 @@ public class FilterConfigForFrameworkWebCore {
     @Profile(value = { "local", "dev", "stg", "prd" })
     @Bean
     // todo : 아래 custom 필터 내부에서도 RequestContextHolder 를 통해 정보를 사용할수 있도록 하기 위해 우선 순위를 높여 설정함
-    // 간혹 필터 내부에서 RequestContextHolder 사용시 셋팅 이전 시점이 있을수 있기때문 (async 디스패치 시점에 그런 걍향이 있음)
     // 가장 좋은 방법은 필터 레이어에서는 RequestContextHolder 를 직접 사용하지 않는 것이 좋음
     public FilterRegistrationBean<RequestContextFilter> requestContextFilter() {
         FilterRegistrationBean<RequestContextFilter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new org.springframework.web.filter.RequestContextFilter());
         filterRegistrationBean.addUrlPatterns("/*");
-        filterRegistrationBean.setAsyncSupported(true);
         filterRegistrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);  // Spring 필터 순서를 높게 설정
         return filterRegistrationBean;
     }
@@ -55,7 +53,6 @@ public class FilterConfigForFrameworkWebCore {
         FilterRegistrationBean<MakeMdcFilter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new MakeMdcFilter());
         filterRegistrationBean.addUrlPatterns("/*");
-        filterRegistrationBean.setAsyncSupported(true);
         //filterRegistrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);  // Spring 필터 순서 설정
         return filterRegistrationBean;
     }
@@ -70,7 +67,6 @@ public class FilterConfigForFrameworkWebCore {
         FilterRegistrationBean<NoSessionFilterForMinorRequest> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new NoSessionFilterForMinorRequest());
         filterRegistrationBean.addUrlPatterns("/*");
-        filterRegistrationBean.setAsyncSupported(true);
         //filterRegistrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);  // Spring 필터 순서 설정
         return filterRegistrationBean;
     }
@@ -84,7 +80,6 @@ public class FilterConfigForFrameworkWebCore {
         FilterRegistrationBean<MakeRequestTimestampFilter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new MakeRequestTimestampFilter());
         filterRegistrationBean.addUrlPatterns("/*");
-        filterRegistrationBean.setAsyncSupported(true);
         //filterRegistrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);  // Spring 필터 순서 설정
         //filterRegistrationBean.setDispatcherTypes(EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR));
         return filterRegistrationBean;
@@ -101,7 +96,6 @@ public class FilterConfigForFrameworkWebCore {
         FilterRegistrationBean<ReqResDetailLogFilter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new ReqResDetailLogFilter());
         filterRegistrationBean.addUrlPatterns("/*");
-        filterRegistrationBean.setAsyncSupported(true);
         //filterRegistrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);  // Spring 필터 순서 설정
         //filterRegistrationBean.setDispatcherTypes(EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR));
         return filterRegistrationBean;
@@ -119,8 +113,8 @@ public class FilterConfigForFrameworkWebCore {
         FilterRegistrationBean<CorsPolicyFilter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new CorsPolicyFilter(corsPropertiesVo));
         filterRegistrationBean.addUrlPatterns("/api/*");
-        filterRegistrationBean.setAsyncSupported(true);
         //filterRegistrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);  // Spring 필터 순서 설정
         return filterRegistrationBean;
     }
 }
+

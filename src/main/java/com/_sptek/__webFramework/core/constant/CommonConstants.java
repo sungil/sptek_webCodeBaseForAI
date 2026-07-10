@@ -18,7 +18,7 @@ public class CommonConstants {
     public static final String DEBUGGING_HELP_MESSAGE = "이 메시지가 보인다면!! FW 담당자 에게 알려 주세요!";
     public static final String SERVER_INITIALIZATION_MARK = "FRAMEWORK BEAN INITIALIZATION NOTICE : ";
 
-    // Req, Res, Async, duplication
+    // Req, Res, duplication
     public static final String REQ_ATTRIBUTE_FOR_LOGGING_TIMESTAMP = "REQ_ATTRIBUTE_FOR_LOGGING_TIMESTAMP";
     public static final String REQ_ATTRIBUTE_FOR_LOGGING_MODEL_AND_VIEW = "REQ_ATTRIBUTE_FOR_LOGGING_MODEL_AND_VIEW";
     public static final String REQ_ATTRIBUTE_FOR_LOGGING_EXCEPTION_MESSAGE = "REQ_ATTRIBUTE_FOR_LOGGING_EXCEPTION_MESSAGE";
@@ -54,3 +54,4 @@ public class CommonConstants {
     public static final int RECOMMEND_THREAD_QUEUE_SIZE = RECOMMEND_THREAD_POOL_MAX_SIZE * 4;
 
 }
+

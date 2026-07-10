@@ -15,7 +15,6 @@ import com._sptek.__webFramework.security.crypto.Enable_EncryptorJasypt_At_Main;
 import com._sptek.__webFramework.view.model.Enable_PropertiesToModelAttribute_At_Main;
 import com._sptek.__webFramework.view.model.Enable_UserAuthenticationToModelAttribute_At_Main;
 import com._sptek.__webFramework.view.thymeleaf.Enable_ThymeleafSpringSecurityDialect_At_Main;
-import com._sptek.__webFramework.web.asyncResponse.Enable_AsyncMonitoring_At_Main;
 import com._sptek.__webFramework.web.cors.Enable_CorsPolicyFilter_At_Main;
 import com._sptek.__webFramework.web.error.Enable_ResponseOfApplicationGlobalException_At_Main;
 import com._sptek.__webFramework.web.filter.Enable_NoFilterAndSessionForMinorRequest_At_Main;
@@ -26,13 +25,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
-import org.springframework.scheduling.annotation.EnableAsync;
 
 /* Spring */
 @Slf4j
 @SpringBootApplication
 @ServletComponentScan //필터쪽에 @WebFilter 를 사용하기 위해 필요함
-@EnableAsync
 
 /* TEST and CHECK */
 @TestAnnotation_At_All("")
@@ -42,7 +39,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 
 /* MONITORING */
 @Enable_HttpConnectorWorkerMonitoring_At_Main("")
-@Enable_AsyncMonitoring_At_Main("")
 @Enable_OutboundSupportMonitoring_At_Main("->noConsole")
 @Enable_HikariDataSourceMonitoring_At_Main("->noConsole")
 
@@ -95,15 +91,4 @@ public class SptWfwApplication{
 	}
 }
 
-/*
-to check:
-아래 둘이 동시 적용되는 케이스에서 문제가 없는지 확인 필요
--@Enable_PreventDuplicateRequest_At_RestController_RestControllerMethod
--@Enable_AsyncController_At_RestControllerMethod
 
-todo:
--재고 수량 안맞는 문제 롹으로 해결 방안
--async Response 에서 어노테이션을 통해 타임아웃 개별 설정이 가능하도록 (타임아웃 처리는 쉬울듯 한데.. 작업 인터럽터는 해줘야 할까? 안해주면 내부적으론 계속 동작)
--SSE
--logging 예시
-*/
