@@ -1,6 +1,7 @@
 package com._sptek.__webFramework.bootstrap.registry;
 
 import com._sptek.__webFramework.core.constant.CommonConstants;
+import com._sptek.__webFramework.event.application.contextRefreshed.ContextRefreshedEventListenerForFwResourceLoading;
 import com._sptek.__webFramework.observability.logging.LoggingUtil;
 import com._sptek.__webFramework.core.util.SpringUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -13,9 +14,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Spring Boot 메인 클래스에 선언된 프레임워크 {@code @Enable_*_At_Main} 애노테이션 정보를 수집하는 런타임 레지스트리.
+ *
+ * <p>프레임워크 기능 중 Bean 등록 시점 이후에도 메인 클래스의 활성화 애노테이션과 속성값을 반복 조회해야 하는 코드가
+ * 이 레지스트리를 사용한다. {@link ContextRefreshedEventListenerForFwResourceLoading}에서 ApplicationContext 준비 후
+ * 한 번 초기화되며, 이후 필터/인터셉터/유틸리티가 static 조회 메서드로 참조한다.</p>
+ *
+ * <p>현재 구현은 단일 Spring ApplicationContext를 전제로 한 static 저장소다. 테스트나 멀티 컨텍스트 환경에서는
+ * 이전 컨텍스트의 값이 남을 수 있으므로, 프레임워크 초기화 순서와 컨텍스트 수명 주기를 함께 고려해야 한다.</p>
+ */
 @Slf4j
-
-// Application main Class 에 적용된 타멧 페키지 Annotation  정보를 모두 가지고 있는 역할
 public class MainClassAnnotationRegister {
     private static Map<String, Map<String, Object>> mainClassAnnotationRegister = Collections.emptyMap();
 
