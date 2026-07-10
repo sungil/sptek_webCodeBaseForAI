@@ -2,7 +2,7 @@ package com._sptek.__webFramework.event.application.contextRefreshed;
 
 import com._sptek.__webFramework.bootstrap.registry.MainClassAnnotationRegister;
 import com._sptek.__webFramework.bootstrap.registry.RequestMappingAnnotationRegister;
-import com._sptek.__webFramework.bootstrap.startup.SystemGlobalEnvTemporaryValue;
+import com._sptek.__webFramework.bootstrap.startup.StartupEnvironmentLogger;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 /**
  * Spring context refresh 완료 시 프레임워크 런타임 레지스트리를 초기화하는 listener.
  *
- * <p>메인 클래스 애노테이션, request mapping 애노테이션, 전역 임시 환경값처럼
+ * <p>메인 클래스 애노테이션, request mapping 애노테이션, 시작 환경 로그처럼
  * ApplicationContext 전체가 준비된 뒤 수집해야 하는 정보를 이 시점에 구성한다.</p>
  */
 @Slf4j
@@ -30,6 +30,7 @@ public class ContextRefreshedEventListenerForFwResourceLoading {
         new MainClassAnnotationRegister(contextRefreshedEvent.getApplicationContext());
         // 생성자 주입 순환을 피하면서도 프레임워크 의도대로 시작 시점에 RequestMapping 어노테이션 정보를 수집한다.
         requestMappingAnnotationRegister.initialize();
-        new SystemGlobalEnvTemporaryValue(contextRefreshedEvent.getApplicationContext()); // NOTE: MainClassAnnotationRegister 보단 항상 뒤에 생성되야 함 (제약이 없도록 수정하면 좋을듯)
+        new StartupEnvironmentLogger(contextRefreshedEvent.getApplicationContext()); // NOTE: MainClassAnnotationRegister 보단 항상 뒤에 생성되야 함 (제약이 없도록 수정하면 좋을듯)
     }
 }
+
