@@ -2,7 +2,7 @@ package com._sptek.__webFramework.observability.monitoring;
 
 import com._sptek.__webFramework.bootstrap.annotationCondition.HasAnnotationOnMain_At_Bean;
 import com._sptek.__webFramework.bootstrap.registry.MainClassAnnotationRegister;
-import com._sptek.__webFramework.core.util.ExceptionUtil;
+import com._sptek.__webFramework.core.exception.ExceptionSafeSupport;
 import com._sptek.__webFramework.observability.logging.LoggingUtil;
 import com.zaxxer.hikari.HikariConfigMXBean;
 import com.zaxxer.hikari.HikariDataSource;
@@ -94,17 +94,17 @@ public class SchedulerForHikariDataSourceMonitoring {
                    """
                     .formatted(
                             hikariDataSource.getPoolName()
-                            , ExceptionUtil.exSafe(hikariPoolMXBean::getTotalConnections, -1)
-                            , ExceptionUtil.exSafe(hikariPoolMXBean::getActiveConnections, -1)
-                            , ExceptionUtil.exSafe(hikariPoolMXBean::getIdleConnections, -1)
-                            , ExceptionUtil.exSafe(hikariPoolMXBean::getThreadsAwaitingConnection, -1)
+                            , ExceptionSafeSupport.exSafe(hikariPoolMXBean::getTotalConnections, -1)
+                            , ExceptionSafeSupport.exSafe(hikariPoolMXBean::getActiveConnections, -1)
+                            , ExceptionSafeSupport.exSafe(hikariPoolMXBean::getIdleConnections, -1)
+                            , ExceptionSafeSupport.exSafe(hikariPoolMXBean::getThreadsAwaitingConnection, -1)
 
-                            , ExceptionUtil.exSafe(hikariConfigMXBean::getMaximumPoolSize, -1)
-                            , ExceptionUtil.exSafe(hikariConfigMXBean::getMinimumIdle, -1)
-                            , ExceptionUtil.exSafe(hikariConfigMXBean::getConnectionTimeout, -1)
-                            , ExceptionUtil.exSafe(hikariConfigMXBean::getIdleTimeout, -1)
-                            , ExceptionUtil.exSafe(hikariConfigMXBean::getMaxLifetime, -1)
-                            , ExceptionUtil.exSafe(hikariConfigMXBean::getValidationTimeout, -1));
+                            , ExceptionSafeSupport.exSafe(hikariConfigMXBean::getMaximumPoolSize, -1)
+                            , ExceptionSafeSupport.exSafe(hikariConfigMXBean::getMinimumIdle, -1)
+                            , ExceptionSafeSupport.exSafe(hikariConfigMXBean::getConnectionTimeout, -1)
+                            , ExceptionSafeSupport.exSafe(hikariConfigMXBean::getIdleTimeout, -1)
+                            , ExceptionSafeSupport.exSafe(hikariConfigMXBean::getMaxLifetime, -1)
+                            , ExceptionSafeSupport.exSafe(hikariConfigMXBean::getValidationTimeout, -1));
 
             if (isDuplicateLogSuppressionMode && Objects.equals(logContent, lastLogContent)) return;
             log.info(LoggingUtil.makeBaseForm(logTag, "HikariDataSource Monitoring (Scheduler)", logContent));

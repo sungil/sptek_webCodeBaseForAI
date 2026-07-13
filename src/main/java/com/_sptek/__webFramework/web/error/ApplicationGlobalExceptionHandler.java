@@ -4,7 +4,7 @@ import com._sptek.__webFramework.observability.logging.LoggingConstants;
 import com._sptek.__webFramework.bootstrap.annotationCondition.HasAnnotationOnMain_At_Bean;
 import com._sptek.__webFramework.api.response.ApiCommonErrorResponseDto;
 import com._sptek.__webFramework.core.resultCode.CommonErrorCodeEnum;
-import com._sptek.__webFramework.core.util.ExceptionUtil;
+import com._sptek.__webFramework.core.exception.ThrowableUnwrapSupport;
 import com._sptek.__webFramework.observability.logging.LoggingUtil;
 import com._sptek.__webFramework.web.util.RequestUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -85,12 +85,12 @@ public class ApplicationGlobalExceptionHandler {
         LoggingUtil.exLoggingAndReturnThrowable(log, ex);
 
         if (RequestUtil.isApiRequest(request)) {
-            ApiCommonErrorResponseDto apiCommonErrorResponseDto = ApiCommonErrorResponseDto.of(commonErrorCodeEnum, ExceptionUtil.getRealException(ex).getMessage());
+            ApiCommonErrorResponseDto apiCommonErrorResponseDto = ApiCommonErrorResponseDto.of(commonErrorCodeEnum, ThrowableUnwrapSupport.getRealException(ex).getMessage());
             LoggingUtil.reqResDetailLogging(log, request, response, apiCommonErrorResponseDto, "Req Res Detail Log From " + this.getClass().getSimpleName());
             return new ResponseEntity<>(apiCommonErrorResponseDto, commonErrorCodeEnum.getHttpStatusCode());
         } else {
             //view 요청에서 발생한 에러의 경우 이후에 구체적으로 어떤 에러가 발생했는지 정확히 알수 없기 때문에 저장해서 사용함.
-            request.setAttribute(LoggingConstants.REQ_ATTRIBUTE_FOR_LOGGING_EXCEPTION_MESSAGE, ExceptionUtil.getRealException(ex).getMessage());
+            request.setAttribute(LoggingConstants.REQ_ATTRIBUTE_FOR_LOGGING_EXCEPTION_MESSAGE, ThrowableUnwrapSupport.getRealException(ex).getMessage());
             LoggingUtil.reqResDetailLogging(log, request, response, "Req Res Detail Log From " + this.getClass().getSimpleName());
             return viewName;
             //return "error/XXX" // spring 호출 페이지와 통일할 수 도 있음

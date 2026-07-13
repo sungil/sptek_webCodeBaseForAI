@@ -1,6 +1,6 @@
 package com._sptek.__webFramework.observability.logging;
 
-import com._sptek.__webFramework.core.util.ExceptionUtil;
+import com._sptek.__webFramework.core.exception.ThrowableUnwrapSupport;
 import com._sptek.__webFramework.bootstrap.registry.MainClassAnnotationRegister;
 import com._sptek.__webFramework.core.exception.ServiceException;
 import com._sptek.__webFramework.web.util.RequestUtil;
@@ -142,7 +142,7 @@ public class LoggingUtil {
      * 래핑된 예외를 실제 원인 예외로 풀어 로깅하고, 호출자가 후속 처리할 수 있도록 반환한다.
      */
     public static Throwable exLoggingAndReturnThrowable(Logger logger, Exception ex) {
-        Throwable t = ExceptionUtil.getRealException(ex);
+        Throwable t = ThrowableUnwrapSupport.getRealException(ex);
         String tag = t instanceof ServiceException ? "ServiceException occurred" : "Exception occurred";
 
         if (logger.isDebugEnabled()) {

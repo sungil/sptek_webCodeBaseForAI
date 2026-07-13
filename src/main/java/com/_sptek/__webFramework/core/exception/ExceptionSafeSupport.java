@@ -1,22 +1,20 @@
-package com._sptek.__webFramework.core.util;
+package com._sptek.__webFramework.core.exception;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.lang.reflect.UndeclaredThrowableException;
-import java.util.concurrent.CompletionException;
-import java.util.concurrent.ExecutionException;
-
-@Slf4j
 /**
- * 예외를 기본값으로 흡수하거나 비동기/프록시 래핑 예외의 실제 원인을 찾는 유틸리티.
+ * 모니터링이나 부가 로그 수집 중 발생한 예외를 기본값으로 흡수하는 안전 실행 유틸리티.
  */
-public class ExceptionUtil {
+@Slf4j
+public class ExceptionSafeSupport {
+    private ExceptionSafeSupport() {}
+
     /**
      * 예외를 던질 수 있는 Supplier 형태를 공통 안전 실행 API에서 사용하기 위한 함수형 인터페이스.
      */
     @FunctionalInterface
     public interface SupplierWithEx<T> {
-        T get();// throws Exception;
+        T get();
     }
 
     /**
@@ -24,7 +22,7 @@ public class ExceptionUtil {
      */
     @FunctionalInterface
     public interface RunnableWithEx {
-        void run();// throws Exception;
+        void run();
     }
 
     /**
@@ -47,22 +45,5 @@ public class ExceptionUtil {
         } catch (Exception e) {
             log.error(e.getMessage());
         }
-    }
-
-    /**
-     * CompletionException, ExecutionException, UndeclaredThrowableException 안쪽의 실제 예외를 찾아 반환한다.
-     */
-    public static Throwable getRealException(Throwable t) {
-        if (t == null) return null;
-
-        // 아래 EX 는 래핑된 경우가 많음
-        while (t instanceof CompletionException || t instanceof ExecutionException || t instanceof UndeclaredThrowableException) {
-            Throwable cause = t.getCause();
-            if (cause == null || cause == t) {
-                return t;
-            }
-            t = cause;
-        }
-        return t;
     }
 }
