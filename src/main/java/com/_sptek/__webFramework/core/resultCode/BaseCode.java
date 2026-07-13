@@ -1,4 +1,4 @@
-package com._sptek.__webFramework.core.code;
+package com._sptek.__webFramework.core.resultCode;
 
 import org.springframework.http.HttpStatus;
 

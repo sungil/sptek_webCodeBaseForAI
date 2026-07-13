@@ -1,7 +1,7 @@
 package com._sptek.__webFramework.core.util;
 
+import com._sptek.__webFramework.observability.logging.LoggingConstants;
 import com._sptek.__webFramework.observability.processTime.Enable_ExecutionTimer_At_Main;
-import com._sptek.__webFramework.core.constant.CommonConstants;
 import com._sptek.__webFramework.bootstrap.registry.MainClassAnnotationRegister;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,7 +34,7 @@ public class Timer {
                 runnable.run();
             } finally {
                 long end = System.nanoTime();
-                log.info(CommonConstants.FW_LOG_PREFIX + "{} took {} ms", logTag, (end - start) / 1_000_000.0);
+                log.info(LoggingConstants.FW_LOG_PREFIX + "{} took {} ms", logTag, (end - start) / 1_000_000.0);
             }
         } else {
             runnable.run();
@@ -51,7 +51,7 @@ public class Timer {
                 return supplier.get();
             } finally {
                 long end = System.nanoTime();
-                log.info(CommonConstants.FW_LOG_PREFIX + "{} took {} ms", logTag, (end - start) / 1_000_000.0);
+                log.info(LoggingConstants.FW_LOG_PREFIX + "{} took {} ms", logTag, (end - start) / 1_000_000.0);
             }
         } else {
             return supplier.get();

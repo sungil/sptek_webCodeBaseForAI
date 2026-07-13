@@ -1,6 +1,6 @@
 package com._sptek.__webFramework.core.exception;
 
-import com._sptek.__webFramework.core.code.BaseCode;
+import com._sptek.__webFramework.core.resultCode.BaseCode;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

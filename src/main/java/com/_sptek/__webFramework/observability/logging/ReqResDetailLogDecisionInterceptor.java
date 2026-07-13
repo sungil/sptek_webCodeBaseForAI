@@ -1,6 +1,5 @@
 package com._sptek.__webFramework.observability.logging;
 
-import com._sptek.__webFramework.core.constant.CommonConstants;
 import com._sptek.__webFramework.bootstrap.registry.MainClassAnnotationRegister;
 import com._sptek.__webFramework.bootstrap.registry.RequestMappingAnnotationRegister;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,7 +31,7 @@ public class ReqResDetailLogDecisionInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler) {
         if (!(handler instanceof HandlerMethod handlerMethod)) {
-            request.setAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_REQ_RES_DETAIL_LOG_ENABLED, false);
+            request.setAttribute(LoggingConstants.REQ_ATTRIBUTE_FOR_REQ_RES_DETAIL_LOG_ENABLED, false);
             return true;
         }
 
@@ -45,8 +44,8 @@ public class ReqResDetailLogDecisionInterceptor implements HandlerInterceptor {
         boolean enabled = MainClassAnnotationRegister.hasAnnotation(Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class)
                 || !controllerAttributes.isEmpty();
 
-        request.setAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_REQ_RES_DETAIL_LOG_ENABLED, enabled);
-        request.setAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_REQ_RES_DETAIL_LOG_TAG, resolveLogTag(controllerAttributes));
+        request.setAttribute(LoggingConstants.REQ_ATTRIBUTE_FOR_REQ_RES_DETAIL_LOG_ENABLED, enabled);
+        request.setAttribute(LoggingConstants.REQ_ATTRIBUTE_FOR_REQ_RES_DETAIL_LOG_TAG, resolveLogTag(controllerAttributes));
         return true;
     }
 

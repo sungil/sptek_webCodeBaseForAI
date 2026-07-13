@@ -1,6 +1,5 @@
 package com._sptek.__webFramework.api.deduplicationRequest;
 
-import com._sptek.__webFramework.core.constant.CommonConstants;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -21,6 +20,6 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Enable_PreventDuplicateRequest_At_RestController_RestControllerMethod {
-    long maxMs() default CommonConstants.DUPLICATION_PREVENT_MAX_MS;
-    long minMs() default CommonConstants.DUPLICATION_PREVENT_MIN_MS;
+    long maxMs() default DeduplicationRequestConstants.DUPLICATION_PREVENT_MAX_MS;
+    long minMs() default DeduplicationRequestConstants.DUPLICATION_PREVENT_MIN_MS;
 }

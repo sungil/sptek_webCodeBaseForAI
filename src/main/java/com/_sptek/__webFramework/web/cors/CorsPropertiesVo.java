@@ -1,6 +1,6 @@
 package com._sptek.__webFramework.web.cors;
 
-import com._sptek.__webFramework.core.constant.CommonConstants;
+import com._sptek.__webFramework.observability.logging.LoggingConstants;
 import com._sptek.__webFramework.observability.logging.LoggingUtil;
 import jakarta.annotation.PostConstruct;
 import lombok.Data;
@@ -24,8 +24,8 @@ public class CorsPropertiesVo {
 
     @PostConstruct
     public void init() {
-        log.info(CommonConstants.SERVER_INITIALIZATION_MARK + this.getClass().getSimpleName() + " is Applied.");
-        log.info(LoggingUtil.makeBaseForm(CommonConstants.FW_START_LOG_TAG, "CORS Policy Properties"
+        log.info(LoggingConstants.SERVER_INITIALIZATION_MARK + this.getClass().getSimpleName() + " is Applied.");
+        log.info(LoggingUtil.makeBaseForm(LoggingConstants.FW_START_LOG_TAG, "CORS Policy Properties"
                 ,"defaultAccessControlAllowOrigin: " + accessControlAllowCredentials + "\n"
                         + "accessControlAllowOrigins: " + accessControlAllowOrigins +"\n"
                         + "accessControlAllowMethods: " + accessControlAllowMethods +"\n"

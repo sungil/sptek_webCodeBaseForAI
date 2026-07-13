@@ -2,7 +2,7 @@ package com._sptek.__webFramework.api.response;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com._sptek.__webFramework.core.code.CommonErrorCodeEnum;
+import com._sptek.__webFramework.core.resultCode.CommonErrorCodeEnum;
 import com._sptek.__webFramework.core.exception.ServiceException;
 import com._sptek.__webFramework.observability.logging.LoggingUtil;
 import jakarta.servlet.http.HttpServletRequest;

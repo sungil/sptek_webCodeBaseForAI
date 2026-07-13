@@ -3,7 +3,6 @@ package com._sptek.__webFramework.observability.logging;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.filter.Filter;
 import ch.qos.logback.core.spi.FilterReply;
-import com._sptek.__webFramework.core.constant.CommonConstants;
 
 /**
  * 프레임워크 로그 중 console 제외 marker가 있는 이벤트를 Logback appender에서 거르는 filter.
@@ -23,10 +22,10 @@ public class LogbackFilterForExcept extends Filter<ILoggingEvent>{
         // 아래 코드는 연산 최적화를 고려해 놓았음 (가능한 변경 하지 말것)
 
         String msg = event.getFormattedMessage();
-        if (msg.startsWith(CommonConstants.FW_LOG_PREFIX)) {
+        if (msg.startsWith(LoggingConstants.FW_LOG_PREFIX)) {
             int newlineIndex = msg.indexOf('\n');
             String firstLine = newlineIndex >= 0 ? msg.substring(0, newlineIndex) : msg;
-            if (firstLine.contains(CommonConstants.FW_LOG_NO_CONSOLE_MARK)) return FilterReply.DENY;
+            if (firstLine.contains(LoggingConstants.FW_LOG_NO_CONSOLE_MARK)) return FilterReply.DENY;
         }
         return FilterReply.ACCEPT;
     }

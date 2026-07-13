@@ -1,6 +1,5 @@
 package com._sptek.__webFramework.web.locale;
 
-import com._sptek.__webFramework.core.constant.CommonConstants;
 import com._sptek.__webFramework.web.util.CookieUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -39,7 +38,7 @@ public class CustomLocaleChangeInterceptor extends LocaleChangeInterceptor {
 
         } else {
             // cookie 만 있다면 maxAge 연장을 위해 재 생성
-            List<Cookie> localeCookies = CookieUtil.getCookies(CommonConstants.LOCALE_COOKIE_NAME);
+            List<Cookie> localeCookies = CookieUtil.getCookies(LocaleConstants.LOCALE_COOKIE_NAME);
             if (!localeCookies.isEmpty()) {
                 LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(request);
                 if (localeResolver != null) {
@@ -51,8 +50,8 @@ public class CustomLocaleChangeInterceptor extends LocaleChangeInterceptor {
 
         // locale 처리시 LocaleContextHolder의 timezone 처리도 함께 처리하려고 custom 클레스로 만듬.
         // DateTimeContextHolder 가 따로 있지만.. 대부분의 영역에서 DateTimeContextHolder 가 없으면 LocaleContextHolder의 timezone 을 사용함
-        String timeZoneValue = request.getParameter(CommonConstants.TIMEZONE_COOKIE_NAME);
-        List<Cookie> timeZoneCookies = CookieUtil.getCookies(CommonConstants.TIMEZONE_COOKIE_NAME);
+        String timeZoneValue = request.getParameter(LocaleConstants.TIMEZONE_COOKIE_NAME);
+        List<Cookie> timeZoneCookies = CookieUtil.getCookies(LocaleConstants.TIMEZONE_COOKIE_NAME);
         if (timeZoneValue == null && !timeZoneCookies.isEmpty()) {
             timeZoneValue = timeZoneCookies.get(0).getValue();
         }
@@ -60,7 +59,7 @@ public class CustomLocaleChangeInterceptor extends LocaleChangeInterceptor {
         if (timeZoneValue != null) {
             TimeZone timeZone = TimeZone.getTimeZone(ZoneId.of(timeZoneValue));
             LocaleContextHolder.setTimeZone(timeZone);
-            CookieUtil.createCookieAndAdd(CommonConstants.TIMEZONE_COOKIE_NAME, timeZoneValue, Duration.ofDays(CommonConstants.TIMEZONE_COOKIE_MAX_AGE_DAY));
+            CookieUtil.createCookieAndAdd(LocaleConstants.TIMEZONE_COOKIE_NAME, timeZoneValue, Duration.ofDays(LocaleConstants.TIMEZONE_COOKIE_MAX_AGE_DAY));
 
             // DateTimeContextHolder 까지 추가로 설정
             var ctx = Optional.ofNullable(DateTimeContextHolder.getDateTimeContext()).orElseGet(DateTimeContext::new);

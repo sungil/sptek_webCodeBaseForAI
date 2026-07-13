@@ -1,4 +1,4 @@
-package com._sptek.__webFramework.core.code;
+package com._sptek.__webFramework.core.resultCode;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

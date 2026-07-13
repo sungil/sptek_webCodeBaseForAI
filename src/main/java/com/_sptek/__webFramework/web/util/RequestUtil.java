@@ -1,6 +1,6 @@
 package com._sptek.__webFramework.web.util;
 
-import com._sptek.__webFramework.core.constant.CommonConstants;
+import com._sptek.__webFramework.observability.logging.LoggingConstants;
 import com._sptek.__webFramework.observability.processTime.ExcuteTimeDto;
 import com._sptek.__webFramework.core.util.SpringUtil;
 import com._sptek.__webFramework.core.util.TypeConvertUtil;
@@ -190,7 +190,7 @@ public class RequestUtil {
     public static ExcuteTimeDto traceRequestDuration() {
         String startTime = Optional.ofNullable(SpringUtil.getRequestOrNull())
                 .map(request -> request
-                        .getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_LOGGING_TIMESTAMP)).map(Object::toString).orElse("");
+                        .getAttribute(LoggingConstants.REQ_ATTRIBUTE_FOR_LOGGING_TIMESTAMP)).map(Object::toString).orElse("");
 
         if (!StringUtils.hasText(startTime)) {
             return new ExcuteTimeDto("N/A", LocalDateTime.now().toString(), "N/A");

@@ -1,7 +1,6 @@
 package com._sptek.__webFramework.observability.logging;
 
 import com._sptek.__webFramework.core.util.ExceptionUtil;
-import com._sptek.__webFramework.core.constant.CommonConstants;
 import com._sptek.__webFramework.bootstrap.registry.MainClassAnnotationRegister;
 import com._sptek.__webFramework.core.exception.ServiceException;
 import com._sptek.__webFramework.web.util.RequestUtil;
@@ -28,7 +27,7 @@ import java.util.Optional;
 /**
  * 프레임워크 공통 로그 포맷과 예외/요청-응답 상세 로그 출력을 제공하는 유틸리티.
  *
- * <p>{@link CommonConstants#FW_LOG_PREFIX}를 기준으로 로그 모양을 통일하며, 일부 메서드는
+ * <p>{@link LoggingConstants#FW_LOG_PREFIX}를 기준으로 로그 모양을 통일하며, 일부 메서드는
  * SLF4J {@link LoggingEventBuilder}를 사용해 로그 레벨이 비활성화된 경우 메시지 계산 비용을 줄인다.</p>
  */
 public class LoggingUtil {
@@ -45,7 +44,7 @@ public class LoggingUtil {
      */
     public static String makeSimpleForm(String logTag, String content) {
         // 변경시 주의(아래 형태가 다른 코드에 영향이 있음)
-        return "%s%s => %s".formatted(CommonConstants.FW_LOG_PREFIX, logTag, LoggingUtil.removeLastNewline(content));
+        return "%s%s => %s".formatted(LoggingConstants.FW_LOG_PREFIX, logTag, LoggingUtil.removeLastNewline(content));
     }
 
     /**
@@ -68,7 +67,7 @@ public class LoggingUtil {
                 %s
                 --------------------------------------------------------------------------------
                 """
-                .formatted(CommonConstants.FW_LOG_PREFIX, logTag, title, LoggingUtil.removeLastNewline(content));
+                .formatted(LoggingConstants.FW_LOG_PREFIX, logTag, title, LoggingUtil.removeLastNewline(content));
     }
 
     /**
@@ -102,7 +101,7 @@ public class LoggingUtil {
         if (!logger.isEnabledForLevel(level)) return;
 
         LoggingEventBuilder loggingEventBuilder = logger.atLevel(level).setMessage(SIMPLE_FORM + removeLastNewline(bodyTemplate))
-                .addArgument(CommonConstants.FW_LOG_PREFIX)
+                .addArgument(LoggingConstants.FW_LOG_PREFIX)
                 .addArgument(logTag);
 
         // 바디 인자들: Supplier면 lazy, 아니면 즉시 값으로 처리
@@ -120,7 +119,7 @@ public class LoggingUtil {
         if (!logger.isEnabledForLevel(level)) return;
 
         LoggingEventBuilder loggingEventBuilder = logger.atLevel(level).setMessage(BASE_FORM_HEADER + bodyTemplate + BASE_FORM_BOTTOM)
-                .addArgument(CommonConstants.FW_LOG_PREFIX)
+                .addArgument(LoggingConstants.FW_LOG_PREFIX)
                 .addArgument(logTag)
                 .addArgument(title);
 
@@ -168,8 +167,8 @@ public class LoggingUtil {
         if (!logger.isEnabledForLevel(Level.INFO)) return;
 
         // main 과 controller 쪽 양쪽에 적용되어 있는 경우 ReqResDetailLogDecisionInterceptor 가 controller 쪽 값을 우선하여 저장한다.
-        String logTag = StringUtils.hasText(Objects.toString(request.getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_REQ_RES_DETAIL_LOG_TAG), ""))
-                ? Objects.toString(request.getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_REQ_RES_DETAIL_LOG_TAG), "")
+        String logTag = StringUtils.hasText(Objects.toString(request.getAttribute(LoggingConstants.REQ_ATTRIBUTE_FOR_REQ_RES_DETAIL_LOG_TAG), ""))
+                ? Objects.toString(request.getAttribute(LoggingConstants.REQ_ATTRIBUTE_FOR_REQ_RES_DETAIL_LOG_TAG), "")
                 : Objects.toString(MainClassAnnotationRegister.getAnnotationAttributes(Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class).get("value"), "");
 
         String sessionId = Optional.ofNullable(request.getSession(false))
@@ -182,11 +181,11 @@ public class LoggingUtil {
         String requestBody = request instanceof ContentCachingRequestWrapper contentCachingRequestWrapper ? RequestUtil.getRequestBody(contentCachingRequestWrapper) : "";
 
         String responseHeader = TypeConvertUtil.strMapToString(ResponseUtil.getResponseHeaderMap(response, "|"));
-        String relatedOutbounds = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_LOGGING_RELATED_OUTBOUNDS)).map(Object::toString).orElse("");
+        String relatedOutbounds = Optional.ofNullable(request.getAttribute(LoggingConstants.REQ_ATTRIBUTE_FOR_LOGGING_RELATED_OUTBOUNDS)).map(Object::toString).orElse("");
         String requestTime = RequestUtil.traceRequestDuration().getStartTime();
         String responseTime = RequestUtil.traceRequestDuration().getCurrentTime();
         String durationMsec = RequestUtil.traceRequestDuration().getDurationMsec();
-        String exceptionMsgForView = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_LOGGING_EXCEPTION_MESSAGE)).map(Object::toString).orElse("");
+        String exceptionMsgForView = Optional.ofNullable(request.getAttribute(LoggingConstants.REQ_ATTRIBUTE_FOR_LOGGING_EXCEPTION_MESSAGE)).map(Object::toString).orElse("");
         int responseStatus = response.getStatus();
 
         // View 요청의 경우 Response body는 html 페이지임으로 제외 함
@@ -194,7 +193,7 @@ public class LoggingUtil {
         if (responseBodyDto != null) responseBody = TypeConvertUtil.objectToJsonWithoutRootName(responseBodyDto, true);
         else if (response instanceof ContentCachingResponseWrapper contentCachingResponseWrapper && RequestUtil.isApiRequest(request)) responseBody = ResponseUtil.getResponseBody(contentCachingResponseWrapper);
 
-        String modelAndView = Optional.ofNullable(request.getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_LOGGING_MODEL_AND_VIEW)).map(Object::toString).orElse("");
+        String modelAndView = Optional.ofNullable(request.getAttribute(LoggingConstants.REQ_ATTRIBUTE_FOR_LOGGING_MODEL_AND_VIEW)).map(Object::toString).orElse("");
 
         String logContent = """
                 sessionId: %s

@@ -1,6 +1,7 @@
 package com._sptek.__webFramework.bootstrap.registry;
 
-import com._sptek.__webFramework.core.constant.CommonConstants;
+import com._sptek.__webFramework.core.constant.FrameworkPackageConstants;
+import com._sptek.__webFramework.observability.logging.LoggingConstants;
 import com._sptek.__webFramework.observability.logging.LoggingUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,8 +74,8 @@ public class RequestMappingAnnotationRegister {
         });
 
         Map<HandlerMethodKey, Map<String, Map<String, Object>>> register = Map.copyOf(tempRequestAnnotationRegister);
-        log.info(LoggingUtil.makeBaseForm(CommonConstants.FW_START_LOG_TAG, "RequestMapping Annotation Register", register.toString()));
-        log.info(LoggingUtil.makeBaseForm(CommonConstants.FW_START_LOG_TAG, "Not Specific HTTP Method (Not Recommended)", logBodyForNonSpecificMapping.isEmpty() ? "All Handlers are mapped with Specific HTTP Method (Good)" : logBodyForNonSpecificMapping.toString()));
+        log.info(LoggingUtil.makeBaseForm(LoggingConstants.FW_START_LOG_TAG, "RequestMapping Annotation Register", register.toString()));
+        log.info(LoggingUtil.makeBaseForm(LoggingConstants.FW_START_LOG_TAG, "Not Specific HTTP Method (Not Recommended)", logBodyForNonSpecificMapping.isEmpty() ? "All Handlers are mapped with Specific HTTP Method (Good)" : logBodyForNonSpecificMapping.toString()));
         return register;
     }
 
@@ -102,7 +103,7 @@ public class RequestMappingAnnotationRegister {
     }
 
     private boolean isFrameworkAnnotation(Class<? extends Annotation> annotationType) {
-        return annotationType.getPackageName().startsWith(CommonConstants.FRAMEWORK_ANNOTATION_PACKAGE_NAME);
+        return annotationType.getPackageName().startsWith(FrameworkPackageConstants.FRAMEWORK_ANNOTATION_PACKAGE_NAME);
     }
 
     public boolean hasAnnotation(HttpServletRequest request, Class<? extends Annotation> annotation) {

@@ -1,6 +1,6 @@
 package com._sptek.__webFramework.security.util;
 
-import com._sptek.__webFramework.core.code.CommonErrorCodeEnum;
+import com._sptek.__webFramework.core.resultCode.CommonErrorCodeEnum;
 import com._sptek.__webFramework.core.util.SpringUtil;
 import com._sptek.__webFramework.core.exception.ServiceException;
 import com._sptek.__webFramework.security.authorization.AuthorityEnum;

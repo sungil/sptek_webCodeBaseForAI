@@ -1,6 +1,6 @@
 package com._sptek.__webFramework.legacy.security.userStore.repository;
 
-import com._sptek.__webFramework.core.code.CommonErrorCodeEnum;
+import com._sptek.__webFramework.core.resultCode.CommonErrorCodeEnum;
 import com._sptek.__webFramework.security.userStore.entity.TestJpa;
 import com._sptek.__webFramework.security.userStore.repository.TestJpaRepository;
 import com._sptek.__webFramework.core.exception.ServiceException;

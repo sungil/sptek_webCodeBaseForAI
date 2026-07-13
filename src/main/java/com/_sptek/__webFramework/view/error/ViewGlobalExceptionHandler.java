@@ -1,6 +1,6 @@
 package com._sptek.__webFramework.view.error;
 
-import com._sptek.__webFramework.core.constant.CommonConstants;
+import com._sptek.__webFramework.observability.logging.LoggingConstants;
 import com._sptek.__webFramework.core.exception.ServiceException;
 import com._sptek.__webFramework.observability.logging.LoggingUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -49,7 +49,7 @@ public class ViewGlobalExceptionHandler {
     private Object handleError(HttpServletRequest request, Exception ex, String viewName) {
         Throwable t = LoggingUtil.exLoggingAndReturnThrowable(log, ex);
         //view 요청 에서 발생한 에러의 경우 이후에 구체적 으로 어떤 에러가 발생 했는지 정확히 알수 없기 때문에 저장 해서 사용함.
-        request.setAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_LOGGING_EXCEPTION_MESSAGE, t.getMessage());
+        request.setAttribute(LoggingConstants.REQ_ATTRIBUTE_FOR_LOGGING_EXCEPTION_MESSAGE, t.getMessage());
         return viewName;
         //return "error/XXX" // spring 호출 페이지와 통일할 수 도 있음
     }

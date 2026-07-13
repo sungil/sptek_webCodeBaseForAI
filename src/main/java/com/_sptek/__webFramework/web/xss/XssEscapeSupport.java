@@ -1,6 +1,6 @@
 package com._sptek.__webFramework.web.xss;
 
-import com._sptek.__webFramework.core.constant.CommonConstants;
+import com._sptek.__webFramework.core.constant.FrameworkPackageConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.lang.Nullable;
@@ -65,7 +65,7 @@ public class XssEscapeSupport {
     private boolean isMyDtoObject(Object obj) {
         return obj != null
                 && !(obj instanceof Enum)
-                && obj.getClass().getPackageName().startsWith(CommonConstants.PROJECT_PACKAGE_NAME);
+                && obj.getClass().getPackageName().startsWith(FrameworkPackageConstants.PROJECT_PACKAGE_NAME);
     }
 
     /**

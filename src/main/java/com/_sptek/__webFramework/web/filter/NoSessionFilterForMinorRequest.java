@@ -1,6 +1,6 @@
 package com._sptek.__webFramework.web.filter;
 
-import com._sptek.__webFramework.core.constant.CommonConstants;
+import com._sptek.__webFramework.observability.logging.LoggingConstants;
 import com._sptek.__webFramework.security.util.SecurityUtil;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.FilterChain;
@@ -39,7 +39,7 @@ public class NoSessionFilterForMinorRequest extends OncePerRequestFilter {
      */
     @PostConstruct //Bean 생성 이후 호출
     public void init() {
-        log.info(CommonConstants.SERVER_INITIALIZATION_MARK + this.getClass().getSimpleName() + " is Applied.");
+        log.info(LoggingConstants.SERVER_INITIALIZATION_MARK + this.getClass().getSimpleName() + " is Applied.");
     }
 
     /**

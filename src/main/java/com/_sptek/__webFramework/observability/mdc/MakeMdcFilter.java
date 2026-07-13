@@ -1,6 +1,7 @@
 package com._sptek.__webFramework.observability.mdc;
 
-import com._sptek.__webFramework.core.constant.CommonConstants;
+import com._sptek.__webFramework.security.SecurityConstants;
+import com._sptek.__webFramework.observability.logging.LoggingConstants;
 import com._sptek.__webFramework.security.util.AuthenticationUtil;
 import com._sptek.__webFramework.security.util.SecurityUtil;
 import jakarta.annotation.PostConstruct;
@@ -31,7 +32,7 @@ import java.util.UUID;
 public class MakeMdcFilter extends OncePerRequestFilter {
     @PostConstruct //Bean 생성 이후 호출
     public void init() {
-        log.info(CommonConstants.SERVER_INITIALIZATION_MARK + this.getClass().getSimpleName() + " is Applied.");
+        log.info(LoggingConstants.SERVER_INITIALIZATION_MARK + this.getClass().getSimpleName() + " is Applied.");
     }
 
     /**
@@ -45,14 +46,14 @@ public class MakeMdcFilter extends OncePerRequestFilter {
             HttpSession session = isMinorRequest ? request.getSession(false) : request.getSession(true);
 
             // todo: 로그인 처리 과정 중에 로그를 남기는 경우 아직 CustomUserDetails 객체가 없는 상태일 수 있어 있어서 아래 방식으로 변경함
-            MDC.put("memberId", AuthenticationUtil.isRealLogin() ? AuthenticationUtil.getMyName().substring(0,4) + "**" : CommonConstants.ANONYMOUS_USER);
+            MDC.put("memberId", AuthenticationUtil.isRealLogin() ? AuthenticationUtil.getMyName().substring(0,4) + "**" : SecurityConstants.ANONYMOUS_USER);
             MDC.put("sessionId", session != null ? session.getId().substring(0, 8) + "**" : "");
 
             // 분산 시스템에서 API 호출 흐름을 trace 하기 위한 값으로 추후 사용을 위해 적용함
             String correlationId = request.getHeader("Correlation-Id");
             if (correlationId == null) {
-                correlationId = Objects.toString(request.getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_KEEPING_ORIGIN_CORRELATION_ID), UUID.randomUUID().toString());
-                request.setAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_KEEPING_ORIGIN_CORRELATION_ID, correlationId);
+                correlationId = Objects.toString(request.getAttribute(LoggingConstants.REQ_ATTRIBUTE_FOR_KEEPING_ORIGIN_CORRELATION_ID), UUID.randomUUID().toString());
+                request.setAttribute(LoggingConstants.REQ_ATTRIBUTE_FOR_KEEPING_ORIGIN_CORRELATION_ID, correlationId);
                 response.setHeader("Correlation-Id", correlationId);
             }
             MDC.put("correlationId", correlationId);

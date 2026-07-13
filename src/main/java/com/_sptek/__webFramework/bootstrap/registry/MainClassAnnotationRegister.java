@@ -1,6 +1,7 @@
 package com._sptek.__webFramework.bootstrap.registry;
 
-import com._sptek.__webFramework.core.constant.CommonConstants;
+import com._sptek.__webFramework.core.constant.FrameworkPackageConstants;
+import com._sptek.__webFramework.observability.logging.LoggingConstants;
 import com._sptek.__webFramework.event.application.contextRefreshed.ContextRefreshedEventListenerForFwResourceLoading;
 import com._sptek.__webFramework.observability.logging.LoggingUtil;
 import com._sptek.__webFramework.core.util.SpringUtil;
@@ -36,13 +37,13 @@ public class MainClassAnnotationRegister {
             Map<String, Map<String, Object>> temp = new HashMap<>();
             for (Annotation annotation : mainClass.getAnnotations()) {
                 String name = annotation.annotationType().getName();
-                if (name.startsWith(CommonConstants.FRAMEWORK_ANNOTATION_PACKAGE_NAME)) {
+                if (name.startsWith(FrameworkPackageConstants.FRAMEWORK_ANNOTATION_PACKAGE_NAME)) {
                     Map<String, Object> attrs = AnnotationUtils.getAnnotationAttributes(annotation, false);
                     temp.put(name, Map.copyOf(attrs));
                 }
             }
             mainClassAnnotationRegister = Map.copyOf(temp);
-            log.info(LoggingUtil.makeBaseForm(CommonConstants.FW_START_LOG_TAG, "MainClass Annotation Register", makeLogBody(mainClassAnnotationRegister)));
+            log.info(LoggingUtil.makeBaseForm(LoggingConstants.FW_START_LOG_TAG, "MainClass Annotation Register", makeLogBody(mainClassAnnotationRegister)));
         }
     }
 
@@ -50,7 +51,7 @@ public class MainClassAnnotationRegister {
         return annotationRegister.entrySet().stream()
                 .sorted(Map.Entry.comparingByKey())
                 .map(entry -> "- %s %s".formatted(
-                        entry.getKey().replace(CommonConstants.FRAMEWORK_ANNOTATION_PACKAGE_NAME + ".", ""),
+                        entry.getKey().replace(FrameworkPackageConstants.FRAMEWORK_ANNOTATION_PACKAGE_NAME + ".", ""),
                         entry.getValue().isEmpty() ? "" : entry.getValue()
                 ).stripTrailing())
                 .collect(Collectors.joining("\n"));

@@ -1,6 +1,6 @@
 package com._sptek.__webFramework.view.error;
 
-import com._sptek.__webFramework.core.constant.CommonConstants;
+import com._sptek.__webFramework.observability.logging.LoggingConstants;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +39,7 @@ public class ViewErrorLogSupportInterceptor implements HandlerInterceptor {
     public void postHandle(HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler, @Nullable ModelAndView modelAndView) {
         //log.debug("postHandle called");
         //필터의 response 에서는 modelAndView 정보를 가져올 방법이 없기 때문에 이곳에서 저장해서 처리함
-        request.setAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_LOGGING_MODEL_AND_VIEW, modelAndView != null ? modelAndView : Collections.emptyMap());
+        request.setAttribute(LoggingConstants.REQ_ATTRIBUTE_FOR_LOGGING_MODEL_AND_VIEW, modelAndView != null ? modelAndView : Collections.emptyMap());
     }
 
     /**
@@ -53,7 +53,7 @@ public class ViewErrorLogSupportInterceptor implements HandlerInterceptor {
         //위치적으로는 viewResolver 단계에서도 에러가 날수 있기 때문에 afterCompletion 에 적용함
         //에러가 발생하는 케이스에 따라 ApplicationGlobalExceptionHandler 에서 이미 저장되는 케이스도 있음
         if (ex != null) {
-            request.setAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_LOGGING_EXCEPTION_MESSAGE, ex.getMessage());
+            request.setAttribute(LoggingConstants.REQ_ATTRIBUTE_FOR_LOGGING_EXCEPTION_MESSAGE, ex.getMessage());
         }
     }
 

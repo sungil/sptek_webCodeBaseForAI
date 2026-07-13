@@ -1,7 +1,7 @@
 package com._sptek.__webFramework.api.response;
 
-import com._sptek.__webFramework.core.code.BaseCode;
-import com._sptek.__webFramework.core.code.SuccessCodeEnum;
+import com._sptek.__webFramework.core.resultCode.BaseCode;
+import com._sptek.__webFramework.core.resultCode.SuccessCodeEnum;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 

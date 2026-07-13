@@ -1,8 +1,8 @@
 package com._sptek.__webFramework.integration.httpClient;
 
+import com._sptek.__webFramework.observability.logging.LoggingConstants;
 import com._sptek.__webFramework.observability.logging.Enable_OutboundSupportDetailLog_At_Main;
 import com._sptek.__webFramework.observability.logging.Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod;
-import com._sptek.__webFramework.core.constant.CommonConstants;
 import com._sptek.__webFramework.bootstrap.registry.MainClassAnnotationRegister;
 import com._sptek.__webFramework.bootstrap.registry.RequestMappingAnnotationRegister;
 import com._sptek.__webFramework.observability.logging.LoggingUtil;
@@ -22,8 +22,8 @@ import org.springframework.http.MediaType;
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponents;
-
 import jakarta.servlet.http.HttpServletRequest;
+
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -114,16 +114,16 @@ public class OutboundSupport {
             // 컨트롤러 요청 중 발생한 outbound 정보만 Req/Res detail log 에 연결한다.
             // 인터셉터 attribute 가 있으면 우선 사용하고, AOP/예외 흐름 등 보조 케이스는 register 로 한 번 더 확인한다.
             boolean hasReqResDetailLog = MainClassAnnotationRegister.hasAnnotation(Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class)
-                    || Boolean.TRUE.equals(currentRequest.getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_REQ_RES_DETAIL_LOG_ENABLED))
+                    || Boolean.TRUE.equals(currentRequest.getAttribute(LoggingConstants.REQ_ATTRIBUTE_FOR_REQ_RES_DETAIL_LOG_ENABLED))
                     || requestMappingAnnotationRegister.hasAnnotation(currentRequest, Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class);
 
             if (hasReqResDetailLog) {
-                List<String> relatedOutbounds = (List<String>) currentRequest.getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_LOGGING_RELATED_OUTBOUNDS);
+                List<String> relatedOutbounds = (List<String>) currentRequest.getAttribute(LoggingConstants.REQ_ATTRIBUTE_FOR_LOGGING_RELATED_OUTBOUNDS);
                 if (relatedOutbounds == null) {
                     relatedOutbounds = new ArrayList<>();
                 }
                 relatedOutbounds.add(outboundId + " " + httpMethod.name() + " " + uriComponents.toString() + " --> " + httpClientResponseDto.code());
-                currentRequest.setAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_LOGGING_RELATED_OUTBOUNDS, relatedOutbounds);
+                currentRequest.setAttribute(LoggingConstants.REQ_ATTRIBUTE_FOR_LOGGING_RELATED_OUTBOUNDS, relatedOutbounds);
             }
         }
     }

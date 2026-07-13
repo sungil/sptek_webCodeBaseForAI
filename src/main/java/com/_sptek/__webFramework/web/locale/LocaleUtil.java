@@ -1,6 +1,5 @@
 package com._sptek.__webFramework.web.locale;
 
-import com._sptek.__webFramework.core.constant.CommonConstants;
 import com._sptek.__webFramework.web.util.CookieUtil;
 import com._sptek.__webFramework.core.util.SpringUtil;
 import jakarta.servlet.http.Cookie;
@@ -65,7 +64,7 @@ public class LocaleUtil {
         } else {
             // 로그아웃 등으로 세션이 종료되어 localeResolver 가 삭제 되더라도 locale 쿠키가 남아 있다면 locale 쿠키로 다국어 지원을 하기 위해서
             // 사실 CustomLocaleChangeInterceptor 가 등록되어 있는 경우 이 케이스는 나오지 않을 것임
-            List<Cookie> localeCookie = CookieUtil.getCookies(CommonConstants.LOCALE_COOKIE_NAME);
+            List<Cookie> localeCookie = CookieUtil.getCookies(LocaleConstants.LOCALE_COOKIE_NAME);
             langCode = !localeCookie.isEmpty() ? localeCookie.get(0).getValue() : Locale.getDefault().getLanguage();
         }
 

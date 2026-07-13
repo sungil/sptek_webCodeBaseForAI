@@ -1,6 +1,6 @@
 package com.cesco.__projectsCommon.commonObject.code;
 
-import com._sptek.__webFramework.core.code.BaseCode;
+import com._sptek.__webFramework.core.resultCode.BaseCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

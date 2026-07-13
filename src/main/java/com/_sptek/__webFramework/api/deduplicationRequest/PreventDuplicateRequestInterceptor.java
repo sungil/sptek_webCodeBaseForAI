@@ -1,8 +1,7 @@
 package com._sptek.__webFramework.api.deduplicationRequest;
 
 import com._sptek.__webFramework.bootstrap.registry.RequestMappingAnnotationRegister;
-import com._sptek.__webFramework.core.code.CommonErrorCodeEnum;
-import com._sptek.__webFramework.core.constant.CommonConstants;
+import com._sptek.__webFramework.core.resultCode.CommonErrorCodeEnum;
 import com._sptek.__webFramework.core.exception.ServiceException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -83,19 +82,19 @@ public class PreventDuplicateRequestInterceptor implements HandlerInterceptor {
     @SuppressWarnings("unchecked")
     private Map<DuplicateRequestKey, Long> getDuplicateRequestExpireTimes(HttpServletRequest request) {
         HttpSession session = request.getSession();
-        Object sessionAttribute = session.getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_CHECKING_DUPLICATION);
+        Object sessionAttribute = session.getAttribute(DeduplicationRequestConstants.REQ_ATTRIBUTE_FOR_CHECKING_DUPLICATION);
         if (sessionAttribute instanceof Map<?, ?> duplicateRequestExpireTimes) {
             return (Map<DuplicateRequestKey, Long>) duplicateRequestExpireTimes;
         }
 
         synchronized (session) {
-            sessionAttribute = session.getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_CHECKING_DUPLICATION);
+            sessionAttribute = session.getAttribute(DeduplicationRequestConstants.REQ_ATTRIBUTE_FOR_CHECKING_DUPLICATION);
             if (sessionAttribute instanceof Map<?, ?> duplicateRequestExpireTimes) {
                 return (Map<DuplicateRequestKey, Long>) duplicateRequestExpireTimes;
             }
 
             Map<DuplicateRequestKey, Long> duplicateRequestExpireTimes = new ConcurrentHashMap<>();
-            session.setAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_CHECKING_DUPLICATION, duplicateRequestExpireTimes);
+            session.setAttribute(DeduplicationRequestConstants.REQ_ATTRIBUTE_FOR_CHECKING_DUPLICATION, duplicateRequestExpireTimes);
             return duplicateRequestExpireTimes;
         }
     }

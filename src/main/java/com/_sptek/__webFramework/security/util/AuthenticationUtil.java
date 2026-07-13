@@ -1,6 +1,6 @@
 package com._sptek.__webFramework.security.util;
 
-import com._sptek.__webFramework.core.constant.CommonConstants;
+import com._sptek.__webFramework.security.SecurityConstants;
 import com._sptek.__webFramework.security.userStore.dto.UserDto;
 import com._sptek.__webFramework.security.authentication.userStore.CustomUserDetails;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +39,7 @@ public class AuthenticationUtil {
         try {
             if(AuthenticationUtil.getMyAuthentication() == null)
                 return false;
-            return !CommonConstants.ANONYMOUS_USER.equals(AuthenticationUtil.getMyAuthentication().getPrincipal().toString());
+            return !SecurityConstants.ANONYMOUS_USER.equals(AuthenticationUtil.getMyAuthentication().getPrincipal().toString());
         } catch (Exception e) {
             return false;
         }
@@ -84,13 +84,13 @@ public class AuthenticationUtil {
      */
     public static String getMyName() {
         Authentication authentication = AuthenticationUtil.getMyAuthentication();
-        if (!isRealLogin() || authentication == null) return CommonConstants.ANONYMOUS_USER;
+        if (!isRealLogin() || authentication == null) return SecurityConstants.ANONYMOUS_USER;
 
         return getMyUserDtoOptional()
                 .map(UserDto::getEmail)
                 .orElseGet(() -> authentication.getPrincipal() instanceof UserDetails userDetails
                         ? userDetails.getUsername()
-                        : CommonConstants.ANONYMOUS_USER);
+                        : SecurityConstants.ANONYMOUS_USER);
     }
 
     /**

@@ -1,6 +1,6 @@
 package com._sptek.__webFramework.event.application.contextClosed;
 
-import com._sptek.__webFramework.core.constant.CommonConstants;
+import com._sptek.__webFramework.observability.logging.LoggingConstants;
 import com._sptek.__webFramework.observability.logging.LoggingUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.ContextClosedEvent;
@@ -21,7 +21,7 @@ public class ContextClosedEventListenerForByeMarking {
      */
     @EventListener
     public void listen(ContextClosedEvent contextClosedEvent) {
-        log.info(LoggingUtil.makeBaseForm(CommonConstants.FW_START_LOG_TAG, "Context Closed Event", "Bye~ Bye~ Application has been shut down successfully."));
+        log.info(LoggingUtil.makeBaseForm(LoggingConstants.FW_START_LOG_TAG, "Context Closed Event", "Bye~ Bye~ Application has been shut down successfully."));
         //do more what you want..
     }
 }

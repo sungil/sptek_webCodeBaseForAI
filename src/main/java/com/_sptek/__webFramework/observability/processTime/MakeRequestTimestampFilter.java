@@ -1,7 +1,7 @@
 package com._sptek.__webFramework.observability.processTime;
 
+import com._sptek.__webFramework.observability.logging.LoggingConstants;
 import com._sptek.__webFramework.web.filter.Enable_NoFilterAndSessionForMinorRequest_At_Main;
-import com._sptek.__webFramework.core.constant.CommonConstants;
 import com._sptek.__webFramework.bootstrap.registry.MainClassAnnotationRegister;
 import com._sptek.__webFramework.security.util.SecurityUtil;
 import jakarta.annotation.PostConstruct;
@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
  * 요청 처리 시작 시각을 request attribute에 기록하는 필터.
  *
  * <p>필터, 인터셉터, 예외 처리기 등 후속 단계에서 동일한 요청 기준 시각을 사용해야 할 때
- * {@link CommonConstants#REQ_ATTRIBUTE_FOR_LOGGING_TIMESTAMP} attribute를 참조한다.</p>
+ * {@link LoggingConstants#REQ_ATTRIBUTE_FOR_LOGGING_TIMESTAMP} attribute를 참조한다.</p>
  */
 @Slf4j
 //@Profile(value = { "local", "dev", "stg", "prd" })
@@ -30,7 +30,7 @@ public class MakeRequestTimestampFilter extends OncePerRequestFilter {
 
     @PostConstruct //Bean 생성 이후 호출
     public void init() {
-        log.info(CommonConstants.SERVER_INITIALIZATION_MARK + this.getClass().getSimpleName() + " is Applied.");
+        log.info(LoggingConstants.SERVER_INITIALIZATION_MARK + this.getClass().getSimpleName() + " is Applied.");
     }
 
     /**
@@ -46,7 +46,7 @@ public class MakeRequestTimestampFilter extends OncePerRequestFilter {
                 return;
             }
         }
-        request.setAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_LOGGING_TIMESTAMP, LocalDateTime.now());
+        request.setAttribute(LoggingConstants.REQ_ATTRIBUTE_FOR_LOGGING_TIMESTAMP, LocalDateTime.now());
         filterChain.doFilter(request, response);
     }
 }

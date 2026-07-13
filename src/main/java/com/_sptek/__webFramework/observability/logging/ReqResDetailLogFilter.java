@@ -1,7 +1,6 @@
 package com._sptek.__webFramework.observability.logging;
 
 import com._sptek.__webFramework.bootstrap.registry.MainClassAnnotationRegister;
-import com._sptek.__webFramework.core.constant.CommonConstants;
 import com._sptek.__webFramework.security.util.SecurityUtil;
 import com._sptek.__webFramework.web.filter.Enable_NoFilterAndSessionForMinorRequest_At_Main;
 import jakarta.annotation.PostConstruct;
@@ -31,7 +30,7 @@ public class ReqResDetailLogFilter extends OncePerRequestFilter {
 
     @PostConstruct
     public void init() {
-        //log.info(CommonConstants.SERVER_INITIALIZATION_MARK + this.getClass().getSimpleName() + " is Applied.");
+        //log.info(LoggingConstants.SERVER_INITIALIZATION_MARK + this.getClass().getSimpleName() + " is Applied.");
     }
 
     /**
@@ -56,7 +55,7 @@ public class ReqResDetailLogFilter extends OncePerRequestFilter {
 
         try {
             filterChain.doFilter(contentCachingRequestWrapper, contentCachingResponseWrapper);
-            if (Boolean.TRUE.equals(request.getAttribute(CommonConstants.REQ_ATTRIBUTE_FOR_REQ_RES_DETAIL_LOG_ENABLED))) {
+            if (Boolean.TRUE.equals(request.getAttribute(LoggingConstants.REQ_ATTRIBUTE_FOR_REQ_RES_DETAIL_LOG_ENABLED))) {
                 LoggingUtil.reqResDetailLogging(log, contentCachingRequestWrapper, contentCachingResponseWrapper, "Req Res Detail Log From " + this.getClass().getSimpleName());
             }
         } finally {

@@ -1,6 +1,5 @@
 package com._sptek.__webFramework.web.locale;
 
-import com._sptek.__webFramework.core.constant.CommonConstants;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,11 +27,11 @@ public class LocaleConfig implements WebMvcConfigurer {
      */
     @Bean
     public LocaleResolver localeResolver() {
-        CookieLocaleResolver cookieLocaleResolver = new CookieLocaleResolver(CommonConstants.LOCALE_COOKIE_NAME);
+        CookieLocaleResolver cookieLocaleResolver = new CookieLocaleResolver(LocaleConstants.LOCALE_COOKIE_NAME);
         // 서버 기준으로 디폴트
         cookieLocaleResolver.setDefaultLocale(Locale.getDefault());
         cookieLocaleResolver.setDefaultTimeZone(TimeZone.getDefault());
-        cookieLocaleResolver.setCookieMaxAge(Duration.ofDays(CommonConstants.LOCALE_COOKIE_MAX_AGE_DAY));
+        cookieLocaleResolver.setCookieMaxAge(Duration.ofDays(LocaleConstants.LOCALE_COOKIE_MAX_AGE_DAY));
         cookieLocaleResolver.setCookieHttpOnly(true);
         return cookieLocaleResolver;
     }
@@ -44,7 +43,7 @@ public class LocaleConfig implements WebMvcConfigurer {
     public CustomLocaleChangeInterceptor localeChangeInterceptor() {
         CustomLocaleChangeInterceptor customLocaleChangeInterceptor = new CustomLocaleChangeInterceptor();
         //해당 이름으로 쿼리가 내려가면 해당 값으로 쿠키가 내려가며 동시에 locale 값으로 세팅됨
-        customLocaleChangeInterceptor.setParamName(CommonConstants.LOCALE_COOKIE_NAME);
+        customLocaleChangeInterceptor.setParamName(LocaleConstants.LOCALE_COOKIE_NAME);
         return customLocaleChangeInterceptor;
     }
 
