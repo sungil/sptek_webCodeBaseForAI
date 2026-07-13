@@ -25,9 +25,9 @@ spring:
     import:
       #_sptek/__webFramework
       - optional:classpath:_autoSqlInitialize/autoSqlInitialize.yml
-      - optional:classpath:_sptek/__webFramework/_frameworkApplicationProperties/actuator/actuator.yml
-      - optional:classpath:_sptek/__webFramework/_frameworkApplicationProperties/globalError/globalError.yml
-      - optional:classpath:_sptek/__webFramework/_frameworkApplicationProperties/h2DB/h2DB.yml
+      - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/actuator/actuator.yml
+      - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/globalError/globalError.yml
+      - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/h2DB/h2DB.yml
       - optional:classpath:_sptek/__webFramework/_frameworkApplicationProperties/jsp/jsp.yml
       - optional:classpath:_sptek/__webFramework/_frameworkApplicationProperties/pageHelper/pageHelper.yml
       - optional:classpath:_sptek/__webFramework/_frameworkApplicationProperties/ssl/ssl.yml
