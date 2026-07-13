@@ -1,8 +1,7 @@
-package com._sptek.__webFramework.core.util;
+package com._sptek.__webFramework.observability.processTime;
 
-import com._sptek.__webFramework.observability.logging.LoggingConstants;
-import com._sptek.__webFramework.observability.processTime.Enable_ExecutionTimer_At_Main;
 import com._sptek.__webFramework.bootstrap.registry.MainClassAnnotationRegister;
+import com._sptek.__webFramework.observability.logging.LoggingConstants;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.function.Supplier;
@@ -11,8 +10,8 @@ import java.util.function.Supplier;
 /**
  * 메인 클래스의 실행 시간 측정 어노테이션 설정에 따라 코드 블록 수행 시간을 로깅하는 유틸리티.
  */
-public class Timer {
-    private Timer() {}
+public class ExecutionTimerSupport {
+    private ExecutionTimerSupport() {}
     private static volatile Boolean has_Enable_ExecutionTimer_At_Main = null;
 
     /**
@@ -25,6 +24,12 @@ public class Timer {
 
     /**
      * 반환값 없는 작업을 실행하고, 설정이 활성화되어 있으면 수행 시간을 로그로 남긴다.
+     *
+     * <pre>{@code
+     * ExecutionTimerSupport.measure("sampleTask", () -> {
+     *     service.process();
+     * });
+     * }</pre>
      */
     public static void measure(String logTag, Runnable runnable) {
         if (checkAnnotation()) {
@@ -43,6 +48,10 @@ public class Timer {
 
     /**
      * 반환값 있는 작업을 실행하고, 설정이 활성화되어 있으면 수행 시간을 로그로 남긴다.
+     *
+     * <pre>{@code
+     * String result = ExecutionTimerSupport.measure("sampleQuery", () -> service.findName(id));
+     * }</pre>
      */
     public static <T> T measure(String logTag, Supplier<T> supplier) {
         if (checkAnnotation()) {
@@ -60,6 +69,8 @@ public class Timer {
 
     /**
      * InterruptedException 전파 없이 sleep 하고, interrupt 상태는 복원한다.
+     *
+     * <p>예제/테스트용 지연이며 운영 흐름 제어용으로 확장하지 말라.</p>
      */
     public static void sleep(long millis) {
         try {

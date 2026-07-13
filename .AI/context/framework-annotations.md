@@ -22,7 +22,7 @@
 | `@Enable_PropertiesToModelAttribute_At_Main` | View 모델에 공통 properties 값을 주입한다. | Thymeleaf 공통 설정값을 매 컨트롤러에서 직접 모델에 넣기 전에 확인한다. |
 | `@Enable_UserAuthenticationToModelAttribute_At_Main` | 현재 인증 사용자 정보를 View 모델에 주입한다. | 화면 컨트롤러마다 로그인 사용자 모델 속성을 직접 넣기 전에 확인한다. |
 | `@Enable_ThymeleafSpringSecurityDialect_At_Main` | Thymeleaf Spring Security dialect Bean을 등록한다. | 템플릿에서 권한/인증 조건을 직접 구현하기 전에 dialect 사용 가능 여부를 확인한다. |
-| `@Enable_ExecutionTimer_At_Main` | 프레임워크 실행 시간 측정 결과 노출을 활성화한다. | 임의의 실행 시간 측정 로그 유틸을 만들기 전에 기존 `Timer` 사용 여부를 확인한다. |
+| `@Enable_ExecutionTimer_At_Main` | 프레임워크 실행 시간 측정 결과 노출을 활성화한다. | 임의의 실행 시간 측정 로그 유틸을 만들기 전에 기존 `ExecutionTimerSupport` 사용 여부를 확인한다. |
 | `@Enable_EncryptorJasypt_At_Main` | Jasypt 문자열 암호화 Bean 구성을 활성화한다. | 설정값 암호화 Bean을 별도로 만들기 전에 환경별 암호화 설정과 함께 확인한다. |
 | `@Enable_XssProtectForApi_At_Main` | API 응답 XSS 문자열 처리를 ObjectMapper 수준에서 일괄 적용한다. | API 응답 문자열 escape를 컨트롤러나 DTO마다 직접 처리하기 전에 확인한다. 활성화되어 있으면 메서드 단위 API XSS 애노테이션보다 우선한다. |
 
