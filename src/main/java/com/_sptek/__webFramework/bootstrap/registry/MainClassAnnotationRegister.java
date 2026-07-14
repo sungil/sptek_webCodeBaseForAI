@@ -2,7 +2,7 @@ package com._sptek.__webFramework.bootstrap.registry;
 
 import com._sptek.__webFramework.core.constant.WebFrameworkPackageConstants;
 import com._sptek.__webFramework.observability.logging.LoggingConstants;
-import com._sptek.__webFramework.event.application.contextRefreshed.ContextRefreshedEventListenerForFwResourceLoading;
+import com._sptek.__webFramework.event.application.FrameworkContextRefreshed.ContextRefreshedEventListenerForFwResourceLoading;
 import com._sptek.__webFramework.observability.logging.LoggingUtil;
 import com._sptek.__webFramework.core.util.SpringUtil;
 import lombok.extern.slf4j.Slf4j;

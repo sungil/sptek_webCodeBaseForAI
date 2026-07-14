@@ -1,4 +1,4 @@
-package com._sptek.__webFramework.event.application.contextRefreshed;
+package com._sptek.__webFramework.event.application.FrameworkContextRefreshed;
 
 import com._sptek.__webFramework.bootstrap.registry.MainClassAnnotationRegister;
 import com._sptek.__webFramework.bootstrap.registry.RequestMappingAnnotationRegister;

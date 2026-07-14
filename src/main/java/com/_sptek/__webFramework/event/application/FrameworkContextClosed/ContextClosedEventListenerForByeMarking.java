@@ -1,4 +1,4 @@
-package com._sptek.__webFramework.event.application.contextClosed;
+package com._sptek.__webFramework.event.application.FrameworkContextClosed;
 
 import com._sptek.__webFramework.observability.logging.LoggingConstants;
 import com._sptek.__webFramework.observability.logging.LoggingUtil;
