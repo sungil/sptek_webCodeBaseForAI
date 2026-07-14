@@ -9,7 +9,6 @@ public final class LoggingConstants {
     public static final String FW_LOG_FILENAME_MARK = "file->";
     public static final String FW_LOG_NO_CONSOLE_MARK = "->noConsole";
     public static final String FW_START_LOG_TAG = "FW_START_LOG file->FW_START_LOG";
-    public static final String DEBUGGING_HELP_MESSAGE = "이 메시지가 보인다면!! FW 담당자 에게 알려 주세요!";
     public static final String SERVER_INITIALIZATION_MARK = "FRAMEWORK BEAN INITIALIZATION NOTICE : ";
 
     public static final String REQ_ATTRIBUTE_FOR_LOGGING_TIMESTAMP = "REQ_ATTRIBUTE_FOR_LOGGING_TIMESTAMP";
