@@ -2,6 +2,7 @@ package com._sptek.__webFramework.observability.monitoring;
 
 import com._sptek.__webFramework.bootstrap.annotationCondition.HasAnnotationOnMain_At_Bean;
 import com._sptek.__webFramework.bootstrap.registry.MainClassAnnotationRegister;
+import com._sptek.__webFramework.observability.logging.LoggingConstants;
 import com._sptek.__webFramework.observability.logging.LoggingUtil;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +34,7 @@ import java.util.concurrent.ScheduledFuture;
 @HasAnnotationOnMain_At_Bean(Enable_HttpConnectorWorkerMonitoring_At_Main.class)
 
 public class SchedulerForHttpConnectorWorkerMonitoring {
-    // todo: 현재의 SchedulerForHttpConnectorWorkerMonitoring 는 embeeded tomcat 을 사용하는 경우만 동작함
+    // NOTE: Spring Boot executable jar/bootRun처럼 embedded TomcatWebServer를 사용하는 servlet 앱에서만 동작한다.
 
     private final ThreadPoolTaskScheduler schedulerExecutorForHttpConnectorWorkerMonitoring;
     private final MonitoringProperties monitoringProperties;
@@ -64,6 +65,15 @@ public class SchedulerForHttpConnectorWorkerMonitoring {
     @EventListener // 시작에 MainClassAnnotationRegister 가 필요 함으로 ContextRefreshedEvent 을 기다려 시작함
     public void listen(ContextRefreshedEvent contextRefreshedEvent) {
         if (scheduledFuture != null) return;
+        if (tomcatWebServer == null) {
+            log.warn(LoggingUtil.makeBaseForm(
+                    LoggingConstants.FW_START_LOG_TAG,
+                    "Http Connector Worker Monitoring",
+                    "Http connector worker monitoring is skipped because embedded TomcatWebServer is not available."
+            ));
+            schedulerExecutorForHttpConnectorWorkerMonitoring.shutdown();
+            return;
+        }
         logTag = Objects.toString(MainClassAnnotationRegister.getAnnotationAttributes(Enable_HttpConnectorWorkerMonitoring_At_Main.class).get("value"), "");
         scheduledFuture = schedulerExecutorForHttpConnectorWorkerMonitoring.scheduleWithFixedDelay(this::doJobs, Duration.ofSeconds(monitoringProperties.getHttpConnectorWorker().getFixedDelaySeconds()));
     }

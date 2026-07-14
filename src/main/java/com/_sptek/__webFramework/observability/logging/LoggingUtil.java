@@ -43,7 +43,7 @@ public class LoggingUtil {
      * 프레임워크 prefix, 선택 로그 태그, 본문을 한 줄 로그 포맷으로 결합한다.
      */
     public static String makeSimpleForm(String logTag, String content) {
-        // 변경시 주의(아래 형태가 다른 코드에 영향이 있음)
+        // NOTE: 아래 형태 변경시 다른 코드에 영향이 있음
         return "%s%s => %s".formatted(LoggingConstants.FW_LOG_PREFIX, logTag, LoggingUtil.removeLastNewline(content));
     }
 
@@ -73,7 +73,7 @@ public class LoggingUtil {
     /**
      * 로그 박스 하단 공백이 늘어나지 않도록 마지막 개행 하나만 제거한다.
      */
-    public static String removeLastNewline(String string) {
+    private static String removeLastNewline(String string) {
         if (string != null && string.endsWith("\n")) {
             return string.substring(0, string.length() - 1);
         }
