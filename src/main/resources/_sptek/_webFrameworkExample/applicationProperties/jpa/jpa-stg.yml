@@ -3,5 +3,5 @@ spring:
     defer-datasource-initialization: true # JPA 가 테이블을 생성하기전 data.sql 파일이 먼저 실행되어 에러 나는것을 방지함 (JPA가 테이블 구성 후 data.sql 가 실행 되도록 순서가 조정됨)
     hibernate:
       ddl-auto: update  # (create, create-drop, update, none)
-    #show-sql: true      # SQL 쿼리를 출력할지 여부
+    show-sql: false      # SQL 쿼리를 출력할지 여부
     database-platform: org.hibernate.dialect.MySQL8Dialect

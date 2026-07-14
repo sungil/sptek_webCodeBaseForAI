@@ -24,6 +24,7 @@ import com._sptek.__webFramework.bootstrap.testSupport.TestAnnotation_At_All;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.ComponentScan;
@@ -48,6 +49,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 }) //필터쪽에 @WebFilter 를 사용하기 위해 필요함
 @EnableJpaRepositories(basePackages = {
 		"com._sptek.__webFramework.security.userStore.repository"
+})
+@EntityScan(basePackages = {
+		"com._sptek.__webFramework.security.userStore.entity"
 })
 
 /* TEST and CHECK */

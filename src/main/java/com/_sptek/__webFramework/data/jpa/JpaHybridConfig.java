@@ -3,17 +3,22 @@ package com._sptek.__webFramework.data.jpa;
 import com._sptek.__webFramework.bootstrap.annotationCondition.HasAnnotationOnMain_At_Bean;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.domain.EntityScanPackages;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.ApplicationContext;
+import org.springframework.core.env.Environment;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,6 +37,9 @@ import java.util.Map;
 @Configuration
 public class JpaHybridConfig implements WebMvcConfigurer {
 
+    private final ApplicationContext applicationContext;
+    private final Environment environment;
+
     /**
      * hybrid 모드에서 사용할 JPA transaction manager를 등록한다.
      */
@@ -46,28 +54,42 @@ public class JpaHybridConfig implements WebMvcConfigurer {
     }
 
     /**
-     * 공통 datasource를 사용하는 EntityManagerFactory를 구성한다.
+     * 공통 datasource와 메인 클래스의 {@code @EntityScan} 선언을 사용해 EntityManagerFactory를 구성한다.
      *
-     * <p>현재 entity scan 범위는 프레임워크 보안 extras entity 패키지로 제한되어 있다.
-     * 업무 도메인 entity를 JPA로 사용하려면 scan 패키지 확장이 필요하다.</p>
+     * <p>repository scan은 메인 클래스의 {@code @EnableJpaRepositories}에서, entity scan은
+     * {@code @EntityScan}에서 함께 선언해 실행 애플리케이션의 JPA 경계를 한 곳에서 확인할 수 있게 한다.</p>
      */
     @Bean(name = "entityManagerFactory")
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(@Qualifier("dataSource") DataSource dataSource) {
         LocalContainerEntityManagerFactoryBean localContainerEntityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
         localContainerEntityManagerFactoryBean.setDataSource(dataSource);
-        // todo : 다른 패키지도 스캔할수 있도록 설정 필요
-        localContainerEntityManagerFactoryBean.setPackagesToScan("com._sptek.__webFramework.security.userStore.entity");
+        localContainerEntityManagerFactoryBean.setPackagesToScan(resolveEntityPackagesToScan());
 
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         localContainerEntityManagerFactoryBean.setJpaVendorAdapter(vendorAdapter);
-
-        Map<String, Object> properties = new HashMap<>();
-        properties.put("hibernate.hbm2ddl.auto", "update"); //(create, create-drop, update, none)
-        properties.put("hibernate.show_sql", "false");
-        localContainerEntityManagerFactoryBean.setJpaPropertyMap(properties);
+        localContainerEntityManagerFactoryBean.setJpaPropertyMap(resolveJpaProperties());
 
         return localContainerEntityManagerFactoryBean;
     }
 
+    private String[] resolveEntityPackagesToScan() {
+        List<String> packageNames = EntityScanPackages.get(applicationContext).getPackageNames();
+        if (packageNames.isEmpty()) {
+            throw new IllegalStateException("@Enable_JpaHybrid_At_Main requires @EntityScan on the main application class.");
+        }
+        return packageNames.toArray(String[]::new);
+    }
+
+    private Map<String, Object> resolveJpaProperties() {
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("hibernate.hbm2ddl.auto", environment.getProperty("spring.jpa.hibernate.ddl-auto", "none"));
+        properties.put("hibernate.show_sql", environment.getProperty("spring.jpa.show-sql", "false"));
+
+        String dialect = environment.getProperty("spring.jpa.database-platform");
+        if (StringUtils.hasText(dialect)) {
+            properties.put("hibernate.dialect", dialect);
+        }
+        return properties;
+    }
 
 }
