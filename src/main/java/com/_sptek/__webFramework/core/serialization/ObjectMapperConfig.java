@@ -29,7 +29,7 @@ public class ObjectMapperConfig {
      * API XSS 전역 escape가 비활성화된 경우 사용하는 기본 ObjectMapper를 등록한다.
      */
     @Bean
-    // @Enable_XssProtectForApi_At_ControllerMethod를 통해 선별적 xss 처리, 더 권장?
+    // @Enable_XssProtectForApi_At_ControllerMethod를 통해 선별적 xss 처리, 더 권장
     @HasAnnotationOnMain_At_Bean(value = Enable_XssProtectForApi_At_Main.class, negate = true)
     public ObjectMapper objectMapperWithoutXssProtectHelper() {
         //locale, timeZone등 공통요소에 대한 setting을 할수 있다.
