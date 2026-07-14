@@ -23,6 +23,18 @@ web-framework:
       exclude-content-types:
         - multipart/form-data
         - application/octet-stream
+  monitoring:
+    hikari-datasource:
+      fixed-delay-seconds: 10 # Hikari datasource pool 상태를 다시 수집하기 전 대기 시간(초)
+      duplicate-log-suppression-mode: true # datasource별 이전 로그 내용과 같으면 반복 출력을 생략한다.
+
+    http-connector-worker:
+      fixed-delay-seconds: 10 # embedded Tomcat connector worker 상태를 다시 수집하기 전 대기 시간(초)
+      duplicate-log-suppression-mode: true # connector별 이전 로그 내용과 같으면 반복 출력을 생략한다.
+
+    outbound-support:
+      fixed-delay-seconds: 10 # outbound HttpClient pool 상태를 다시 수집하고 idle/expired connection을 정리하기 전 대기 시간(초)
+      duplicate-log-suppression-mode: true # 전체 outbound pool/route 상태가 이전 로그 내용과 같으면 반복 출력을 생략한다.
 
 ################################################################
 

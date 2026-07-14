@@ -1,5 +1,6 @@
 package com._sptek.__webFramework.observability.monitoring;
 
+import com._sptek.__webFramework.bootstrap.annotationCondition.HasAnnotationOnMain_At_Bean;
 import com._sptek.__webFramework.bootstrap.registry.MainClassAnnotationRegister;
 import com._sptek.__webFramework.observability.logging.LoggingUtil;
 import jakarta.annotation.PreDestroy;
@@ -10,7 +11,6 @@ import org.apache.hc.core5.http.HttpHost;
 import org.apache.hc.core5.pool.PoolStats;
 import org.apache.hc.core5.util.TimeValue;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
@@ -28,10 +28,10 @@ import java.util.concurrent.ScheduledFuture;
  */
 @Slf4j
 @Component
+@HasAnnotationOnMain_At_Bean(Enable_OutboundSupportMonitoring_At_Main.class)
 
 // 단순 상태 모니터링이 뿐만 아니라 관리를 포함함
 public class SchedulerForOutboundSupportManagingMonitoring {
-    // todo: @Enable_OutboundSupportMonitoring_At_Main 적용과 관련 없이 동작되며 Enable_OutboundSupportMonitoring_At_Main 단지 모니터링 로깅 조건임
 
     // Scheduler 시작과 종료에 대해 여러 방법을 이용할 수 있다. (케이스에 적합하게 선택하여 처리할 것)
     // @PostConstruct 와 @PreDestroy 를 통해 처리할 수 있으나 처리 로직에 제 3의 Bean 을 @Lookup 이나 ApplicationContext로 가져와 사용하는 경우 해당 빈의 생존을 보장 받을 수 없다.(생성자나 @Autowired 를 통해 주입된 빈은 보장됨)
@@ -40,22 +40,18 @@ public class SchedulerForOutboundSupportManagingMonitoring {
 
     private final ThreadPoolTaskScheduler schedulerExecutorForOutboundSupportMonitoring;
     private final PoolingHttpClientConnectionManager poolingHttpClientConnectionManager;
-    private final boolean isDuplicateLogSuppressionMode; // 동일 내용 로깅 방지
-    private final int fixedDelaySeconds;
+    private final MonitoringProperties monitoringProperties;
     private ScheduledFuture<?> scheduledFuture = null;
-    private boolean has_Enable_OutboundSupportMonitoring_At_Main;
     private String logTag;
     private volatile String lastLogContent = "";
 
     public SchedulerForOutboundSupportManagingMonitoring(
             @Qualifier("schedulerExecutorForOutboundSupportMonitoring") ThreadPoolTaskScheduler schedulerExecutorForOutboundSupportMonitoring,
             PoolingHttpClientConnectionManager poolingHttpClientConnectionManager,
-            @Value("${logging.monitoring.schedulerForOutboundSupportManagingMonitoring.duplicateLogSuppressionMode:false}") boolean isDuplicateLogSuppressionMode,
-            @Value("${logging.monitoring.schedulerForOutboundSupportManagingMonitoring.fixedDelaySeconds:5}") int fixedDelaySeconds) {
+            MonitoringProperties monitoringProperties) {
         this.schedulerExecutorForOutboundSupportMonitoring = schedulerExecutorForOutboundSupportMonitoring;
         this.poolingHttpClientConnectionManager = poolingHttpClientConnectionManager;
-        this.isDuplicateLogSuppressionMode = isDuplicateLogSuppressionMode;
-        this.fixedDelaySeconds = fixedDelaySeconds;
+        this.monitoringProperties = monitoringProperties;
     }
 
     /**
@@ -64,9 +60,8 @@ public class SchedulerForOutboundSupportManagingMonitoring {
     @EventListener // 시작에 MainClassAnnotationRegister 가 필요 함으로 ContextRefreshedEvent 을 기다려 시작함
     public void listen(ContextRefreshedEvent contextRefreshedEvent) {
         if (scheduledFuture != null) return;
-        has_Enable_OutboundSupportMonitoring_At_Main = MainClassAnnotationRegister.hasAnnotation(Enable_OutboundSupportMonitoring_At_Main.class);
         logTag = Objects.toString(MainClassAnnotationRegister.getAnnotationAttributes(Enable_OutboundSupportMonitoring_At_Main.class).get("value"), "");
-        scheduledFuture = schedulerExecutorForOutboundSupportMonitoring.scheduleWithFixedDelay(this::doJobs, Duration.ofSeconds(fixedDelaySeconds));
+        scheduledFuture = schedulerExecutorForOutboundSupportMonitoring.scheduleWithFixedDelay(this::doJobs, Duration.ofSeconds(monitoringProperties.getOutboundSupport().getFixedDelaySeconds()));
     }
 
     /**
@@ -89,25 +84,23 @@ public class SchedulerForOutboundSupportManagingMonitoring {
             poolingHttpClientConnectionManager.closeIdle(TimeValue.ofSeconds(10));
             poolingHttpClientConnectionManager.closeExpired();
 
-            if (has_Enable_OutboundSupportMonitoring_At_Main) {
-                PoolStats afterStats = poolingHttpClientConnectionManager.getTotalStats();
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append(String.format("사용중(Leased)=%d->%d, 사용가능(Available)=%d->%d, 대기중(Pending)=%d->%d\n"
-                        , beforeStats.getLeased(), afterStats.getLeased(), beforeStats.getAvailable()
-                        , afterStats.getAvailable(), beforeStats.getPending(), afterStats.getPending()));
+            PoolStats afterStats = poolingHttpClientConnectionManager.getTotalStats();
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append(String.format("사용중(Leased)=%d->%d, 사용가능(Available)=%d->%d, 대기중(Pending)=%d->%d\n"
+                    , beforeStats.getLeased(), afterStats.getLeased(), beforeStats.getAvailable()
+                    , afterStats.getAvailable(), beforeStats.getPending(), afterStats.getPending()));
 
-                // 현재 각 Route별 상태
-                for (HttpRoute route : poolingHttpClientConnectionManager.getRoutes()) {
-                    PoolStats routeStats = poolingHttpClientConnectionManager.getStats(route);
-                    stringBuilder.append(String.format("%s => Leased=%d, Available=%d, Pending=%d\n"
-                            , getRouteKey(route), routeStats.getLeased(), routeStats.getAvailable(), routeStats.getPending()));
-                }
-
-                String logContent = stringBuilder.toString();
-                if (isDuplicateLogSuppressionMode && Objects.equals(logContent, lastLogContent)) return;
-                log.info(LoggingUtil.makeBaseForm(logTag, "OutboundSupport Monitoring (Scheduler)", logContent));
-                lastLogContent = logContent;
+            // 현재 각 Route별 상태
+            for (HttpRoute route : poolingHttpClientConnectionManager.getRoutes()) {
+                PoolStats routeStats = poolingHttpClientConnectionManager.getStats(route);
+                stringBuilder.append(String.format("%s => Leased=%d, Available=%d, Pending=%d\n"
+                        , getRouteKey(route), routeStats.getLeased(), routeStats.getAvailable(), routeStats.getPending()));
             }
+
+            String logContent = stringBuilder.toString();
+            if (monitoringProperties.getOutboundSupport().isDuplicateLogSuppressionMode() && Objects.equals(logContent, lastLogContent)) return;
+            log.info(LoggingUtil.makeBaseForm(logTag, "OutboundSupport Monitoring (Scheduler)", logContent));
+            lastLogContent = logContent;
         } catch (Exception e) {
             log.warn("Error while monitoring HttpClient Connection Pool", e);
         }

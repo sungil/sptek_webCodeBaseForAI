@@ -10,7 +10,6 @@ import com.zaxxer.hikari.HikariPoolMXBean;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
@@ -19,6 +18,7 @@ import org.springframework.stereotype.Component;
 import java.time.Duration;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 
 /**
@@ -34,19 +34,16 @@ import java.util.concurrent.ScheduledFuture;
 public class SchedulerForHikariDataSourceMonitoring {
 
     private final ThreadPoolTaskScheduler schedulerExecutorForHikariDataSourceMonitoring;
-    private final boolean isDuplicateLogSuppressionMode; // 동일 내용 로깅 방지
-    private final int fixedDelaySeconds;
+    private final MonitoringProperties monitoringProperties;
     private Map<String, HikariDataSource> hikariDataSources = null;
     private ScheduledFuture<?> scheduledFuture = null;
     private String logTag;
-    private volatile String lastLogContent = "";
+    private final Map<String, String> lastLogContents = new ConcurrentHashMap<>();
 
     public SchedulerForHikariDataSourceMonitoring(@Qualifier("schedulerExecutorForHikariDataSourceMonitoring") ThreadPoolTaskScheduler schedulerExecutorForHikariDataSourceMonitoring,
-                                                  @Value("${logging.monitoring.schedulerForHikariDataSourceMonitoring.duplicateLogSuppressionMode:false}") boolean isDuplicateLogSuppressionMode,
-                                                  @Value("${logging.monitoring.schedulerForHikariDataSourceMonitoring.fixedDelaySeconds:5}") int fixedDelaySeconds) {
+                                                  MonitoringProperties monitoringProperties) {
         this.schedulerExecutorForHikariDataSourceMonitoring = schedulerExecutorForHikariDataSourceMonitoring;
-        this.isDuplicateLogSuppressionMode = isDuplicateLogSuppressionMode;
-        this.fixedDelaySeconds = fixedDelaySeconds;
+        this.monitoringProperties = monitoringProperties;
     }
 
     /**
@@ -66,7 +63,7 @@ public class SchedulerForHikariDataSourceMonitoring {
         });
 
         logTag = Objects.toString(MainClassAnnotationRegister.getAnnotationAttributes(Enable_HikariDataSourceMonitoring_At_Main.class).get("value"), "");
-        scheduledFuture = schedulerExecutorForHikariDataSourceMonitoring.scheduleWithFixedDelay(this::doJobs, Duration.ofSeconds(fixedDelaySeconds));
+        scheduledFuture = schedulerExecutorForHikariDataSourceMonitoring.scheduleWithFixedDelay(this::doJobs, Duration.ofSeconds(monitoringProperties.getHikariDatasource().getFixedDelaySeconds()));
     }
 
     /**
@@ -106,9 +103,16 @@ public class SchedulerForHikariDataSourceMonitoring {
                             , ExceptionSafeSupport.exSafe(hikariConfigMXBean::getMaxLifetime, -1)
                             , ExceptionSafeSupport.exSafe(hikariConfigMXBean::getValidationTimeout, -1));
 
-            if (isDuplicateLogSuppressionMode && Objects.equals(logContent, lastLogContent)) return;
+            if (isDuplicateLog(monitoringProperties.getHikariDatasource(), hikariDataSource.getPoolName(), logContent)) continue;
             log.info(LoggingUtil.makeBaseForm(logTag, "HikariDataSource Monitoring (Scheduler)", logContent));
-            lastLogContent = logContent;
         }
+    }
+
+    private boolean isDuplicateLog(MonitoringProperties.Scheduler schedulerProperties, String key, String logContent) {
+        if (!schedulerProperties.isDuplicateLogSuppressionMode()) {
+            return false;
+        }
+        String previousLogContent = lastLogContents.put(key, logContent);
+        return Objects.equals(previousLogContent, logContent);
     }
 }

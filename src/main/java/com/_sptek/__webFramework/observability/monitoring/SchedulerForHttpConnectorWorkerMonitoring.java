@@ -9,7 +9,6 @@ import org.apache.catalina.connector.Connector;
 import org.apache.coyote.AbstractProtocol;
 import org.apache.coyote.ProtocolHandler;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.embedded.tomcat.TomcatWebServer;
 import org.springframework.boot.web.servlet.context.ServletWebServerInitializedEvent;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -19,6 +18,8 @@ import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.util.Objects;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 
 /**
@@ -35,19 +36,16 @@ public class SchedulerForHttpConnectorWorkerMonitoring {
     // todo: 현재의 SchedulerForHttpConnectorWorkerMonitoring 는 embeeded tomcat 을 사용하는 경우만 동작함
 
     private final ThreadPoolTaskScheduler schedulerExecutorForHttpConnectorWorkerMonitoring;
-    private final boolean isDuplicateLogSuppressionMode; // 동일 내용 로깅 방지
-    private final int fixedDelaySeconds;
+    private final MonitoringProperties monitoringProperties;
     private TomcatWebServer  tomcatWebServer = null;
     private ScheduledFuture<?> scheduledFuture = null;
     private String logTag;
-    private volatile String lastLogContent = "";
+    private final Map<String, String> lastLogContents = new ConcurrentHashMap<>();
 
     public SchedulerForHttpConnectorWorkerMonitoring(@Qualifier("schedulerExecutorForHttpConnectorWorkerMonitoring") ThreadPoolTaskScheduler schedulerExecutorForHttpConnectorWorkerMonitoring,
-                                                     @Value("${logging.monitoring.schedulerForHttpConnectorWorkerMonitoring.duplicateLogSuppressionMode:false}") boolean isDuplicateLogSuppressionMode,
-                                                     @Value("${logging.monitoring.schedulerForHttpConnectorWorkerMonitoring.fixedDelaySeconds:5}") int fixedDelaySeconds) {
+                                                     MonitoringProperties monitoringProperties) {
         this.schedulerExecutorForHttpConnectorWorkerMonitoring = schedulerExecutorForHttpConnectorWorkerMonitoring;
-        this.isDuplicateLogSuppressionMode = isDuplicateLogSuppressionMode;
-        this.fixedDelaySeconds = fixedDelaySeconds;
+        this.monitoringProperties = monitoringProperties;
     }
 
     /**
@@ -67,7 +65,7 @@ public class SchedulerForHttpConnectorWorkerMonitoring {
     public void listen(ContextRefreshedEvent contextRefreshedEvent) {
         if (scheduledFuture != null) return;
         logTag = Objects.toString(MainClassAnnotationRegister.getAnnotationAttributes(Enable_HttpConnectorWorkerMonitoring_At_Main.class).get("value"), "");
-        scheduledFuture = schedulerExecutorForHttpConnectorWorkerMonitoring.scheduleWithFixedDelay(this::doJobs, Duration.ofSeconds(fixedDelaySeconds));
+        scheduledFuture = schedulerExecutorForHttpConnectorWorkerMonitoring.scheduleWithFixedDelay(this::doJobs, Duration.ofSeconds(monitoringProperties.getHttpConnectorWorker().getFixedDelaySeconds()));
     }
 
     /**
@@ -110,13 +108,21 @@ public class SchedulerForHttpConnectorWorkerMonitoring {
                             queueSize
                     );
 
-                    if (isDuplicateLogSuppressionMode && Objects.equals(logContent, lastLogContent)) return;
+                    String key = connector.getProtocol() + ":" + connector.getPort();
+                    if (isDuplicateLog(monitoringProperties.getHttpConnectorWorker(), key, logContent)) continue;
                     log.info(LoggingUtil.makeBaseForm(logTag, "Http Connector Worker Monitoring (Scheduler)", logContent));
-                    lastLogContent = logContent;
                 }
             }
         } catch (Exception e) {
             log.warn("Scheduler For Http Connector Worker Monitoring", e);
         }
+    }
+
+    private boolean isDuplicateLog(MonitoringProperties.Scheduler schedulerProperties, String key, String logContent) {
+        if (!schedulerProperties.isDuplicateLogSuppressionMode()) {
+            return false;
+        }
+        String previousLogContent = lastLogContents.put(key, logContent);
+        return Objects.equals(previousLogContent, logContent);
     }
 }
