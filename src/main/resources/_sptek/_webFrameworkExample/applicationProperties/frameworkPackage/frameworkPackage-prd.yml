@@ -1,0 +1,5 @@
+web-framework:
+  package-boundary:
+    application-package-prefixes:
+      - com._sptek.__webFramework
+      - com._sptek._webFrameworkExample

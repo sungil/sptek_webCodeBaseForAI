@@ -1,6 +1,7 @@
 package com._sptek.__webFramework.web.xss;
 
-import com._sptek.__webFramework.core.constant.FrameworkPackageConstants;
+import com._sptek.__webFramework.core.properties.WebFrameworkPackageProperties;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.lang.Nullable;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 /**
  * 응답 직렬화 직전에 문자열 값을 HTML escape 처리하는 지원 컴포넌트.
  *
@@ -19,6 +21,8 @@ import java.util.stream.Collectors;
  * 새 객체를 만들지 않고 필드 값을 직접 변경하므로 호출 지점에서는 원본 객체 변경을 전제로 사용해야 한다.</p>
  */
 public class XssEscapeSupport {
+
+    private final WebFrameworkPackageProperties webFrameworkPackageProperties;
 
     /**
      * 전달된 값을 타입별로 판별해 XSS 방어용 HTML escape 처리를 수행한다.
@@ -65,7 +69,12 @@ public class XssEscapeSupport {
     private boolean isMyDtoObject(Object obj) {
         return obj != null
                 && !(obj instanceof Enum)
-                && obj.getClass().getPackageName().startsWith(FrameworkPackageConstants.PROJECT_PACKAGE_NAME);
+                && webFrameworkPackageProperties.getApplicationPackagePrefixes().stream()
+                .anyMatch(packagePrefix -> isSameOrSubPackage(obj.getClass().getPackageName(), packagePrefix));
+    }
+
+    private boolean isSameOrSubPackage(String packageName, String packagePrefix) {
+        return packageName.equals(packagePrefix) || packageName.startsWith(packagePrefix + ".");
     }
 
     /**

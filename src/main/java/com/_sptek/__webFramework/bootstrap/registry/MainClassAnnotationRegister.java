@@ -1,6 +1,6 @@
 package com._sptek.__webFramework.bootstrap.registry;
 
-import com._sptek.__webFramework.core.constant.FrameworkPackageConstants;
+import com._sptek.__webFramework.core.constant.WebFrameworkPackageConstants;
 import com._sptek.__webFramework.observability.logging.LoggingConstants;
 import com._sptek.__webFramework.event.application.contextRefreshed.ContextRefreshedEventListenerForFwResourceLoading;
 import com._sptek.__webFramework.observability.logging.LoggingUtil;
@@ -37,7 +37,7 @@ public class MainClassAnnotationRegister {
             Map<String, Map<String, Object>> temp = new HashMap<>();
             for (Annotation annotation : mainClass.getAnnotations()) {
                 String name = annotation.annotationType().getName();
-                if (name.startsWith(FrameworkPackageConstants.FRAMEWORK_ANNOTATION_PACKAGE_NAME)) {
+                if (name.startsWith(WebFrameworkPackageConstants.WEB_FRAMEWORK_ANNOTATION_PACKAGE_PREFIX)) {
                     Map<String, Object> attrs = AnnotationUtils.getAnnotationAttributes(annotation, false);
                     temp.put(name, Map.copyOf(attrs));
                 }
@@ -51,7 +51,7 @@ public class MainClassAnnotationRegister {
         return annotationRegister.entrySet().stream()
                 .sorted(Map.Entry.comparingByKey())
                 .map(entry -> "- %s %s".formatted(
-                        entry.getKey().replace(FrameworkPackageConstants.FRAMEWORK_ANNOTATION_PACKAGE_NAME + ".", ""),
+                        entry.getKey().replace(WebFrameworkPackageConstants.WEB_FRAMEWORK_ANNOTATION_PACKAGE_PREFIX, ""),
                         entry.getValue().isEmpty() ? "" : entry.getValue()
                 ).stripTrailing())
                 .collect(Collectors.joining("\n"));

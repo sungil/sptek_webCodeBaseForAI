@@ -1,6 +1,6 @@
 package com._sptek.__webFramework.bootstrap.registry;
 
-import com._sptek.__webFramework.core.constant.FrameworkPackageConstants;
+import com._sptek.__webFramework.core.constant.WebFrameworkPackageConstants;
 import com._sptek.__webFramework.observability.logging.LoggingConstants;
 import com._sptek.__webFramework.observability.logging.LoggingUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -103,7 +103,7 @@ public class RequestMappingAnnotationRegister {
     }
 
     private boolean isFrameworkAnnotation(Class<? extends Annotation> annotationType) {
-        return annotationType.getPackageName().startsWith(FrameworkPackageConstants.FRAMEWORK_ANNOTATION_PACKAGE_NAME);
+        return annotationType.getPackageName().startsWith(WebFrameworkPackageConstants.WEB_FRAMEWORK_ANNOTATION_PACKAGE_PREFIX);
     }
 
     public boolean hasAnnotation(HttpServletRequest request, Class<? extends Annotation> annotation) {
