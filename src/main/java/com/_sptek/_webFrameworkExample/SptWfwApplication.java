@@ -27,6 +27,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 /* Spring */
 @Slf4j
@@ -34,11 +36,19 @@ import org.springframework.context.annotation.ComponentScan;
 @ComponentScan(basePackages = {
 		"com._sptek.__webFramework",
 		"com._sptek._webFrameworkExample"
+}, excludeFilters = {
+		@ComponentScan.Filter(
+				type = FilterType.REGEX,
+				pattern = "com\\._sptek\\.__webFramework\\.legacy\\..*"
+		)
 })
 @ServletComponentScan(basePackages = {
 		"com._sptek.__webFramework",
 		"com._sptek._webFrameworkExample"
 }) //필터쪽에 @WebFilter 를 사용하기 위해 필요함
+@EnableJpaRepositories(basePackages = {
+		"com._sptek.__webFramework.security.userStore.repository"
+})
 
 /* TEST and CHECK */
 @TestAnnotation_At_All("")
