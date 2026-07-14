@@ -10,6 +10,25 @@ log4jdbc:
 
 ################################################################
 
+web-framework:
+  logging:
+    req-res-detail:
+      # 요청/응답 상세 로그 필터가 ContentCaching wrapper를 적용하지 않고 바로 통과시킬 path pattern 목록
+      # 큰 파일 다운로드, 엑셀 export, 이미지/영상 응답처럼 body caching 비용이 큰 endpoint를 지정한다.
+      exclude-path-patterns:
+        - /download/**
+        - /file/**
+        - /static/**
+
+      # 요청 Content-Type 기준으로 상세 로그 body caching을 제외할 값 목록
+      # 필터 진입 시점에는 응답 Content-Type을 알 수 없으므로, 다운로드 응답 제외는 exclude-path-patterns로 처리한다.
+      # 값은 startsWith 기준으로 비교하므로 "image/"처럼 prefix 형태로도 지정할 수 있다.
+      exclude-content-types:
+        - multipart/form-data
+        - application/octet-stream
+
+################################################################
+
 logging:
   level: #log level은 logback config 파일에 그대로 반영됨
     root: info

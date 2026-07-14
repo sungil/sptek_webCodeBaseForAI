@@ -1,6 +1,7 @@
 package com._sptek.__webFramework.web.filter;
 
 import com._sptek.__webFramework.observability.logging.ReqResDetailLogFilter;
+import com._sptek.__webFramework.observability.logging.ReqResDetailLogProperties;
 import com._sptek.__webFramework.observability.mdc.MakeMdcFilter;
 import com._sptek.__webFramework.observability.processTime.MakeRequestTimestampFilter;
 import com._sptek.__webFramework.web.cors.CorsPolicyFilter;
@@ -92,9 +93,9 @@ public class FilterConfigForFrameworkWebCore {
      */
     @Profile(value = { "local", "dev", "stg", "prd" }) // 필터 내부에서 동작을 여부가 다시 한번 결정됨
     @Bean
-    public FilterRegistrationBean<ReqResDetailLogFilter> detailLogFilterWithAnnotation() {
+    public FilterRegistrationBean<ReqResDetailLogFilter> detailLogFilterWithAnnotation(ReqResDetailLogProperties reqResDetailLogProperties) {
         FilterRegistrationBean<ReqResDetailLogFilter> filterRegistrationBean = new FilterRegistrationBean<>();
-        filterRegistrationBean.setFilter(new ReqResDetailLogFilter());
+        filterRegistrationBean.setFilter(new ReqResDetailLogFilter(reqResDetailLogProperties));
         filterRegistrationBean.addUrlPatterns("/*");
         //filterRegistrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);  // Spring 필터 순서 설정
         //filterRegistrationBean.setDispatcherTypes(EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR));
