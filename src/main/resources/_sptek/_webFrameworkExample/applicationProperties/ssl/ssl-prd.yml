@@ -1,6 +1,6 @@
 #사설 인증사의 경우 로컬 테스트를 위해 브라우저 설정 필요 (chrome://flags/ -> Allow invalid certificates for resources loaded from localhost. -> Enabled, 도메인은 front.localhost:8080 형태로 구성)
 server:
   ssl:
-    key-store: classpath:_sptek/__webFramework/keystore/keystore.p12
+    key-store: classpath:_sptek/_webFrameworkExample/keystore/keystore.p12
     key-store-type: PKCS12
     key-store-password: keystore_password

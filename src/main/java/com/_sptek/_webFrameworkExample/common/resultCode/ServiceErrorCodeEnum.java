@@ -1,4 +1,4 @@
-package com.cesco.__projectsCommon.commonObject.code;
+package com._sptek._webFrameworkExample.common.resultCode;
 
 import com._sptek.__webFramework.core.resultCode.BaseCode;
 import lombok.AllArgsConstructor;
@@ -12,13 +12,12 @@ public enum ServiceErrorCodeEnum implements BaseCode {
     //API에서 주로 활용되지만 viewController에서도 활용될수 있다. viewController에서 활용되는 경우 HttpStatus는 의미가 없음
 
     //example
+    DEFAULT_ERROR(HttpStatus.BAD_REQUEST, "SE999", "요청이 정상적으로 처리되지 않았습니다."),
     NO_RESOURCE_ERROR(HttpStatus.BAD_REQUEST, "SE404", "해당 데이터가 없습니다."), //HttpStatus.NOT_FOUND 가 모호해서 변경
     ALREADY_EXIST_RESOURCE_ERROR(HttpStatus.CONFLICT, "SE409", "해당 데이터 가 이미 존재 합니다."),
+
     PAYLOAD_TOO_LARGE_ERROR(HttpStatus.PAYLOAD_TOO_LARGE, "SE413", "Multipart File MaxUploadSizeExceeded Exception"),
-
-    FILE_UPLOAD_ERROR(HttpStatus.BAD_REQUEST, "SE101", "File Upload Exception"),
-
-    DEFAULT_ERROR(HttpStatus.BAD_REQUEST, "SE999", "요청이 정상적으로 처리되지 않았습니다.");
+    FILE_UPLOAD_ERROR(HttpStatus.BAD_REQUEST, "SE101", "File Upload Exception");
 
     private final HttpStatus httpStatusCode;
     private final String resultCode;

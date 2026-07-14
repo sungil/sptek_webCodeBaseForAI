@@ -1,4 +1,4 @@
-package com._sptek;
+package com._sptek._webFrameworkExample;
 
 import com._sptek.__webFramework.data.datasource.Enable_DatasourceOfH2_At_Main;
 import com._sptek.__webFramework.data.jpa.Enable_JpaHybrid_At_Main;

@@ -7,7 +7,7 @@ import com._sptek.__webFramework.security.userStore.repository.AuthorityReposito
 import com._sptek.__webFramework.security.userStore.repository.RoleRepository;
 import com._sptek.__webFramework.security.userStore.repository.TermsRepository;
 import com._sptek.__webFramework.security.userStore.repository.UserRepository;
-import com.cesco.__projectsCommon.commonObject.code.ServiceErrorCodeEnum;
+import com._sptek._webFrameworkExample.common.resultCode.ServiceErrorCodeEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;

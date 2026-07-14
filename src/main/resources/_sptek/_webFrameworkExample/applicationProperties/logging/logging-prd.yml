@@ -41,5 +41,4 @@ logging:
     jdbc.resultset: error
     jdbc.resultsettable: error
 
-  config: classpath:_sptek/__webFramework/logbackConfig/logback-spring-local.xml
-
+  config: classpath:_sptek/_webFrameworkExample/logbackConfig/logback-spring-local.xml

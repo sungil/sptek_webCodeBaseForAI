@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class HealthIndicatorForXXX implements HealthIndicator {
+public class IndicatorForHealth implements HealthIndicator {
     // actuator/health 에 custom한 요소를 추가 할 수 있다.
     // 검사 항목의 기본 요소는 spring 설정 및 포함된 jar 파일들에 따라 actuator 가 정하게 된다. (추가하거나 뺄수 있음)
     // 모든 검사 항목이 Up 일때 최종 UP 됨

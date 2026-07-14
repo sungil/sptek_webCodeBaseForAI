@@ -28,23 +28,21 @@ spring:
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/actuator/actuator.yml
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/globalError/globalError.yml
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/h2DB/h2DB.yml
-      - optional:classpath:_sptek/__webFramework/_frameworkApplicationProperties/jsp/jsp.yml
-      - optional:classpath:_sptek/__webFramework/_frameworkApplicationProperties/pageHelper/pageHelper.yml
-      - optional:classpath:_sptek/__webFramework/_frameworkApplicationProperties/ssl/ssl.yml
-      - optional:classpath:_sptek/__webFramework/_frameworkApplicationProperties/thymeleaf/thymeleaf.yml
+      - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/jsp/jsp.yml
+      - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/pageHelper/pageHelper.yml
+      - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/ssl/ssl.yml
+      - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/thymeleaf/thymeleaf.yml
       #cesco/__projectsCommon(_system)
-      - optional:classpath:cesco/__projectsCommon/_projectApplicationProperties/_framework/cors/corsPolicy.yml
-      - optional:classpath:cesco/__projectsCommon/_projectApplicationProperties/_framework/daoPagination/daoPagination.yml
-      - optional:classpath:cesco/__projectsCommon/_projectApplicationProperties/_framework/datasource/datasource.yml
-      - optional:classpath:cesco/__projectsCommon/_projectApplicationProperties/_framework/encryption/encryption.yml
-      - optional:classpath:cesco/__projectsCommon/_projectApplicationProperties/_framework/jpa/jpa.yml
-      - optional:classpath:cesco/__projectsCommon/_projectApplicationProperties/_framework/jwt/jwt.yml
-      - optional:classpath:cesco/__projectsCommon/_projectApplicationProperties/_framework/logging/logging.yml
-      - optional:classpath:cesco/__projectsCommon/_projectApplicationProperties/_framework/session/session.yml
-      - optional:classpath:cesco/__projectsCommon/_projectApplicationProperties/_framework/swagger/swagger.yml
-      #- optional:classpath:cesco/__projectsCommon/_projectApplicationProperties/_framework/_frameworkOption/frameworkOption.yml
-      - optional:classpath:cesco/__projectsCommon/_projectApplicationProperties/_framework/storage/storage.yml
-      - optional:classpath:cesco/__projectsCommon/_projectApplicationProperties/_framework/propertyForModelAttribute/propertyForModelAttribute.yml
+      - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/cors/corsPolicy.yml
+      - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/daoPagination/daoPagination.yml
+      - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/datasource/datasource.yml
+      - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/encryption/encryption.yml
+      - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/jpa/jpa.yml
+      - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/jwt/jwt.yml
+      - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/logging/logging.yml
+      - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/session/session.yml
+      - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/swagger/swagger.yml
+      #- optional:classpath:_sptek/_webFrameworkExample/applicationProperties/DEPRECATED_frameworkOption/frameworkOption.yml
+      - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/storage/storage.yml
+      - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/propertyForModelAttribute/propertyForModelAttribute.yml
       #cesco/__projectsCommon(extra)
-      - optional:classpath:cesco/__projectsCommon/_projectApplicationProperties/example1/example1.yml
-

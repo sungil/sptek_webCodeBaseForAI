@@ -7,7 +7,7 @@ import com._sptek.__webFramework.security.authorization.AuthorityEnum;
 import com._sptek.__webFramework.security.util.AuthenticationUtil;
 import com._sptek.__webFramework.core.file.FileUtil;
 import com._sptek.__webFramework.security.util.SecurityUtil;
-import com.cesco.__projectsCommon.commonObject.code.ServiceErrorCodeEnum;
+import com._sptek._webFrameworkExample.common.resultCode.ServiceErrorCodeEnum;
 import com.cesco.__projectsCommon.commonObject.dto.PostBaseDto;
 import com.cesco.__projectsCommon.commonObject.dto.UploadFileDto;
 import lombok.RequiredArgsConstructor;

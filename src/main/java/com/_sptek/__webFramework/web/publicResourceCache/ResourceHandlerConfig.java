@@ -42,6 +42,7 @@ public class ResourceHandlerConfig implements WebMvcConfigurer {
         //swagger를 위한 리소스핸들러 설정
         resourceHandlerRegistry.addResourceHandler("swagger-ui.html").addResourceLocations("classpath:/resources/");
         resourceHandlerRegistry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/resources/webjars/");
+        resourceHandlerRegistry.addResourceHandler("/js/_framework/**").addResourceLocations("classpath:/_sptek/_webFrameworkExample/_framework/");
     }
 
     /**
