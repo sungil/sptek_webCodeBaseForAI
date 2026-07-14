@@ -8,6 +8,7 @@ import com._sptek.__webFramework.core.util.SpringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.stereotype.Component;
 
 import java.lang.annotation.Annotation;
 import java.util.Collections;
@@ -26,10 +27,14 @@ import java.util.stream.Collectors;
  * 이전 컨텍스트의 값이 남을 수 있으므로, 프레임워크 초기화 순서와 컨텍스트 수명 주기를 함께 고려해야 한다.</p>
  */
 @Slf4j
+@Component
 public class MainClassAnnotationRegister {
     private static Map<String, Map<String, Object>> mainClassAnnotationRegister = Collections.emptyMap();
 
-    public MainClassAnnotationRegister(ApplicationContext applicationContext) throws Exception {
+    /**
+     * ApplicationContext 준비 후 메인 클래스의 프레임워크 애노테이션 정보를 static 조회 저장소에 적재한다.
+     */
+    public void initialize(ApplicationContext applicationContext) throws Exception {
         synchronized (MainClassAnnotationRegister.class) {
             if (!mainClassAnnotationRegister.isEmpty()) return;
 

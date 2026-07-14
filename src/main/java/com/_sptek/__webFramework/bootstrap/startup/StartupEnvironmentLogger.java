@@ -9,6 +9,7 @@ import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.MutablePropertySources;
+import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -24,11 +25,15 @@ import java.util.stream.StreamSupport;
  * 민감 정보로 판단한 값은 앞 3자만 남기고 나머지를 마스킹한다.</p>
  */
 @Slf4j
+@Component
 public class StartupEnvironmentLogger {
     private static final int SENSITIVE_VALUE_VISIBLE_PREFIX_LENGTH = 3;
     private static final String MASKED_VALUE_SUFFIX = "****";
 
-    public StartupEnvironmentLogger(ApplicationContext applicationContext) {
+    /**
+     * 메인 클래스 애노테이션 레지스트리 초기화 후 환경 로그 활성화 여부를 확인하고 출력한다.
+     */
+    public void logIfEnabled(ApplicationContext applicationContext) {
         if (MainClassAnnotationRegister.hasAnnotation(Enable_GlobalEnvLog_At_Main.class)) {
             logEnvironment(applicationContext);
         }

@@ -19,7 +19,9 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class ContextRefreshedEventListenerForFwResourceLoading {
+    private final MainClassAnnotationRegister mainClassAnnotationRegister;
     private final RequestMappingAnnotationRegister requestMappingAnnotationRegister;
+    private final StartupEnvironmentLogger startupEnvironmentLogger;
 
     /**
      * context refresh 이벤트를 기준으로 프레임워크 레지스트리 초기화를 순서대로 수행한다.
@@ -27,10 +29,10 @@ public class ContextRefreshedEventListenerForFwResourceLoading {
     @EventListener
     public void listen(ContextRefreshedEvent contextRefreshedEvent) throws Exception {
         log.debug("Event!");
-        new MainClassAnnotationRegister(contextRefreshedEvent.getApplicationContext());
+        mainClassAnnotationRegister.initialize(contextRefreshedEvent.getApplicationContext());
         // 생성자 주입 순환을 피하면서도 프레임워크 의도대로 시작 시점에 RequestMapping 어노테이션 정보를 수집한다.
         requestMappingAnnotationRegister.initialize();
-        new StartupEnvironmentLogger(contextRefreshedEvent.getApplicationContext()); // NOTE: MainClassAnnotationRegister 보단 항상 뒤에 생성되야 함 (제약이 없도록 수정하면 좋을듯)
+        startupEnvironmentLogger.logIfEnabled(contextRefreshedEvent.getApplicationContext());
     }
 }
 
