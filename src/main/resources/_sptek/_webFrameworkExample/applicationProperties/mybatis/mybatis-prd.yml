@@ -1,0 +1,5 @@
+web-framework:
+  mybatis:
+    config-location-pattern: classpath:/_sptek/_webFrameworkExample/mybatis/*-config.xml
+    mapper-location-patterns:
+      - classpath:/_sptek/_webFrameworkExample/mybatis/**/*Mapper.xml

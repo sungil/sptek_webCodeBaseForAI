@@ -39,6 +39,7 @@ spring:
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/jpa/jpa.yml
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/jwt/jwt.yml
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/logging/logging.yml
+      - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/mybatis/mybatis.yml
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/session/session.yml
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/swagger/swagger.yml
       #- optional:classpath:_sptek/_webFrameworkExample/applicationProperties/DEPRECATED_frameworkOption/frameworkOption.yml
