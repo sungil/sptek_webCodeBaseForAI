@@ -21,15 +21,24 @@ import com._sptek.__webFramework.web.filter.Enable_NoFilterAndSessionForMinorReq
 import com._sptek.__webFramework.web.publicResourceCache.Enable_HttpCachePublicForStaticResource_At_Main;
 import com._sptek.__webFramework.web.xss.Enable_XssProtectForApi_At_Main;
 import com._sptek.__webFramework.bootstrap.testSupport.TestAnnotation_At_All;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.ServletComponentScan;
+import org.springframework.context.annotation.ComponentScan;
 
 /* Spring */
 @Slf4j
 @SpringBootApplication
-@ServletComponentScan //필터쪽에 @WebFilter 를 사용하기 위해 필요함
+@ComponentScan(basePackages = {
+		"com._sptek.__webFramework",
+		"com._sptek._webFrameworkExample"
+})
+@ServletComponentScan(basePackages = {
+		"com._sptek.__webFramework",
+		"com._sptek._webFrameworkExample"
+}) //필터쪽에 @WebFilter 를 사용하기 위해 필요함
 
 /* TEST and CHECK */
 @TestAnnotation_At_All("")
@@ -73,7 +82,12 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 
 public class SptWfwApplication{
 	public static void main(String[] args) {
-		SpringApplication.run(SptWfwApplication.class, args);
+		new SpringApplicationBuilder(SptWfwApplication.class)
+				.properties(Map.of(
+						"spring.config.location",
+						"optional:classpath:/_sptek/_webFrameworkExample/"
+				))
+				.run(args);
 
 		//아래와 같은 방법으로 ApplicationContextInitializer 를 동작 시킬수 있다.
 		//애플리케이션에서 스프링 컨텍스트 초기화 전에 커스텀 설정이나 로직을 실행하기 위해 사용 할수 있다.
