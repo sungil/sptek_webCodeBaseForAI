@@ -1,4 +1,4 @@
-package com._sptek.__webFramework.event.httpSession;
+package com._sptek.__webFramework.event.listener.httpSession;
 
 import jakarta.servlet.http.HttpSessionEvent;
 import jakarta.servlet.http.HttpSessionListener;
