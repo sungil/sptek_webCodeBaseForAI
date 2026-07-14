@@ -4,4 +4,4 @@ spring:
     hibernate:
       ddl-auto: update  # (create, create-drop, update, none)
     show-sql: false      # SQL 쿼리를 출력할지 여부
-    database-platform: org.hibernate.dialect.MySQL8Dialect
+    database-platform: org.hibernate.dialect.H2Dialect

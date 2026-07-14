@@ -2,7 +2,7 @@ package com._sptek._webFrameworkExample.aiExample.feature.event;
 
 import com._sptek.__webFramework.api.response.Enable_ResponseOfApiCommonSuccess_At_RestController;
 import com._sptek.__webFramework.api.response.Enable_ResponseOfApiGlobalException_At_RestController;
-import com._sptek.__webFramework.event.core.SptEventPublisher;
+import com._sptek.__webFramework.event.support.SptEventPublisher;
 import com._sptek._webFrameworkExample.aiExample.event.AiExampleEvent;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

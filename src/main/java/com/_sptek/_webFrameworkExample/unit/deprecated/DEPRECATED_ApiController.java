@@ -8,7 +8,7 @@ import com._sptek.__webFramework.bootstrap.testSupport.TestAnnotation_At_All;
 import com._sptek.__webFramework.bootstrap.annotationCondition.HasAnnotationOnMain_At_Bean;
 import com._sptek.__webFramework.api.response.ApiCommonSuccessResponseDto;
 import com._sptek.__webFramework.system.projectInfo.ProjectInfoVo;
-import com._sptek.__webFramework.event.core.SptEventPublisher;
+import com._sptek.__webFramework.event.support.SptEventPublisher;
 import com._sptek.__webFramework.integration.httpClient.OutboundSupport;
 import com._sptek.__webFramework.legacy.integration.httpClient.DEPRECATED_RestTemplateSupport;
 import com.cesco.__projectsCommon.event.event.MyExampleEvent;

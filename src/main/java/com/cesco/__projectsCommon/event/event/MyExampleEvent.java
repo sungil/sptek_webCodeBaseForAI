@@ -1,6 +1,6 @@
 package com.cesco.__projectsCommon.event.event;
 
-import com._sptek.__webFramework.event.core.SptBaseEvent;
+import com._sptek.__webFramework.event.support.SptBaseEvent;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
