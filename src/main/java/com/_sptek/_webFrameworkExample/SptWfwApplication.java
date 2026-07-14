@@ -28,7 +28,6 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 /* Spring */
@@ -37,11 +36,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @ComponentScan(basePackages = {
 		"com._sptek.__webFramework",
 		"com._sptek._webFrameworkExample"
-}, excludeFilters = {
-		@ComponentScan.Filter(
-				type = FilterType.REGEX,
-				pattern = "com\\._sptek\\.__webFramework\\.legacy\\..*"
-		)
 })
 @ServletComponentScan(basePackages = {
 		"com._sptek.__webFramework",
@@ -102,12 +96,6 @@ public class SptWfwApplication{
 						"optional:classpath:/_sptek/_webFrameworkExample/"
 				))
 				.run(args);
-
-		//아래와 같은 방법으로 ApplicationContextInitializer 를 동작 시킬수 있다.
-		//애플리케이션에서 스프링 컨텍스트 초기화 전에 커스텀 설정이나 로직을 실행하기 위해 사용 할수 있다.
-		//new SpringApplicationBuilder(SptWfwApplication.class)
-		//		.initializers(new ContextInitializerFor())
-		//		.run(args);
 
 		//아래와 같은 방법으로 프로파일을 지정(추가)할 수 있지만 환경변수 또는 실행파람의 프로파일에 비해 우선순위가 낮다.
 		//다시말해 app.setAdditionalProfiles("dev, stg") 같이 dev, stg 를 추가 하여도 프로파일에 목록에는 올라가지만 실제 환경변수에 다른 프로파일이 있다면 해당 프로파일의 프로퍼티파일을 로딩한다.

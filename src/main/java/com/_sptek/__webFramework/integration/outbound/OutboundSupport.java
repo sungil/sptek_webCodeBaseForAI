@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.client5.http.classic.methods.*;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
-import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -123,15 +122,4 @@ public class OutboundSupport {
         }
     }
 
-    /**
-     * @deprecated {@link OutboundResponse#body()} 사용 흐름으로 대체되었으며 기존 HttpEntity 처리 호환용으로만 남겨둔다.
-     */
-    @Deprecated
-    public static String DEPRECATED_convertResponseToString(HttpEntity httpEntity) throws Exception {
-        String reponseString =EntityUtils.toString(httpEntity, StandardCharsets.UTF_8);
-        log.debug("responseBody to String = {}", reponseString);
-
-        EntityUtils.consume(httpEntity);
-        return reponseString;
-    }
 }
