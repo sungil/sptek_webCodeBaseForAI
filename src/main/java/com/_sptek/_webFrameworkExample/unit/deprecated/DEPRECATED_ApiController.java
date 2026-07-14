@@ -9,7 +9,7 @@ import com._sptek.__webFramework.bootstrap.annotationCondition.HasAnnotationOnMa
 import com._sptek.__webFramework.api.response.ApiCommonSuccessResponseDto;
 import com._sptek.__webFramework.system.projectInfo.ProjectInfoVo;
 import com._sptek.__webFramework.event.support.SptEventPublisher;
-import com._sptek.__webFramework.integration.httpClient.OutboundSupport;
+import com._sptek.__webFramework.integration.outbound.OutboundSupport;
 import com._sptek.__webFramework.legacy.integration.httpClient.DEPRECATED_RestTemplateSupport;
 import com.cesco.__projectsCommon.event.event.MyExampleEvent;
 import io.swagger.v3.oas.annotations.tags.Tag;

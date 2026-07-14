@@ -1,6 +1,7 @@
 package com._sptek.__webFramework.legacy.integration.httpClient;
 
 
+import com._sptek.__webFramework.integration.outbound.OutboundSupport;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;

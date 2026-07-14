@@ -2,8 +2,8 @@ package com._sptek._webFrameworkExample.unit.httpClient;
 
 import com._sptek.__webFramework.api.response.Enable_ResponseOfApiCommonSuccess_At_RestController;
 import com._sptek.__webFramework.api.response.Enable_ResponseOfApiGlobalException_At_RestController;
-import com._sptek.__webFramework.integration.httpClient.HttpClientResponseDto;
-import com._sptek.__webFramework.integration.httpClient.OutboundSupport;
+import com._sptek.__webFramework.integration.outbound.OutboundResponse;
+import com._sptek.__webFramework.integration.outbound.OutboundSupport;
 import com._sptek.__webFramework.core.util.TypeConvertUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -92,8 +92,8 @@ public class OutboundApiController {
                 .queryParam("myKey", "myValue")
                 .buildAndExpand(Map.of("id", 1));
 
-        HttpClientResponseDto httpClientResponseDto = outboundSupport.request(HttpMethod.GET, uriComponents);
-        return httpClientResponseDto.code();
+        OutboundResponse outboundResponse = outboundSupport.request(HttpMethod.GET, uriComponents);
+        return outboundResponse.code();
     }
 
     @GetMapping("/04/example/outbound/outboundSupportPost")
@@ -106,9 +106,9 @@ public class OutboundApiController {
                 .build();
 
         HttpHeaders httpHeaders = TypeConvertUtil.objMapToHttpHeaders(Map.of("X-TEST_KEY", "X-TEST_VALUE"));
-        HttpClientResponseDto httpClientResponseDto = outboundSupport.request(HttpMethod.POST, uriComponents, httpHeaders, outboundDto);
-        if (httpClientResponseDto.code() < 200 || httpClientResponseDto.code() >= 300)  return "http client request failed. (result code: " + httpClientResponseDto.code() + ")";
-        return TypeConvertUtil.jsonToClass(httpClientResponseDto.body(), OutboundDto.class);
+        OutboundResponse outboundResponse = outboundSupport.request(HttpMethod.POST, uriComponents, httpHeaders, outboundDto);
+        if (outboundResponse.code() < 200 || outboundResponse.code() >= 300)  return "http client request failed. (result code: " + outboundResponse.code() + ")";
+        return TypeConvertUtil.jsonToClass(outboundResponse.body(), OutboundDto.class);
     }
 
     @GetMapping("/05/example/outbound/outboundSupportPut")
@@ -121,9 +121,9 @@ public class OutboundApiController {
                 .buildAndExpand(Map.of("id", 1));
 
         HttpHeaders httpHeaders = TypeConvertUtil.objMapToHttpHeaders(Map.of("X-TEST_KEY", "X-TEST_VALUE"));
-        HttpClientResponseDto httpClientResponseDto = outboundSupport.request(HttpMethod.PUT, uriComponents, httpHeaders, outboundDto);
-        if (httpClientResponseDto.code() < 200 || httpClientResponseDto.code() >= 300) return "http client request failed. (result code: " + httpClientResponseDto.code() + ")";
-        return TypeConvertUtil.jsonToClass(httpClientResponseDto.body(), OutboundDto.class);
+        OutboundResponse outboundResponse = outboundSupport.request(HttpMethod.PUT, uriComponents, httpHeaders, outboundDto);
+        if (outboundResponse.code() < 200 || outboundResponse.code() >= 300) return "http client request failed. (result code: " + outboundResponse.code() + ")";
+        return TypeConvertUtil.jsonToClass(outboundResponse.body(), OutboundDto.class);
     }
 
     @GetMapping("/06/example/outbound/outboundSupportDelete")
@@ -136,9 +136,9 @@ public class OutboundApiController {
                 .buildAndExpand(Map.of("id", 1));
 
         HttpHeaders httpHeaders = TypeConvertUtil.objMapToHttpHeaders(Map.of("X-TEST_KEY", "X-TEST_VALUE"));
-        HttpClientResponseDto httpClientResponseDto = outboundSupport.request(HttpMethod.DELETE, uriComponents, httpHeaders);
-        if (httpClientResponseDto.code() < 200 || httpClientResponseDto.code() >= 300) return "http client request failed. (result code: " + httpClientResponseDto.code() + ")";
-        return TypeConvertUtil.jsonToClass(httpClientResponseDto.body(), OutboundDto.class);
+        OutboundResponse outboundResponse = outboundSupport.request(HttpMethod.DELETE, uriComponents, httpHeaders);
+        if (outboundResponse.code() < 200 || outboundResponse.code() >= 300) return "http client request failed. (result code: " + outboundResponse.code() + ")";
+        return TypeConvertUtil.jsonToClass(outboundResponse.body(), OutboundDto.class);
     }
 
     // api Test Dto

@@ -1,0 +1,11 @@
+web-framework:
+  outbound:
+    http-client:
+      pool:
+        max-conn-total: 100       # 전체 외부 HTTP 호출에 대해 pool이 동시에 보유할 수 있는 최대 connection 수
+        max-conn-per-route: 20    # 동일 route(host/port 조합) 하나가 동시에 사용할 수 있는 최대 connection 수
+        keep-alive-seconds: 10    # 응답 후 connection을 pool에 유지해 재사용할 최대 시간(초)
+      timeout:
+        connection-request-seconds: 5 # pool에서 사용 가능한 connection을 빌릴 때까지 기다리는 최대 시간(초)
+        connect-seconds: 5            # 대상 서버와 TCP 연결이 성립될 때까지 기다리는 최대 시간(초)
+        response-seconds: 10          # 요청 전송 후 응답을 받을 때까지 기다리는 최대 시간(초)
