@@ -3,7 +3,7 @@ package com._sptek._webFrameworkExample.unit.deduplication;
 import com._sptek.__webFramework.api.deduplicationRequest.Enable_PreventDuplicateRequest_At_RestController_RestControllerMethod;
 import com._sptek.__webFramework.api.response.Enable_ResponseOfApiCommonSuccess_At_RestController;
 import com._sptek.__webFramework.api.response.Enable_ResponseOfApiGlobalException_At_RestController;
-import com._sptek.__webFramework.observability.processTime.ExecutionTimerSupport;
+import com._sptek.__webFramework.observability.timing.ExecutionTimerSupport;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

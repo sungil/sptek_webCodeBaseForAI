@@ -1,4 +1,4 @@
-package com._sptek.__webFramework.observability.processTime;
+package com._sptek.__webFramework.observability.timing;
 
 import com._sptek.__webFramework.bootstrap.registry.MainClassAnnotationRegister;
 import com._sptek.__webFramework.observability.logging.LoggingConstants;
@@ -9,6 +9,9 @@ import java.util.function.Supplier;
 @Slf4j
 /**
  * 메인 클래스의 실행 시간 측정 어노테이션 설정에 따라 코드 블록 수행 시간을 로깅하는 유틸리티.
+ *
+ * <p>요청 전체 duration은 {@link MakeRequestTimestampFilter}와 {@code RequestUtil.traceRequestDuration()}이 담당하고,
+ * 이 클래스는 개발자가 명시적으로 감싼 특정 코드 블록의 elapsed time만 측정한다.</p>
  */
 public class ExecutionTimerSupport {
     private ExecutionTimerSupport() {}

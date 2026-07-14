@@ -3,7 +3,7 @@ package com._sptek.__webFramework.web.filter;
 import com._sptek.__webFramework.observability.logging.ReqResDetailLogFilter;
 import com._sptek.__webFramework.observability.logging.ReqResDetailLogProperties;
 import com._sptek.__webFramework.observability.mdc.MakeMdcFilter;
-import com._sptek.__webFramework.observability.processTime.MakeRequestTimestampFilter;
+import com._sptek.__webFramework.observability.timing.MakeRequestTimestampFilter;
 import com._sptek.__webFramework.web.cors.CorsPolicyFilter;
 import com._sptek.__webFramework.web.cors.Enable_CorsPolicyFilter_At_Main;
 import com._sptek.__webFramework.observability.mdc.Enable_MdcTagging_At_Main;

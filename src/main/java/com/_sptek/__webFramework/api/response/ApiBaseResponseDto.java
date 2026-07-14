@@ -1,6 +1,6 @@
 package com._sptek.__webFramework.api.response;
 
-import com._sptek.__webFramework.observability.processTime.ExcuteTimeDto;
+import com._sptek.__webFramework.observability.timing.RequestDurationDto;
 import com._sptek.__webFramework.web.util.RequestUtil;
 
 public class ApiBaseResponseDto {
@@ -11,9 +11,9 @@ public class ApiBaseResponseDto {
     public String durationMsec;
 
     public void makeTimestamp() {
-        ExcuteTimeDto excuteTimeDto = RequestUtil.traceRequestDuration();
-        this.requestTime = excuteTimeDto.getStartTime();
-        this.responseTime = excuteTimeDto.getCurrentTime();
-        this.durationMsec = excuteTimeDto.getDurationMsec();
+        RequestDurationDto requestDurationDto = RequestUtil.traceRequestDuration();
+        this.requestTime = requestDurationDto.getStartTime();
+        this.responseTime = requestDurationDto.getCurrentTime();
+        this.durationMsec = requestDurationDto.getDurationMsec();
     }
 }

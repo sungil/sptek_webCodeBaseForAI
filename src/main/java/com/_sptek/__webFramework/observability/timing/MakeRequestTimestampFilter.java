@@ -1,9 +1,9 @@
-package com._sptek.__webFramework.observability.processTime;
+package com._sptek.__webFramework.observability.timing;
 
-import com._sptek.__webFramework.observability.logging.LoggingConstants;
-import com._sptek.__webFramework.web.filter.Enable_NoFilterAndSessionForMinorRequest_At_Main;
 import com._sptek.__webFramework.bootstrap.registry.MainClassAnnotationRegister;
+import com._sptek.__webFramework.observability.logging.LoggingConstants;
 import com._sptek.__webFramework.security.util.SecurityUtil;
+import com._sptek.__webFramework.web.filter.Enable_NoFilterAndSessionForMinorRequest_At_Main;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -20,8 +20,9 @@ import java.time.LocalDateTime;
 /**
  * 요청 처리 시작 시각을 request attribute에 기록하는 필터.
  *
- * <p>필터, 인터셉터, 예외 처리기 등 후속 단계에서 동일한 요청 기준 시각을 사용해야 할 때
- * {@link LoggingConstants#REQ_ATTRIBUTE_FOR_LOGGING_TIMESTAMP} attribute를 참조한다.</p>
+ * <p>요청 duration은 API 응답 timestamp와 요청/응답 상세 로그에서 공통으로 사용된다.
+ * {@link Enable_ExecutionTimer_At_Main}은 코드 블록 수동 측정 로그의 출력 스위치이며,
+ * 이 필터의 요청 timestamp 기록과는 별도의 책임이다.</p>
  */
 @Slf4j
 //@Profile(value = { "local", "dev", "stg", "prd" })
@@ -50,4 +51,3 @@ public class MakeRequestTimestampFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 }
-

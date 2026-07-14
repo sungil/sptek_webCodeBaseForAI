@@ -1,7 +1,7 @@
 package com._sptek.__webFramework.web.util;
 
 import com._sptek.__webFramework.observability.logging.LoggingConstants;
-import com._sptek.__webFramework.observability.processTime.ExcuteTimeDto;
+import com._sptek.__webFramework.observability.timing.RequestDurationDto;
 import com._sptek.__webFramework.core.util.SpringUtil;
 import com._sptek.__webFramework.core.util.TypeConvertUtil;
 import jakarta.servlet.RequestDispatcher;
@@ -187,18 +187,21 @@ public class RequestUtil {
     /**
      * 요청 시작 attribute와 현재 시각을 비교해 요청 처리 시간 DTO를 만든다.
      */
-    public static ExcuteTimeDto traceRequestDuration() {
-        String startTime = Optional.ofNullable(SpringUtil.getRequestOrNull())
+    public static RequestDurationDto traceRequestDuration() {
+        LocalDateTime startTime = Optional.ofNullable(SpringUtil.getRequestOrNull())
                 .map(request -> request
-                        .getAttribute(LoggingConstants.REQ_ATTRIBUTE_FOR_LOGGING_TIMESTAMP)).map(Object::toString).orElse("");
+                        .getAttribute(LoggingConstants.REQ_ATTRIBUTE_FOR_LOGGING_TIMESTAMP))
+                .filter(LocalDateTime.class::isInstance)
+                .map(LocalDateTime.class::cast)
+                .orElse(null);
 
-        if (!StringUtils.hasText(startTime)) {
-            return new ExcuteTimeDto("N/A", LocalDateTime.now().toString(), "N/A");
+        LocalDateTime currentTime = LocalDateTime.now();
+        if (startTime == null) {
+            return new RequestDurationDto("N/A", currentTime.toString(), "N/A");
         }
 
-        String currentTime = LocalDateTime.now().toString();
-        String durationMsec = Objects.toString(Duration.between(LocalDateTime.parse(startTime), LocalDateTime.parse(currentTime)).toMillis(), "");
-        return new ExcuteTimeDto(startTime, currentTime, durationMsec);
+        String durationMsec = Objects.toString(Duration.between(startTime, currentTime).toMillis(), "");
+        return new RequestDurationDto(startTime.toString(), currentTime.toString(), durationMsec);
     }
 
     /**
