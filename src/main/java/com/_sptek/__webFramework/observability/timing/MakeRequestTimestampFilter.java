@@ -20,9 +20,9 @@ import java.time.LocalDateTime;
 /**
  * 요청 처리 시작 시각을 request attribute에 기록하는 필터.
  *
- * <p>요청 duration은 API 응답 timestamp와 요청/응답 상세 로그에서 공통으로 사용된다.
- * {@link Enable_ExecutionTimer_At_Main}은 코드 블록 수동 측정 로그의 출력 스위치이며,
- * 이 필터의 요청 timestamp 기록과는 별도의 책임이다.</p>
+ * <p>요청 duration은 API 응답 timestamp와 요청/응답 상세 로그에서 공통으로 사용할 수 있다.
+ * {@link Enable_ExecutionTimeLog_At_Main}은 요청/응답 상세 로그에 시간 항목을 노출할지 결정하며,
+ * 이 필터의 요청 timestamp 기록 자체와는 별도의 책임이다.</p>
  */
 @Slf4j
 //@Profile(value = { "local", "dev", "stg", "prd" })

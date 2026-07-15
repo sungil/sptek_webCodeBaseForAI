@@ -3,6 +3,8 @@ package com._sptek.__webFramework.observability.logging;
 import com._sptek.__webFramework.core.exception.ThrowableUnwrapSupport;
 import com._sptek.__webFramework.bootstrap.registry.MainClassAnnotationRegister;
 import com._sptek.__webFramework.core.exception.ServiceException;
+import com._sptek.__webFramework.observability.timing.Enable_ExecutionTimeLog_At_Main;
+import com._sptek.__webFramework.observability.timing.RequestDurationDto;
 import com._sptek.__webFramework.web.util.RequestUtil;
 import com._sptek.__webFramework.web.util.ResponseUtil;
 import com._sptek.__webFramework.core.util.TypeConvertUtil;
@@ -182,9 +184,15 @@ public class LoggingUtil {
 
         String responseHeader = TypeConvertUtil.strMapToString(ResponseUtil.getResponseHeaderMap(response, "|"));
         String relatedOutbounds = Optional.ofNullable(request.getAttribute(LoggingConstants.REQ_ATTRIBUTE_FOR_LOGGING_RELATED_OUTBOUNDS)).map(Object::toString).orElse("");
-        String requestTime = RequestUtil.traceRequestDuration().getStartTime();
-        String responseTime = RequestUtil.traceRequestDuration().getCurrentTime();
-        String durationMsec = RequestUtil.traceRequestDuration().getDurationMsec();
+        String requestTime = "";
+        String responseTime = "";
+        String durationMsec = "";
+        if (MainClassAnnotationRegister.hasAnnotation(Enable_ExecutionTimeLog_At_Main.class)) {
+            RequestDurationDto requestDurationDto = RequestUtil.traceRequestDuration();
+            requestTime = requestDurationDto.getStartTime();
+            responseTime = requestDurationDto.getCurrentTime();
+            durationMsec = requestDurationDto.getDurationMsec();
+        }
         String exceptionMsgForView = Optional.ofNullable(request.getAttribute(LoggingConstants.REQ_ATTRIBUTE_FOR_LOGGING_EXCEPTION_MESSAGE)).map(Object::toString).orElse("");
         int responseStatus = response.getStatus();
 

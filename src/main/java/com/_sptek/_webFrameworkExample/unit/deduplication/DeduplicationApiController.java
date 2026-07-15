@@ -3,7 +3,7 @@ package com._sptek._webFrameworkExample.unit.deduplication;
 import com._sptek.__webFramework.api.deduplicationRequest.Enable_PreventDuplicateRequest_At_RestController_RestControllerMethod;
 import com._sptek.__webFramework.api.response.Enable_ResponseOfApiCommonSuccess_At_RestController;
 import com._sptek.__webFramework.api.response.Enable_ResponseOfApiGlobalException_At_RestController;
-import com._sptek.__webFramework.observability.timing.ExecutionTimerSupport;
+import com._sptek.__webFramework.observability.timing.ExecutionTimeSupport;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +37,7 @@ public class DeduplicationApiController {
     @RequestMapping(value = "/01/example/deduplication/preventDuplicateRequest", method = {RequestMethod.GET, RequestMethod.POST})
     @Operation(summary = "01. 동일 요청이 빠르게 연속 요청 되는 것을 방지", description = "")
     public Object duplicatedRequest() {
-        ExecutionTimerSupport.sleep(3000L);
+        ExecutionTimeSupport.sleep(3000L);
         return "prevent duplicateRequest test ok";
     }
 }
