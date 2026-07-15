@@ -29,10 +29,9 @@ spring:
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/frameworkPackage/frameworkPackage.yml
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/globalError/globalError.yml
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/h2DB/h2DB.yml
-      - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/jsp/jsp.yml
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/pageHelper/pageHelper.yml
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/ssl/ssl.yml
-      - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/thymeleaf/thymeleaf.yml
+      - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/viewResolver/viewResolver.yml
       #cesco/__projectsCommon(_system)
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/cors/corsPolicy.yml
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/daoPagination/daoPagination.yml

@@ -13,7 +13,6 @@ import com._sptek.__webFramework.observability.monitoring.Enable_OutboundSupport
 import com._sptek.__webFramework.observability.timing.Enable_RequestTimestampLog_At_Main;
 import com._sptek.__webFramework.security.crypto.Enable_EncryptorJasypt_At_Main;
 import com._sptek.__webFramework.view.model.Enable_UserAuthenticationToModelAttribute_At_Main;
-import com._sptek.__webFramework.view.thymeleaf.Enable_ThymeleafSpringSecurityDialect_At_Main;
 import com._sptek.__webFramework.web.cors.Enable_CorsPolicyFilter_At_Main;
 import com._sptek.__webFramework.web.error.Enable_ResponseOfApplicationGlobalException_At_Main;
 import com._sptek.__webFramework.web.filter.Enable_NoFilterAndSessionForMinorRequest_At_Main;
@@ -78,7 +77,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @Enable_CorsPolicyFilter_At_Main
 @Enable_XssProtectForApi_At_Main
 //Enable_XssProtectForApi_At_Main 가 적용된 경우 Enable_XssProtectForApi_At_ControllerMethod 는 동작하지 않는다.
-@Enable_ThymeleafSpringSecurityDialect_At_Main //thymeleaf 에서 springSecurity 요소를 사용 하기 위한 설정
 @Enable_UserAuthenticationToModelAttribute_At_Main
 
 /* UTIL */
