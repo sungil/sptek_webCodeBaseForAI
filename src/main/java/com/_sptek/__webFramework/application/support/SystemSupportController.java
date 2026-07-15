@@ -1,4 +1,4 @@
-package com._sptek.__webFramework.system.support;
+package com._sptek.__webFramework.application.support;
 
 import com._sptek.__webFramework.api.response.Enable_ResponseOfApiCommonSuccess_At_RestController;
 import com._sptek.__webFramework.api.response.Enable_ResponseOfApiGlobalException_At_RestController;

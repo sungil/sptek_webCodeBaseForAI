@@ -1,6 +1,6 @@
 package com._sptek.__webFramework.api.documentation.swagger;
 
-import com._sptek.__webFramework.system.projectInfo.ProjectInfoVo;
+import com._sptek.__webFramework.application.info.ApplicationInfoProperties;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -13,7 +13,6 @@ import org.springframework.util.StringUtils;
 @Slf4j
 //@Profile(value = {"local", "dev", "stg"})
 //@HasAnnotationOnMain_InBean(EnableSwaggerOpenApi_InMain.class)
-//@EnableConfigurationProperties(ProjectInfoVo.class) //ProjectInfoVo 가 프로필에 따라 오류가 나서..
 /**
  * SpringDoc OpenAPI 문서의 기본 메타 정보를 프로젝트 설정값으로 채우는 설정.
  *
@@ -25,7 +24,7 @@ import org.springframework.util.StringUtils;
 @Configuration
 public class SwaggerOpenApiConfig {
 
-    private final ProjectInfoVo projectInfoVo;
+    private final ApplicationInfoProperties applicationInfoProperties;
 
     /**
      * 프로젝트 정보 설정을 기반으로 OpenAPI 문서의 기본 Info 객체를 구성한다.
@@ -41,10 +40,10 @@ public class SwaggerOpenApiConfig {
         String version = "unknown";
         String description = "";
 
-        if (projectInfoVo.getApp() != null) {
-            title = valueOrDefault(projectInfoVo.getApp().getName(), title);
-            version = valueOrDefault(projectInfoVo.getApp().getVersion(), version);
-            description = valueOrDefault(projectInfoVo.getApp().getDescription(), description);
+        if (applicationInfoProperties.getApp() != null) {
+            title = valueOrDefault(applicationInfoProperties.getApp().getName(), title);
+            version = valueOrDefault(applicationInfoProperties.getApp().getVersion(), version);
+            description = valueOrDefault(applicationInfoProperties.getApp().getDescription(), description);
         }
 
         Info info = new Info()
