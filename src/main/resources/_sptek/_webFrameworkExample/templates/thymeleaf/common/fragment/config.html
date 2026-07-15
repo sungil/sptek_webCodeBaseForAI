@@ -20,8 +20,8 @@
     <!--Common CSS -->
     <link th:inline="css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
 
-    <!--Meta Data from ModelAttribute (Model 로 넘어온 autoMetaSet Map을 document의 meta 정보로 자동 등록해 준다) -->
-    <th:block th:insert="_framework/autoMetaSetRegister :: AutoMetaSetFragment" />
+    <!--Meta Data from ModelAttribute (Model 로 넘어온 htmlMetaAttributes Map을 document의 meta 정보로 자동 등록해 준다) -->
+    <th:block th:insert="_framework/htmlMetaAttributesRegister :: HtmlMetaAttributesFragment" />
 
 </head>
 </html>

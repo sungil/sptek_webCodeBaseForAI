@@ -44,5 +44,5 @@ spring:
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/session/session.yml
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/swagger/swagger.yml
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/storage/storage.yml
-      - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/propertyForModelAttribute/propertyForModelAttribute.yml
+      - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/viewModelAttribute/viewModelAttribute.yml
       #cesco/__projectsCommon(extra)

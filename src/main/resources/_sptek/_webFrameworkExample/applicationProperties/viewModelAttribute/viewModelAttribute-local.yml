@@ -1,7 +1,7 @@
 properties-for-model-attributes: #고정 이름
   attributes: #고정 이름
 
-    autoMetaSet: #고정 이름 (view document 에 meta 정보로 자동 등록될 데이터 를 아래 선언)
+    htmlMetaAttributes: #고정 이름 (view document 에 meta 정보로 자동 등록될 데이터 를 아래 선언)
       apiBaseUrl: https://spt.com/api
       apiBaseUrl2: https://spt.com/api
 
