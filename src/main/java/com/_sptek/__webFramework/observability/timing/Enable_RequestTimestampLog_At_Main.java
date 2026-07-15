@@ -13,5 +13,5 @@ import java.lang.annotation.Target;
  * <p>{@link ExecutionTimeSupport}의 명시적 코드 블록 측정 기능에는 영향을 주지 않는다.
  * 이 애노테이션은 상세 로그에 requestTime, responseTime, durationMsec 항목을 노출할지 결정한다.</p>
  */
-public @interface Enable_ExecutionTimeLog_At_Main {
+public @interface Enable_RequestTimestampLog_At_Main {
 }

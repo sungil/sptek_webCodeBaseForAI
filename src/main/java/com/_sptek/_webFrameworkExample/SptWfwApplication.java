@@ -10,7 +10,7 @@ import com._sptek.__webFramework.observability.mdc.Enable_MdcTagging_At_Main;
 import com._sptek.__webFramework.observability.monitoring.Enable_HikariDataSourceMonitoring_At_Main;
 import com._sptek.__webFramework.observability.monitoring.Enable_HttpConnectorWorkerMonitoring_At_Main;
 import com._sptek.__webFramework.observability.monitoring.Enable_OutboundSupportMonitoring_At_Main;
-import com._sptek.__webFramework.observability.timing.Enable_ExecutionTimeLog_At_Main;
+import com._sptek.__webFramework.observability.timing.Enable_RequestTimestampLog_At_Main;
 import com._sptek.__webFramework.security.crypto.Enable_EncryptorJasypt_At_Main;
 import com._sptek.__webFramework.view.model.Enable_PropertiesToModelAttribute_At_Main;
 import com._sptek.__webFramework.view.model.Enable_UserAuthenticationToModelAttribute_At_Main;
@@ -86,7 +86,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @Enable_NoFilterAndSessionForMinorRequest_At_Main //minor 한 request 에 대해 session 생성 방지 (세션 관리 효율)
 @Enable_HttpCachePublicForStaticResource_At_Main
 @Enable_PropertiesToModelAttribute_At_Main
-@Enable_ExecutionTimeLog_At_Main
+@Enable_RequestTimestampLog_At_Main
 
 public class SptWfwApplication{
 	public static void main(String[] args) {

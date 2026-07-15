@@ -8,7 +8,7 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-public class RequestDurationDto {
+public class RequestTimestampDto {
     private String startTime;
     private String currentTime;
     private String durationMsec;

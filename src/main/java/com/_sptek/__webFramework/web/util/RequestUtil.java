@@ -1,7 +1,7 @@
 package com._sptek.__webFramework.web.util;
 
 import com._sptek.__webFramework.observability.logging.LoggingConstants;
-import com._sptek.__webFramework.observability.timing.RequestDurationDto;
+import com._sptek.__webFramework.observability.timing.RequestTimestampDto;
 import com._sptek.__webFramework.core.util.SpringUtil;
 import com._sptek.__webFramework.core.util.TypeConvertUtil;
 import jakarta.servlet.RequestDispatcher;
@@ -187,7 +187,7 @@ public class RequestUtil {
     /**
      * 요청 시작 attribute와 현재 시각을 비교해 요청 처리 시간 DTO를 만든다.
      */
-    public static RequestDurationDto traceRequestDuration() {
+    public static RequestTimestampDto traceRequestDuration() {
         LocalDateTime startTime = Optional.ofNullable(SpringUtil.getRequestOrNull())
                 .map(request -> request
                         .getAttribute(LoggingConstants.REQ_ATTRIBUTE_FOR_LOGGING_TIMESTAMP))
@@ -197,11 +197,11 @@ public class RequestUtil {
 
         LocalDateTime currentTime = LocalDateTime.now();
         if (startTime == null) {
-            return new RequestDurationDto("N/A", currentTime.toString(), "N/A");
+            return new RequestTimestampDto("N/A", currentTime.toString(), "N/A");
         }
 
         String durationMsec = Objects.toString(Duration.between(startTime, currentTime).toMillis(), "");
-        return new RequestDurationDto(startTime.toString(), currentTime.toString(), durationMsec);
+        return new RequestTimestampDto(startTime.toString(), currentTime.toString(), durationMsec);
     }
 
     /**
