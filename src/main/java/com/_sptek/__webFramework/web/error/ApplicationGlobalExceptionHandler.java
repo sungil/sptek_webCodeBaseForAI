@@ -27,18 +27,18 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 
 @Slf4j
 @HasAnnotationOnMain_At_Bean(Enable_ResponseOfApplicationGlobalException_At_Main.class)
-// todo: (중요) CustomErrorController 전용 처리 (API/VEW 모두 가능)
+// NOTE: (중요) CustomErrorController 전용 처리 (API/VEW 모두 가능)
 @ControllerAdvice(assignableTypes = {CustomErrorController.class})
 
 public class ApplicationGlobalExceptionHandler {
-    // 이 핸들러 는 CustomErrorController 를 통해 인입된 상위 레벨 에러 처리 만을 하는게 목적 이다.
+    // 이 핸들러 는 CustomErrorController 를 통해 인입된 상위 레벨 에러 처리만을 하는게 목적 이다.
     // 상위 레벨이 아닌 Controller 내부 진입 후 에러에 대해 서는 ViewGlobalExceptionHandler 와 ApiGlobalExceptionHandler 에서 처리 한다.
 
     // 401 (실제로 spring에서 401은 발생이 안된고 403으로 발생됨)
     @ExceptionHandler({AuthenticationException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public Object handleAuthenticationException(Exception ex, HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // todo : view 요청에서 로그인이 안된상태여서 권한 에러가 났을때는 에러 페이지 보단 로그인 페이지로 더 친절히 이동해 줄까?
+        // NOTE : view 요청에서 로그인이 안된상태여서 권한 에러가 났을때는 에러 페이지 보단 로그인 페이지로 더 친절히 이동해 줄까?
         return handleError(request, response, ex, CommonErrorCodeEnum.FORBIDDEN_ERROR, "error/commonAuthenticationError");
     }
 
@@ -47,7 +47,7 @@ public class ApplicationGlobalExceptionHandler {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     //controller 에서 hasRole 이든 hasAuthority 든 AccessDeniedException 이 발생됨 (hasRole인 경우는 401 같지는 403이 나옴)
     public Object handleAccessDeniedException(Exception ex, HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // todo : view 요청에서 로그인이 안된상태여서 권한 에러가 났을때는 에러 페이지 보단 로그인 페이지로 더 친절히 이동해 줄까?
+        // NOTE : view 요청에서 로그인이 안된상태여서 권한 에러가 났을때는 에러 페이지 보단 로그인 페이지로 더 친절히 이동해 줄까?
         return handleError(request, response, ex, CommonErrorCodeEnum.FORBIDDEN_ERROR, "error/commonAuthenticationError");
     }
 
