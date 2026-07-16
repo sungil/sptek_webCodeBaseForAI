@@ -68,7 +68,7 @@ public class SystemSupportController {
     @GetMapping("/supportedLocaleLanguage")
     @Operation(summary = "지원 하는 Locale/Language 목록 제공", description = "") //swagger
     public Object supportedLocaleLanguage() {
-        return LocaleUtil.getMajorLocales();
+        return LocaleUtil.getSupportedLocales();
     }
 
     @GetMapping(value = "/fileByteFromStorage")

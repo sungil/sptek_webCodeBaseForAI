@@ -17,8 +17,9 @@
 | `@Enable_ResponseOfApplicationGlobalException_At_Main` | 애플리케이션 전역 예외 처리와 기본 오류 컨트롤러를 활성화한다. | 오류 페이지, 기본 오류 응답, 전역 예외 처리를 새로 만들기 전에 확인한다. |
 | `@Enable_CorsPolicyFilter_At_Main` | 프레임워크 CORS 정책 필터를 등록한다. | CORS Filter나 WebMvc CORS 설정을 새로 만들기 전에 기존 CORS 리소스와 함께 확인한다. |
 | `@Enable_MdcTagging_At_Main` | 요청 단위 MDC 태깅 필터를 등록한다. | request id, user, path 같은 로그 추적값을 직접 MDC에 넣는 코드를 만들기 전에 확인한다. |
-| `@Enable_NoFilterAndSessionForMinorRequest_At_Main` | 정적 리소스 등 minor request의 세션 생성과 일부 필터 처리를 줄인다. | 정적 리소스, health, favicon 같은 경량 요청 예외 처리를 새로 추가하기 전에 확인한다. |
+| `@Enable_MinorRequestOptimization_At_Main` | 정적 리소스 등 minor request의 세션 저장소 접근과 일부 필터 처리를 줄인다. | 정적 리소스, health, favicon 같은 경량 요청 예외 처리를 새로 추가하기 전에 확인한다. |
 | `@Enable_HttpCachePublicForStaticResource_At_Main` | 정적 리소스 응답에 public cache 정책을 적용한다. | 정적 리소스 캐시 헤더를 별도 필터나 컨트롤러에서 처리하기 전에 확인한다. |
+| `@Enable_LocaleSupport_At_Main` | locale/timezone cookie 기반 지역화 지원과 MessageSource 구성을 활성화한다. | locale, timezone, i18n message 처리를 컨트롤러나 interceptor에서 직접 만들기 전에 확인한다. |
 | `@Enable_PropertiesToModelAttribute_At_Main` | View 모델에 공통 properties 값을 주입한다. | Thymeleaf 공통 설정값을 매 컨트롤러에서 직접 모델에 넣기 전에 확인한다. |
 | `@Enable_UserAuthenticationToModelAttribute_At_Main` | 현재 인증 사용자 정보를 View 모델에 주입한다. | 화면 컨트롤러마다 로그인 사용자 모델 속성을 직접 넣기 전에 확인한다. |
 | `@Enable_ThymeleafSpringSecurityDialect_At_Main` | Thymeleaf Spring Security dialect Bean을 등록한다. | 템플릿에서 권한/인증 조건을 직접 구현하기 전에 dialect 사용 가능 여부를 확인한다. |

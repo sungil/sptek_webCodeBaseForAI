@@ -1,0 +1,100 @@
+web-framework:
+  locale:
+    message-source:
+      basename: classpath:/_sptek/_webFrameworkExample/i18n/messages
+      encoding: UTF-8
+      cache-seconds: 600
+    cookie:
+      locale-name: locale
+      timezone-name: timezone
+      max-age-days: 7
+      http-only: true
+      secure: false
+      same-site: Lax
+    default-value:
+      locale: ko-KR
+      timezone: Asia/Seoul
+    supported-locales:
+      # US
+      - language-code: en
+        country-code: US
+        timezone: America/New_York
+      - language-code: en
+        country-code: US
+        timezone: America/Chicago
+      - language-code: en
+        country-code: US
+        timezone: America/Denver
+      - language-code: en
+        country-code: US
+        timezone: America/Los_Angeles
+
+      # CA
+      - language-code: en
+        country-code: CA
+        timezone: America/Toronto
+      - language-code: en
+        country-code: CA
+        timezone: America/Winnipeg
+      - language-code: en
+        country-code: CA
+        timezone: America/Edmonton
+      - language-code: en
+        country-code: CA
+        timezone: America/Vancouver
+
+      # RU
+      - language-code: ru
+        country-code: RU
+        timezone: Europe/Moscow
+      - language-code: ru
+        country-code: RU
+        timezone: Asia/Yekaterinburg
+      - language-code: ru
+        country-code: RU
+        timezone: Asia/Novosibirsk
+      - language-code: ru
+        country-code: RU
+        timezone: Asia/Vladivostok
+
+      # BR
+      - language-code: pt
+        country-code: BR
+        timezone: America/Sao_Paulo
+      - language-code: pt
+        country-code: BR
+        timezone: America/Manaus
+      - language-code: pt
+        country-code: BR
+        timezone: America/Noronha
+
+      # AU
+      - language-code: en
+        country-code: AU
+        timezone: Australia/Sydney
+      - language-code: en
+        country-code: AU
+        timezone: Australia/Adelaide
+      - language-code: en
+        country-code: AU
+        timezone: Australia/Perth
+
+      # Single timezone countries
+      - language-code: zh
+        country-code: CN
+        timezone: Asia/Shanghai
+      - language-code: ja
+        country-code: JP
+        timezone: Asia/Tokyo
+      - language-code: ko
+        country-code: KR
+        timezone: Asia/Seoul
+      - language-code: de
+        country-code: DE
+        timezone: Europe/Berlin
+      - language-code: fr
+        country-code: FR
+        timezone: Europe/Paris
+      - language-code: hi
+        country-code: IN
+        timezone: Asia/Kolkata
