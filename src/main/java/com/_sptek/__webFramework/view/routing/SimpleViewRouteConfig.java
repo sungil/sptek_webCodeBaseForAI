@@ -13,7 +13,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  */
 @Slf4j
 @Configuration
-public class ViewControllerConfig implements WebMvcConfigurer {
+public class SimpleViewRouteConfig implements WebMvcConfigurer {
 
     /**
      * Swagger redirect와 기본 예제 화면의 view name 매핑을 등록한다.
