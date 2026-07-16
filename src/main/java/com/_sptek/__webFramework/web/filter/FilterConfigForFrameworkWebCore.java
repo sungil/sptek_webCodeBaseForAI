@@ -50,16 +50,16 @@ public class FilterConfigForFrameworkWebCore {
     }
 
     /**
-     * 로그 패턴에서 사용할 사용자/세션/correlationId MDC 값을 구성하는 필터를 등록한다.
+     * 요청 시작 시각을 request attribute에 남기는 필터를 등록한다.
      */
     @Profile(value = { "local", "dev", "stg", "prd" })
-    @HasAnnotationOnMain_At_Bean(Enable_MdcTagging_At_Main.class)
     @Bean
-    public FilterRegistrationBean<MakeMdcFilter> makeMdcFilter() {
-        FilterRegistrationBean<MakeMdcFilter> filterRegistrationBean = new FilterRegistrationBean<>();
-        filterRegistrationBean.setFilter(new MakeMdcFilter());
+    public FilterRegistrationBean<MakeRequestTimestampFilter> makeRequestTimestampFilter() {
+        FilterRegistrationBean<MakeRequestTimestampFilter> filterRegistrationBean = new FilterRegistrationBean<>();
+        filterRegistrationBean.setFilter(new MakeRequestTimestampFilter());
         filterRegistrationBean.addUrlPatterns("/*");
-        filterRegistrationBean.setOrder(MDC_FILTER_ORDER);
+        filterRegistrationBean.setOrder(REQUEST_TIMESTAMP_FILTER_ORDER);
+        //filterRegistrationBean.setDispatcherTypes(EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR));
         return filterRegistrationBean;
     }
 
@@ -78,16 +78,31 @@ public class FilterConfigForFrameworkWebCore {
     }
 
     /**
-     * 요청 시작 시각을 request attribute에 남기는 필터를 등록한다.
+     * 로그 패턴에서 사용할 사용자/세션/correlationId MDC 값을 구성하는 필터를 등록한다.
      */
     @Profile(value = { "local", "dev", "stg", "prd" })
+    @HasAnnotationOnMain_At_Bean(Enable_MdcTagging_At_Main.class)
     @Bean
-    public FilterRegistrationBean<MakeRequestTimestampFilter> makeRequestTimestampFilter() {
-        FilterRegistrationBean<MakeRequestTimestampFilter> filterRegistrationBean = new FilterRegistrationBean<>();
-        filterRegistrationBean.setFilter(new MakeRequestTimestampFilter());
+    public FilterRegistrationBean<MakeMdcFilter> makeMdcFilter() {
+        FilterRegistrationBean<MakeMdcFilter> filterRegistrationBean = new FilterRegistrationBean<>();
+        filterRegistrationBean.setFilter(new MakeMdcFilter());
         filterRegistrationBean.addUrlPatterns("/*");
-        filterRegistrationBean.setOrder(REQUEST_TIMESTAMP_FILTER_ORDER);
-        //filterRegistrationBean.setDispatcherTypes(EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR));
+        filterRegistrationBean.setOrder(MDC_FILTER_ORDER);
+        return filterRegistrationBean;
+    }
+
+    /**
+     * API 경로에 CORS 응답 헤더와 preflight 응답 처리를 적용하는 필터를 등록한다.
+     */
+    @Profile(value = { "local", "dev", "stg", "prd" })
+    @HasAnnotationOnMain_At_Bean(Enable_CorsPolicyFilter_At_Main.class)
+    @Bean
+    public FilterRegistrationBean<CorsPolicyFilter> corsPolicyFilter(CorsProperties corsProperties) {
+        //log.debug("corsPolicyFilter is applied.");
+        FilterRegistrationBean<CorsPolicyFilter> filterRegistrationBean = new FilterRegistrationBean<>();
+        filterRegistrationBean.setFilter(new CorsPolicyFilter(corsProperties));
+        filterRegistrationBean.addUrlPatterns("/api/*");
+        filterRegistrationBean.setOrder(CORS_POLICY_FILTER_ORDER);
         return filterRegistrationBean;
     }
 
@@ -104,21 +119,6 @@ public class FilterConfigForFrameworkWebCore {
         filterRegistrationBean.addUrlPatterns("/*");
         filterRegistrationBean.setOrder(REQ_RES_DETAIL_LOG_FILTER_ORDER);
         //filterRegistrationBean.setDispatcherTypes(EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR));
-        return filterRegistrationBean;
-    }
-
-    /**
-     * API 경로에 CORS 응답 헤더와 preflight 응답 처리를 적용하는 필터를 등록한다.
-     */
-    @Profile(value = { "local", "dev", "stg", "prd" })
-    @HasAnnotationOnMain_At_Bean(Enable_CorsPolicyFilter_At_Main.class)
-    @Bean
-    public FilterRegistrationBean<CorsPolicyFilter> corsPolicyFilter(CorsProperties corsProperties) {
-        //log.debug("corsPolicyFilter is applied.");
-        FilterRegistrationBean<CorsPolicyFilter> filterRegistrationBean = new FilterRegistrationBean<>();
-        filterRegistrationBean.setFilter(new CorsPolicyFilter(corsProperties));
-        filterRegistrationBean.addUrlPatterns("/api/*");
-        filterRegistrationBean.setOrder(CORS_POLICY_FILTER_ORDER);
         return filterRegistrationBean;
     }
 }
