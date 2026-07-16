@@ -34,7 +34,7 @@ public class SwaggerOpenApiConfig {
      */
     @Bean
     public OpenAPI openAPI() {
-        //default url : http://localhost:8080/swagger-ui.html
+        //default url : https://localhost:8080/swagger-ui.html
 
         String title = "API";
         String version = "unknown";
