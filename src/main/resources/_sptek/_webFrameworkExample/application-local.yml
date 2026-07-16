@@ -39,6 +39,7 @@ spring:
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/jwt/jwt.yml
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/locale/locale-local.yml
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/logging/logging.yml
+      - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/multipart/multipart-local.yml
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/mybatis/mybatis.yml
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/outbound/outbound.yml
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/serialization/serialization-local.yml

@@ -2,52 +2,43 @@ package com._sptek.__webFramework.web.multipart;
 
 
 import jakarta.servlet.MultipartConfigElement;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.web.servlet.MultipartConfigFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.web.servlet.MultipartProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.util.unit.DataSize;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * Servlet multipart 요청 처리를 위한 resolver와 업로드 크기 제한을 등록하는 설정.
+ * Servlet multipart 요청 처리를 위한 resolver와 업로드 제한 정책을 등록하는 설정.
  *
- * <p>Spring MVC가 multipart/form-data 요청을 파일 업로드로 해석하게 하며,
- * 전역 max size는 넉넉하게 두고 업무 API 내부에서 별도 검증하는 현재 정책을 반영한다.</p>
+ * <p>Spring MVC가 multipart/form-data 요청을 파일 업로드로 해석하게 하며, 크기 제한과
+ * 임시 저장 위치 같은 환경별 정책은 {@code spring.servlet.multipart.*} 설정을 따른다.</p>
  */
-@Slf4j
 @Configuration
-public class MultipartResolverConfig implements WebMvcConfigurer {
+@EnableConfigurationProperties(MultipartProperties.class)
+@ConditionalOnProperty(prefix = "spring.servlet.multipart", name = "enabled", havingValue = "true", matchIfMissing = true)
+public class MultipartResolverConfig {
 
     /**
      * 표준 Servlet multipart resolver를 Spring MVC의 multipartResolver Bean으로 등록한다.
      */
     @Bean(name = "multipartResolver")
-    public StandardServletMultipartResolver multipartResolver() {
+    public StandardServletMultipartResolver multipartResolver(MultipartProperties multipartProperties) {
         StandardServletMultipartResolver multipartResolver = new StandardServletMultipartResolver();
+        multipartResolver.setResolveLazily(multipartProperties.isResolveLazily());
         return multipartResolver;
     }
 
     /**
-     * Servlet multipart request/file 최대 크기 제한을 설정한다.
+     * Servlet multipart request/file 최대 크기와 임시 저장 위치를 설정한다.
      *
-     * <p>MaxUploadSizeExceededException이 공통 예외 응답으로 안정적으로 변환되지 않는 제약 때문에
-     * 이 값은 상한 안전장치로 두고, 실제 업무 제한은 각 API 내부에서 검사한다.</p>
+     * <p>Spring Boot의 {@code spring.servlet.multipart.*} 표준 설정을 사용해 환경별 업로드
+     * 상한을 업무 프로젝트 프로퍼티에서 조정할 수 있게 한다.</p>
      */
     @Bean
-    public MultipartConfigElement multipartConfigElement() {
-        // max 초과시 발생하는 MaxUploadSizeExceededException 에 대해서 Ex 핸들러 에서 catch 가 안되는 문제가 있음 (DefaultHandlerExceptionResolver 에서 직접 처리고 response 커밋이 이루어 지는듯)
-        // 그래서 MaxUploadSizeExceededException 에 대해 api 규격화된 json 구성이 어려움
-        // 그래서 좋은 방법은 아니지만.. spring 단의 설정 값은 넉넉히 하고.. 각 api 내부 에서 최대값 처리를 하는 것으로.. 방향을 잡음 (ServiceErrorCodeEnum.MULTIPARTFILE_UPLOAD_ERROR)
-        long maxUploadSizePerFile = 100 * 1024 * 1024; //M
-        long maxUploadSize = 100 * 1024 * 1024; //M
-
-        MultipartConfigFactory factory = new MultipartConfigFactory();
-        factory.setMaxRequestSize(DataSize.ofBytes(maxUploadSize));
-        factory.setMaxFileSize(DataSize.ofBytes(maxUploadSizePerFile));
-
-        return factory.createMultipartConfig();
+    public MultipartConfigElement multipartConfigElement(MultipartProperties multipartProperties) {
+        return multipartProperties.createMultipartConfig();
     }
 
 
