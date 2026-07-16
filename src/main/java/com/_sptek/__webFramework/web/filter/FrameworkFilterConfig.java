@@ -25,7 +25,7 @@ import org.springframework.web.filter.RequestContextFilter;
  */
 @Slf4j
 @Configuration
-public class FilterConfigForFrameworkWebCore {
+public class FrameworkFilterConfig {
     // Spring Security 전후로 필요한 필터 위치를 명시한다. ReqResDetailLogFilter는 HandlerMethod 결정 이후 로그 출력을 전제로 한다.
     private static final int REQUEST_CONTEXT_FILTER_ORDER = Ordered.HIGHEST_PRECEDENCE;
     private static final int REQUEST_TIMESTAMP_FILTER_ORDER = Ordered.HIGHEST_PRECEDENCE + 5;
