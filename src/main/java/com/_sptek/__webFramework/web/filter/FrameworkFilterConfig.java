@@ -69,9 +69,9 @@ public class FrameworkFilterConfig {
     @Profile(value = { "local", "dev", "stg", "prd" })
     @HasAnnotationOnMain_At_Bean(Enable_MinorRequestOptimization_At_Main.class)
     @Bean
-    public FilterRegistrationBean<NoSessionFilterForMinorRequest> noSessionFilterForMinorRequest() {
-        FilterRegistrationBean<NoSessionFilterForMinorRequest> filterRegistrationBean = new FilterRegistrationBean<>();
-        filterRegistrationBean.setFilter(new NoSessionFilterForMinorRequest());
+    public FilterRegistrationBean<MinorRequestSessionRepositorySkipFilter> noSessionFilterForMinorRequest() {
+        FilterRegistrationBean<MinorRequestSessionRepositorySkipFilter> filterRegistrationBean = new FilterRegistrationBean<>();
+        filterRegistrationBean.setFilter(new MinorRequestSessionRepositorySkipFilter());
         filterRegistrationBean.addUrlPatterns("/*");
         filterRegistrationBean.setOrder(NO_SESSION_FILTER_FOR_MINOR_REQUEST_ORDER);
         return filterRegistrationBean;

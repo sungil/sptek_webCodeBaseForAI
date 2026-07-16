@@ -23,7 +23,7 @@ import java.io.IOException;
 //@Profile(value = { "local", "dev", "stg", "prd" })
 //@HasAnnotationOnMain_InBean(EnableNoFilterAndSessionForMinorRequest_InMain.class)
 //@WebFilter(urlPatterns = "/*")
-public class NoSessionFilterForMinorRequest extends OncePerRequestFilter {
+public class MinorRequestSessionRepositorySkipFilter extends OncePerRequestFilter {
     private static final String SPRING_SESSION_REPOSITORY_FILTER_CLASS_NAME = "org.springframework.session.web.http.SessionRepositoryFilter";
     private static final String ALREADY_FILTERED_ATTRIBUTE_SUFFIX = ".FILTERED";
     static final String SPRING_SESSION_REPOSITORY_FILTERED_ATTRIBUTE =
