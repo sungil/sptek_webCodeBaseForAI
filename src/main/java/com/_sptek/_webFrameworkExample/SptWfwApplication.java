@@ -16,7 +16,7 @@ import com._sptek.__webFramework.view.model.Enable_UserAuthenticationToModelAttr
 import com._sptek.__webFramework.web.cors.Enable_CorsPolicyFilter_At_Main;
 import com._sptek.__webFramework.web.error.Enable_ResponseOfApplicationGlobalException_At_Main;
 import com._sptek.__webFramework.web.filter.Enable_MinorRequestOptimization_At_Main;
-import com._sptek.__webFramework.web.publicResourceCache.Enable_HttpCachePublicForStaticResource_At_Main;
+import com._sptek.__webFramework.web.resource.Enable_HttpCacheForAssets_At_Main;
 import com._sptek.__webFramework.web.locale.Enable_LocaleSupport_At_Main;
 import com._sptek.__webFramework.web.xss.Enable_XssProtectForApi_At_Main;
 import com._sptek.__webFramework.bootstrap.testSupport.TestAnnotation_At_All;
@@ -83,7 +83,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 /* UTIL */
 @Enable_MinorRequestOptimization_At_Main //minor 한 request 에 대해 session 생성 방지 (세션 관리 효율)
-@Enable_HttpCachePublicForStaticResource_At_Main
+@Enable_HttpCacheForAssets_At_Main
 @Enable_RequestTimestampLog_At_Main
 
 public class SptWfwApplication{

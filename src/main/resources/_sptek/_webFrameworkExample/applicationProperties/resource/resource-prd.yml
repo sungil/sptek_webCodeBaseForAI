@@ -1,0 +1,20 @@
+web-framework:
+  static-resource:
+    locations:
+      - classpath:/_sptek/_webFrameworkExample/static/
+    swagger:
+      ui-path-pattern: swagger-ui.html
+      ui-location: classpath:/resources/
+      webjars-path-pattern: /webjars/**
+      webjars-location: classpath:/resources/webjars/
+    framework-js:
+      path-pattern: /js/_framework/**
+      location: classpath:/_sptek/_webFrameworkExample/_framework/
+  assets:
+    cache:
+      path-pattern: /assets/**
+      locations:
+        - classpath:/_sptek/_webFrameworkExample/static/assets/
+      max-age: 365d
+      public-cache: true
+      immutable: true

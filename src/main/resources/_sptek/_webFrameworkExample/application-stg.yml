@@ -44,6 +44,7 @@ spring:
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/multipart/multipart-stg.yml
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/mybatis/mybatis.yml
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/outbound/outbound.yml
+      - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/resource/resource-stg.yml
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/serialization/serialization-stg.yml
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/session/session.yml
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/swagger/swagger.yml
