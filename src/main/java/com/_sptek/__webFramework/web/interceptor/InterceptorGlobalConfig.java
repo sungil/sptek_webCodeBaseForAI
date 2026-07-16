@@ -82,12 +82,6 @@ public class InterceptorGlobalConfig implements WebMvcConfigurer {
                     .excludePathPatterns(SecurityUtil.getStaticResourceRequestPatterns());
         }
 
-//        interceptorRegistry.addInterceptor(new InterceptorConfigSupportForRequestMethod(new ExampleInterceptor())
-//                //2차 필터 조건, 아래 GET의 경우 1차 대상에 포함되나 무조건 제외, api/v1 POST는 인정, api/v2 POST는 제외
-//                .excludePathPattern("/api/**", HttpMethod.GET)
-//                .excludePathPattern("/api/v2/**", HttpMethod.POST)
-//                ).addPathPatterns("/api/**").excludePathPatterns(SecureUtil.getStaticResourceRequestPatterns()); //1차 필터 조건
-
         WebMvcConfigurer.super.addInterceptors(interceptorRegistry);
     }
 
