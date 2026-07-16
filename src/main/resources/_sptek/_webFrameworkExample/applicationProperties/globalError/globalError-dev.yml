@@ -12,5 +12,7 @@ server:
 
 web-framework:
   error:
-    custom-view:
-      enabled: true # false 이면 프레임워크 공통 에러 View 대신 Spring 기본 에러 처리 흐름을 사용한다.
+    application-global:
+      enabled: true # false 이면 Controller 외부 /error 진입에 대한 프레임워크 공통 처리를 사용하지 않는다.
+    view-global:
+      enabled: true # false 이면 View Controller 내부 예외에 대한 프레임워크 공통 에러 View 처리를 사용하지 않는다.

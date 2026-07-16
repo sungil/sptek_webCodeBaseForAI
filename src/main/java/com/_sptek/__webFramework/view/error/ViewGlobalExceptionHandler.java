@@ -20,7 +20,7 @@ import org.springframework.web.client.HttpClientErrorException;
 @Slf4j
 // todo: (중요) Enable_ResponseOfViewGlobalException_At_ViewController 가 적용된 클레스만 처리 (View)
 @ControllerAdvice(annotations = Enable_ResponseOfViewGlobalException_At_ViewController.class)
-@ConditionalOnProperty(name = "web-framework.error.custom-view.enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(name = "web-framework.error.view-global.enabled", havingValue = "true", matchIfMissing = false)
 
 public class ViewGlobalExceptionHandler {
     // todo: viewController에서 발생되는 에러의 경우 사용자에게 공통된 에러 페이지를 보여주는것 외에 딱히 다른 처리가 있을수 있을까? 그래서 현재는 httpsttus 코드도 상세히 분리하고 있지않음, 고민필요.

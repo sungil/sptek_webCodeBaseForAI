@@ -22,7 +22,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 @Slf4j
 @RequiredArgsConstructor
 @HasAnnotationOnMain_At_Bean(Enable_ResponseOfApplicationGlobalException_At_Main.class)
-@ConditionalOnProperty(name = "web-framework.error.custom-view.enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(name = "web-framework.error.application-global.enabled", havingValue = "true", matchIfMissing = false)
 @Controller
 
 public class CustomErrorController implements ErrorController {

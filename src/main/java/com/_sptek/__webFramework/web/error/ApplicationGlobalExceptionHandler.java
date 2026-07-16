@@ -75,19 +75,27 @@ public class ApplicationGlobalExceptionHandler {
     }
 
     @ExceptionHandler(ResponseStatusException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Object responseStatusException(Exception ex, HttpServletRequest request, HttpServletResponse response) throws Exception {
-        return handleError(request, response, ex, CommonErrorCodeEnum.INTERNAL_SERVER_ERROR, "error/commonInternalError");
+    public Object responseStatusException(ResponseStatusException ex, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        HttpStatus httpStatus = HttpStatus.resolve(ex.getStatusCode().value());
+        if (httpStatus == null) {
+            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+        return handleError(request, response, ex, commonErrorCodeOf(httpStatus), viewNameOf(httpStatus), httpStatus);
     }
 
     //view 와 api 요청을 구분 하여 최종 처리 함 (이곳에서 처리되는 경우는 ReqResDeailLogFilter 로 진입이 불가능한 케이스임으로 여기로 로그를 처리함)
     private Object handleError(HttpServletRequest request, HttpServletResponse response, Exception ex, CommonErrorCodeEnum commonErrorCodeEnum, String viewName) throws Exception {
+        return handleError(request, response, ex, commonErrorCodeEnum, viewName, commonErrorCodeEnum.getHttpStatusCode());
+    }
+
+    private Object handleError(HttpServletRequest request, HttpServletResponse response, Exception ex, CommonErrorCodeEnum commonErrorCodeEnum, String viewName, HttpStatus httpStatus) throws Exception {
         LoggingUtil.exLoggingAndReturnThrowable(log, ex);
+        response.setStatus(httpStatus.value());
 
         if (RequestUtil.isApiRequest(request)) {
             ApiCommonErrorResponseDto apiCommonErrorResponseDto = ApiCommonErrorResponseDto.of(commonErrorCodeEnum, ThrowableUnwrapSupport.getRealException(ex).getMessage());
             LoggingUtil.reqResDetailLogging(log, request, response, apiCommonErrorResponseDto, "Req Res Detail Log From " + this.getClass().getSimpleName());
-            return new ResponseEntity<>(apiCommonErrorResponseDto, commonErrorCodeEnum.getHttpStatusCode());
+            return new ResponseEntity<>(apiCommonErrorResponseDto, httpStatus);
         } else {
             //view 요청에서 발생한 에러의 경우 이후에 구체적으로 어떤 에러가 발생했는지 정확히 알수 없기 때문에 저장해서 사용함.
             request.setAttribute(LoggingConstants.REQ_ATTRIBUTE_FOR_LOGGING_EXCEPTION_MESSAGE, ThrowableUnwrapSupport.getRealException(ex).getMessage());
@@ -95,5 +103,25 @@ public class ApplicationGlobalExceptionHandler {
             return viewName;
             //return "error/XXX" // spring 호출 페이지와 통일할 수 도 있음
         }
+    }
+
+    private CommonErrorCodeEnum commonErrorCodeOf(HttpStatus httpStatus) {
+        return switch (httpStatus) {
+            case BAD_REQUEST -> CommonErrorCodeEnum.BAD_REQUEST_ERROR;
+            case NOT_FOUND -> CommonErrorCodeEnum.NOT_FOUND_ERROR;
+            case METHOD_NOT_ALLOWED -> CommonErrorCodeEnum.METHOD_NOT_ALLOWED;
+            case PAYLOAD_TOO_LARGE -> CommonErrorCodeEnum.PAYLOAD_EXCEEDED_ERROR;
+            case FORBIDDEN, UNAUTHORIZED -> CommonErrorCodeEnum.FORBIDDEN_ERROR;
+            default -> CommonErrorCodeEnum.INTERNAL_SERVER_ERROR;
+        };
+    }
+
+    private String viewNameOf(HttpStatus httpStatus) {
+        return switch (httpStatus) {
+            case NOT_FOUND -> "error/commonNotfoundError";
+            case METHOD_NOT_ALLOWED -> "error/commonMethodNotSupportError";
+            case FORBIDDEN, UNAUTHORIZED -> "error/commonAuthenticationError";
+            default -> "error/commonInternalError";
+        };
     }
 }
