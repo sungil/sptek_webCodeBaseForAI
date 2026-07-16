@@ -20,7 +20,7 @@ import java.time.Duration;
 @Configuration
 @RequiredArgsConstructor
 
-public class SpecificSchedulerExecutorConfig {
+public class MonitoringSchedulerExecutorConfig {
     // FW 의 Scheduler 는 보다 안정적인 동작을 위해 @Scheduled 에서 사용하는 공용 ThreadPoolTaskScheduler 를 사용하지 않고
     // 각각 독립된 별도의 ThreadPoolTaskScheduler 를 생성하여 사용함
 
