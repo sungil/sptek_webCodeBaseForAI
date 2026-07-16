@@ -1,0 +1,16 @@
+web-framework:
+  message-conversion:
+    json:
+      pretty-print: false
+      default-charset: UTF-8
+      supported-media-types:
+        - application/json
+        - application/*+json
+    string:
+      default-charset: UTF-8
+      write-accept-charset: false
+  object-mapper:
+    fail-on-unknown-properties: false
+    include-non-null-only: true
+    default-locale: system
+    default-timezone: system

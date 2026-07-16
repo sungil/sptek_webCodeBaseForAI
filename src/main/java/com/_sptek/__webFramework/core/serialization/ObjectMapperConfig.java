@@ -6,10 +6,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com._sptek.__webFramework.web.xss.Enable_XssProtectForApi_At_Main;
 import com._sptek.__webFramework.bootstrap.annotationCondition.HasAnnotationOnMain_At_Bean;
 import com._sptek.__webFramework.web.xss.XssProtectHelper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.time.ZoneId;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -21,7 +23,10 @@ import java.util.TimeZone;
  */
 @Slf4j
 @Configuration
+@RequiredArgsConstructor
 public class ObjectMapperConfig {
+    private final ObjectMapperProperties objectMapperProperties;
+
     //jason->object, object->jason
     //Locale 과 TimeZone 은 system default로 설정함 (user 별 변환이 필요시 해당 user의 locale 을 이용해서 변환된 string 값을 내리도록 할것)
 
@@ -33,12 +38,7 @@ public class ObjectMapperConfig {
     @HasAnnotationOnMain_At_Bean(value = Enable_XssProtectForApi_At_Main.class, negate = true)
     public ObjectMapper objectMapperWithoutXssProtectHelper() {
         //locale, timeZone등 공통요소에 대한 setting을 할수 있다.
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setLocale(Locale.getDefault());
-        objectMapper.setTimeZone(TimeZone.getDefault());
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL); //null 값은 json에서 제외
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        return objectMapper;
+        return configureBaseObjectMapper(new ObjectMapper());
     }
 
     /**
@@ -48,12 +48,34 @@ public class ObjectMapperConfig {
     @HasAnnotationOnMain_At_Bean(value = Enable_XssProtectForApi_At_Main.class, negate = false)
     public ObjectMapper objectMapperWithXssProtectHelper() {
         //locale, timeZone등 공통요소에 대한 setting을 할수 있다.
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setLocale(Locale.getDefault());
-        objectMapper.setTimeZone(TimeZone.getDefault());
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL); //null 값은 json에서 제외
+        ObjectMapper objectMapper = configureBaseObjectMapper(new ObjectMapper());
         objectMapper.getFactory().setCharacterEscapes(new XssProtectHelper()); //Xss 방지 적용
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         return objectMapper;
+    }
+
+    private ObjectMapper configureBaseObjectMapper(ObjectMapper objectMapper) {
+        objectMapper.setLocale(resolveLocale());
+        objectMapper.setTimeZone(resolveTimeZone());
+        objectMapper.setSerializationInclusion(objectMapperProperties.isIncludeNonNullOnly()
+                ? JsonInclude.Include.NON_NULL
+                : JsonInclude.Include.ALWAYS);
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, objectMapperProperties.isFailOnUnknownProperties());
+        return objectMapper;
+    }
+
+    private Locale resolveLocale() {
+        String defaultLocale = objectMapperProperties.getDefaultLocale();
+        if (defaultLocale == null || defaultLocale.isBlank() || "system".equalsIgnoreCase(defaultLocale)) {
+            return Locale.getDefault();
+        }
+        return Locale.forLanguageTag(defaultLocale);
+    }
+
+    private TimeZone resolveTimeZone() {
+        String defaultTimezone = objectMapperProperties.getDefaultTimezone();
+        if (defaultTimezone == null || defaultTimezone.isBlank() || "system".equalsIgnoreCase(defaultTimezone)) {
+            return TimeZone.getDefault();
+        }
+        return TimeZone.getTimeZone(ZoneId.of(defaultTimezone));
     }
 }
