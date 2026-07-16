@@ -9,6 +9,7 @@ import com._sptek.__webFramework.web.cors.Enable_CorsPolicyFilter_At_Main;
 import com._sptek.__webFramework.observability.mdc.Enable_MdcTagging_At_Main;
 import com._sptek.__webFramework.bootstrap.annotationCondition.HasAnnotationOnMain_At_Bean;
 import com._sptek.__webFramework.web.cors.CorsProperties;
+import com._sptek.__webFramework.web.session.MinorRequestSessionRepositorySkipFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
