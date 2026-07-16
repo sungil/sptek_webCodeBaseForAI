@@ -307,6 +307,7 @@ public class FrameworkSecurityFilterChainConfig {
 
                 .authorizeHttpRequests(authorize ->
                         authorize
+                                .requestMatchers(HttpMethod.OPTIONS, "/api/**").permitAll()
                                 // 필요시 추가해 나감.
                                 .requestMatchers(exampleApiPattern + "login/**").authenticated() //로그인 만 되어 있으면 되는 경우
                                 .requestMatchers(exampleApiPattern + "auth-special/**").hasAuthority(AuthorityEnum.AUTH_SPECIAL_FOR_TEST.name()) //필터 에서 특정 authority 를 직접 확인 하는 케이스+

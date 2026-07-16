@@ -8,12 +8,11 @@ import com._sptek.__webFramework.web.cors.CorsPolicyFilter;
 import com._sptek.__webFramework.web.cors.Enable_CorsPolicyFilter_At_Main;
 import com._sptek.__webFramework.observability.mdc.Enable_MdcTagging_At_Main;
 import com._sptek.__webFramework.bootstrap.annotationCondition.HasAnnotationOnMain_At_Bean;
-import com._sptek.__webFramework.web.cors.CorsPropertiesVo;
+import com._sptek.__webFramework.web.cors.CorsProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.Ordered;
 import org.springframework.web.filter.RequestContextFilter;
@@ -107,12 +106,11 @@ public class FilterConfigForFrameworkWebCore {
      */
     @Profile(value = { "local", "dev", "stg", "prd" })
     @HasAnnotationOnMain_At_Bean(Enable_CorsPolicyFilter_At_Main.class)
-    @DependsOn({"corsPropertiesVo"})
     @Bean
-    public FilterRegistrationBean<CorsPolicyFilter> corsPolicyFilter(CorsPropertiesVo corsPropertiesVo) {
+    public FilterRegistrationBean<CorsPolicyFilter> corsPolicyFilter(CorsProperties corsProperties) {
         //log.debug("corsPolicyFilter is applied.");
         FilterRegistrationBean<CorsPolicyFilter> filterRegistrationBean = new FilterRegistrationBean<>();
-        filterRegistrationBean.setFilter(new CorsPolicyFilter(corsPropertiesVo));
+        filterRegistrationBean.setFilter(new CorsPolicyFilter(corsProperties));
         filterRegistrationBean.addUrlPatterns("/api/*");
         //filterRegistrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);  // Spring 필터 순서 설정
         return filterRegistrationBean;

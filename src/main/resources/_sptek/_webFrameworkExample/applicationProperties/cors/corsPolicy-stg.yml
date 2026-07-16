@@ -1,14 +1,24 @@
-#cors 관련 옵션 설정
+# CORS 관련 옵션 설정
 cors:
   options:
-    #클라이언트가 보낸 origin 값이 accessControlAllowOrigin 에 포함되어 있지 않은 경우 어떤 orging 값을 보낼지의 설정임 (*로 보내면 모두 허용, 허용하지 않을려면 그냥 자신의 대표 url로 보냄)
-    defaultAccessControlAllowOrigin: "https://back.localhost"
-
-    #내가 허용할 url목록(공백 없이 ,로 구분, port가 있는 경우 명시)
-    accessControlAllowOrigin: "http://back.localhost,https://back.localhost,http://front.localhost,https://front.localhost"
-
-    #클라이언트가 option 메소드로 확인을 요청할때 알려주는 요소들
-    accessControlAllowMethods: "GET, POST, PUT, DELETE, OPTIONS"
-    accessControlAllowCredentials: true
-    accessControlMaxAge: 3600
-    accessControlAllowHeaders: "Origin, X-Requested-With, Content-Type, Accept, Authorization, Etag, If-None-Match"
+    allowed-origins:
+      - http://back.localhost
+      - https://back.localhost
+      - http://front.localhost
+      - https://front.localhost
+    allowed-methods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - OPTIONS
+    allowed-headers:
+      - Origin
+      - X-Requested-With
+      - Content-Type
+      - Accept
+      - Authorization
+      - Etag
+      - If-None-Match
+    allow-credentials: true
+    max-age: 3600
