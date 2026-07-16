@@ -10,4 +10,7 @@ server:
     path: error #에러 처리에 대한 뷰 경로
     whitelabel.enabled: false #스프링의 기본 에러 페이지(Whitelabel Error Page)를 사용할지
 
-    ignoreCustomErrorViewForDebug: false #디버깅을 위해 에러 내용을 포함하는 에러 페이지로 전환 할지 여부 (상용 에서는 false 적용)
+web-framework:
+  error:
+    custom-view:
+      enabled: true # false 이면 프레임워크 공통 에러 View 대신 Spring 기본 에러 처리 흐름을 사용한다.
