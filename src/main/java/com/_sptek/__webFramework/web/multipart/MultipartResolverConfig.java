@@ -42,8 +42,8 @@ public class MultipartResolverConfig {
     }
 
 
-//    // todo : MaxUploadSizeExceededException 이 발생 했을때 ex를 catch 하기 위해서 아래와 같이 시도 했으나.. CustomErrorController 로 진입 되지 않음
-//    // todo : DefaultHandlerExceptionResolver 에서 http status 만 적용 해서 바로 response 커밋을 직접 하는 것으로 추측 함
+//    // NOTE : MaxUploadSizeExceededException 이 발생 했을때 ex를 catch 하기 위해서 아래와 같이 시도 했으나.. CustomErrorController 로 진입 되지 않음
+//    // NOTE : DefaultHandlerExceptionResolver 에서 http status 만 적용 해서 바로 response 커밋을 직접 하는 것으로 추측 함
 //    @Bean
 //    public ErrorPageRegistrar errorPageRegistrar() {
 //        return registry -> registry.addErrorPages(
