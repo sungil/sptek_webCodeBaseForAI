@@ -3,7 +3,7 @@ package com._sptek.__webFramework.observability.timing;
 import com._sptek.__webFramework.bootstrap.registry.MainClassAnnotationRegister;
 import com._sptek.__webFramework.observability.logging.LoggingConstants;
 import com._sptek.__webFramework.security.util.SecurityUtil;
-import com._sptek.__webFramework.web.filter.Enable_NoFilterAndSessionForMinorRequest_At_Main;
+import com._sptek.__webFramework.web.filter.Enable_MinorRequestOptimization_At_Main;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -41,7 +41,7 @@ public class MakeRequestTimestampFilter extends OncePerRequestFilter {
     public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
         //log.debug("MakeRequestTimestampFilter start");
 
-        if (MainClassAnnotationRegister.hasAnnotation(Enable_NoFilterAndSessionForMinorRequest_At_Main.class)) {
+        if (MainClassAnnotationRegister.hasAnnotation(Enable_MinorRequestOptimization_At_Main.class)) {
             if (SecurityUtil.isNotEssentialRequest() || SecurityUtil.isStaticResourceRequest()) {
                 filterChain.doFilter(request, response);
                 return;

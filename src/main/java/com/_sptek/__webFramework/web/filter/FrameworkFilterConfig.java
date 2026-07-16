@@ -67,7 +67,7 @@ public class FrameworkFilterConfig {
      * static 또는 중요도가 낮은 요청에서 Spring Session 저장소 접근을 줄이는 필터를 등록한다.
      */
     @Profile(value = { "local", "dev", "stg", "prd" })
-    @HasAnnotationOnMain_At_Bean(Enable_NoFilterAndSessionForMinorRequest_At_Main.class)
+    @HasAnnotationOnMain_At_Bean(Enable_MinorRequestOptimization_At_Main.class)
     @Bean
     public FilterRegistrationBean<NoSessionFilterForMinorRequest> noSessionFilterForMinorRequest() {
         FilterRegistrationBean<NoSessionFilterForMinorRequest> filterRegistrationBean = new FilterRegistrationBean<>();

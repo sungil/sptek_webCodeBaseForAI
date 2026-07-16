@@ -13,5 +13,5 @@ import java.lang.annotation.Target;
  * <p>{@code FilterConfigForFrameworkWebCore}가 no-session 필터를 등록하고,
  * 여러 필터가 {@code MainClassAnnotationRegister}로 이 애노테이션을 확인해 minor request 처리 방식을 분기한다.</p>
  */
-public @interface Enable_NoFilterAndSessionForMinorRequest_At_Main {
+public @interface Enable_MinorRequestOptimization_At_Main {
 }
