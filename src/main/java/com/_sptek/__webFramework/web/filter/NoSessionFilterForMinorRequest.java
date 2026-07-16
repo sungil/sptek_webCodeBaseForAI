@@ -24,6 +24,11 @@ import java.io.IOException;
 //@HasAnnotationOnMain_InBean(EnableNoFilterAndSessionForMinorRequest_InMain.class)
 //@WebFilter(urlPatterns = "/*")
 public class NoSessionFilterForMinorRequest extends OncePerRequestFilter {
+    private static final String SPRING_SESSION_REPOSITORY_FILTER_CLASS_NAME = "org.springframework.session.web.http.SessionRepositoryFilter";
+    private static final String ALREADY_FILTERED_ATTRIBUTE_SUFFIX = ".FILTERED";
+    static final String SPRING_SESSION_REPOSITORY_FILTERED_ATTRIBUTE =
+            SPRING_SESSION_REPOSITORY_FILTER_CLASS_NAME + ALREADY_FILTERED_ATTRIBUTE_SUFFIX;
+
     /*
     org.springframework.session:spring-session-data-redis 을 사용하게 되면 SessionRepositoryFilter 가 자동 등록 되게 되는데
     이는 http 기본 세션 관리 방식이 아닌 SessionRepositoryFilter 를 통해(redis 같은) 처리 하게 되는 의미임
@@ -49,7 +54,7 @@ public class NoSessionFilterForMinorRequest extends OncePerRequestFilter {
      public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
         // 중용하지 않은 req 에 대해 session 비 생성 처리
         if (SecurityUtil.isNotEssentialRequest(request) || SecurityUtil.isStaticResourceRequest(request)) {
-            request.setAttribute("org.springframework.session.web.http.SessionRepositoryFilter.FILTERED", Boolean.TRUE); //세션 처리를 끝낸것 처럼 강제 세팅함
+            request.setAttribute(SPRING_SESSION_REPOSITORY_FILTERED_ATTRIBUTE, Boolean.TRUE); //세션 처리를 끝낸것 처럼 강제 세팅함
             filterChain.doFilter(request, response);
             return;
         }

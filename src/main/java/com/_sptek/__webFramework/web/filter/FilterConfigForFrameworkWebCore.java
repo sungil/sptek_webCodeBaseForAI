@@ -26,7 +26,13 @@ import org.springframework.web.filter.RequestContextFilter;
 @Slf4j
 @Configuration
 public class FilterConfigForFrameworkWebCore {
-    // todo: 아래 필터 설정보다 Spring Security Filter Chain 이 항상 우선함
+    // Spring Security 전후로 필요한 필터 위치를 명시한다. ReqResDetailLogFilter는 HandlerMethod 결정 이후 로그 출력을 전제로 한다.
+    private static final int REQUEST_CONTEXT_FILTER_ORDER = Ordered.HIGHEST_PRECEDENCE;
+    private static final int REQUEST_TIMESTAMP_FILTER_ORDER = Ordered.HIGHEST_PRECEDENCE + 5;
+    private static final int NO_SESSION_FILTER_FOR_MINOR_REQUEST_ORDER = Ordered.HIGHEST_PRECEDENCE + 10;
+    private static final int MDC_FILTER_ORDER = Ordered.HIGHEST_PRECEDENCE + 20;
+    private static final int CORS_POLICY_FILTER_ORDER = Ordered.HIGHEST_PRECEDENCE + 30;
+    private static final int REQ_RES_DETAIL_LOG_FILTER_ORDER = 10;
 
     /**
      * 필터 내부에서도 Spring request context를 조회할 수 있게 RequestContextFilter를 가장 앞쪽에 등록한다.
@@ -39,7 +45,7 @@ public class FilterConfigForFrameworkWebCore {
         FilterRegistrationBean<RequestContextFilter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new org.springframework.web.filter.RequestContextFilter());
         filterRegistrationBean.addUrlPatterns("/*");
-        filterRegistrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);  // Spring 필터 순서를 높게 설정
+        filterRegistrationBean.setOrder(REQUEST_CONTEXT_FILTER_ORDER);  // Spring 필터 순서를 높게 설정
         return filterRegistrationBean;
     }
 
@@ -53,7 +59,7 @@ public class FilterConfigForFrameworkWebCore {
         FilterRegistrationBean<MakeMdcFilter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new MakeMdcFilter());
         filterRegistrationBean.addUrlPatterns("/*");
-        //filterRegistrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);  // Spring 필터 순서 설정
+        filterRegistrationBean.setOrder(MDC_FILTER_ORDER);
         return filterRegistrationBean;
     }
 
@@ -67,7 +73,7 @@ public class FilterConfigForFrameworkWebCore {
         FilterRegistrationBean<NoSessionFilterForMinorRequest> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new NoSessionFilterForMinorRequest());
         filterRegistrationBean.addUrlPatterns("/*");
-        //filterRegistrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);  // Spring 필터 순서 설정
+        filterRegistrationBean.setOrder(NO_SESSION_FILTER_FOR_MINOR_REQUEST_ORDER);
         return filterRegistrationBean;
     }
 
@@ -80,7 +86,7 @@ public class FilterConfigForFrameworkWebCore {
         FilterRegistrationBean<MakeRequestTimestampFilter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new MakeRequestTimestampFilter());
         filterRegistrationBean.addUrlPatterns("/*");
-        //filterRegistrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);  // Spring 필터 순서 설정
+        filterRegistrationBean.setOrder(REQUEST_TIMESTAMP_FILTER_ORDER);
         //filterRegistrationBean.setDispatcherTypes(EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR));
         return filterRegistrationBean;
     }
@@ -96,7 +102,7 @@ public class FilterConfigForFrameworkWebCore {
         FilterRegistrationBean<ReqResDetailLogFilter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new ReqResDetailLogFilter(reqResDetailLogProperties));
         filterRegistrationBean.addUrlPatterns("/*");
-        //filterRegistrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);  // Spring 필터 순서 설정
+        filterRegistrationBean.setOrder(REQ_RES_DETAIL_LOG_FILTER_ORDER);
         //filterRegistrationBean.setDispatcherTypes(EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR));
         return filterRegistrationBean;
     }
@@ -112,7 +118,7 @@ public class FilterConfigForFrameworkWebCore {
         FilterRegistrationBean<CorsPolicyFilter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new CorsPolicyFilter(corsProperties));
         filterRegistrationBean.addUrlPatterns("/api/*");
-        //filterRegistrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);  // Spring 필터 순서 설정
+        filterRegistrationBean.setOrder(CORS_POLICY_FILTER_ORDER);
         return filterRegistrationBean;
     }
 }
