@@ -27,4 +27,26 @@ class RequestUtilTest {
         assertThat(attributes).isEmpty();
         assertThat(request.getSession(false)).isNull();
     }
+
+    @Test
+    void getReqUserIpUsesFirstValidForwardedForValue() {
+        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/api/test");
+        request.addHeader("X-Forwarded-For", "unknown, 203.0.113.10, 10.0.0.1");
+        request.setRemoteAddr("127.0.0.1");
+
+        String ip = RequestUtil.getReqUserIp(request);
+
+        assertThat(ip).isEqualTo("203.0.113.10");
+    }
+
+    @Test
+    void getReqUserIpFallsBackToRemoteAddrWhenHeadersAreInvalid() {
+        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/api/test");
+        request.addHeader("X-Forwarded-For", "unknown");
+        request.setRemoteAddr("2001:db8:85a3::8a2e:370:7334");
+
+        String ip = RequestUtil.getReqUserIp(request);
+
+        assertThat(ip).isEqualTo("2001:db8:85a3::8a2e:370:7334");
+    }
 }

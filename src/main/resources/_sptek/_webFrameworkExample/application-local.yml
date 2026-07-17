@@ -31,6 +31,7 @@ spring:
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/ssl/ssl.yml
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/viewResolver/viewResolver.yml
       #cesco/__projectsCommon(_system)
+      - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/cookie/cookie-local.yml
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/cors/corsPolicy.yml
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/daoPagination/daoPagination.yml
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/datasource/datasource.yml

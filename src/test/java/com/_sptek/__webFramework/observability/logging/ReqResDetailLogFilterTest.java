@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ReqResDetailLogFilterTest {
     @Test
     void copiesResponseBodyWhenDetailLogDecisionWasMadeAfterFilterWrapping() throws ServletException, IOException {
-        ReqResDetailLogFilter filter = new ReqResDetailLogFilter();
+        ReqResDetailLogFilter filter = new ReqResDetailLogFilter(new ReqResDetailLogProperties());
         MockHttpServletRequest request = new MockHttpServletRequest("GET", "/api/log/target");
         MockHttpServletResponse response = new MockHttpServletResponse();
         FilterChain filterChain = (servletRequest, servletResponse) -> {

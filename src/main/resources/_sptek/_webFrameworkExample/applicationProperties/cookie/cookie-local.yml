@@ -1,0 +1,7 @@
+web-framework:
+  cookie:
+    defaults:
+      http-only: true
+      secure: false
+      path: /
+      same-site: Lax

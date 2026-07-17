@@ -82,6 +82,10 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 }
 
+test {
+	useJUnitPlatform()
+}
+
 //task renameStaticFilesWithTimestamp(type: Copy) {
 //	from 'src/main/resources/static'
 //	into 'build/resources/main/static'

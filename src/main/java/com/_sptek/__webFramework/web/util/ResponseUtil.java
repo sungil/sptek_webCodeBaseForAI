@@ -7,12 +7,12 @@ import com._sptek.__webFramework.core.util.TypeConvertUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.FileCopyUtils;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
-import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,7 +20,7 @@ import java.util.*;
 
 @Slf4j
 /**
- * HTTP 응답 헤더/본문 조회와 보안 파일 다운로드 응답 생성을 지원하는 유틸리티.
+ * HTTP 응답 헤더/본문 조회와 보안 파일 리소스 응답 생성을 지원하는 유틸리티.
  */
 public class ResponseUtil {
 
@@ -64,23 +64,28 @@ public class ResponseUtil {
     }
 
     /**
-     * 보안 경로 권한을 확인한 뒤 실제 저장소 파일을 byte[] ResponseEntity로 만든다.
+     * 보안 경로 권한을 확인한 뒤 실제 저장소 파일을 Resource 기반 ResponseEntity로 만든다.
      */
-    public static ResponseEntity<byte[]> makeResponseEntityFromFile(Path securedFilePath) throws Exception {
+    public static ResponseEntity<Resource> makeResponseEntityFromFile(Path securedFilePath) throws Exception {
         if (securedFilePath == null) throw new ServiceException(CommonErrorCodeEnum.BAD_REQUEST_ERROR, "securedFilePath is required");
         if (!SecurityUtil.hasPermissionForSecuredFilePath(securedFilePath)) {
             throw new ServiceException(CommonErrorCodeEnum.FORBIDDEN_ERROR);
         }
 
         Path resolvedPath = SecurityUtil.resolveStoragePath(securedFilePath);
-        File finalFile = resolvedPath.toFile();
-        //log.debug("Final request file: {}", finalFile.getAbsolutePath());
+        if (!Files.isRegularFile(resolvedPath)) {
+            throw new ServiceException(CommonErrorCodeEnum.NOT_FOUND_ERROR, "file not found");
+        }
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", Files.probeContentType(resolvedPath));
+        Resource resource = new FileSystemResource(resolvedPath);
+        MediaType mediaType = Optional.ofNullable(Files.probeContentType(resolvedPath))
+                .map(MediaType::parseMediaType)
+                .orElse(MediaType.APPLICATION_OCTET_STREAM);
 
-        byte[] fileBytes = FileCopyUtils.copyToByteArray(finalFile);
-        return new ResponseEntity<>(fileBytes, headers, HttpStatus.OK);
+        return ResponseEntity.ok()
+                .contentType(mediaType)
+                .contentLength(Files.size(resolvedPath))
+                .body(resource);
     }
 
     /**

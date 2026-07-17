@@ -8,25 +8,28 @@ import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
-import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.http.HttpHeaders;
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 
 @Slf4j
 /**
- * 현재 HTTP request의 URL, 파라미터, 헤더, 본문, 시간 추적 정보와 outbound 요청 조립을 지원하는 유틸리티.
+ * 현재 HTTP request의 URL, 파라미터, 헤더, 본문, 시간 추적 정보를 다루는 유틸리티.
  */
 public class RequestUtil {
+    private static final List<String> CLIENT_IP_HEADER_NAMES = List.of(
+            "X-Forwarded-For",
+            "Proxy-Client-IP",
+            "WL-Proxy-Client-IP",
+            "HTTP_CLIENT_IP",
+            "HTTP_X_FORWARDED_FOR"
+    );
 
     /**
      * request scheme, host, port를 조합해 현재 요청 도메인을 반환한다.
@@ -69,34 +72,15 @@ public class RequestUtil {
     }
 
     /**
-     * 프록시 헤더를 순서대로 확인해 클라이언트 IP로 사용할 값을 추출한다.
+     * 프록시 헤더를 순서대로 확인하고 X-Forwarded-For의 첫 유효 IP를 클라이언트 IP 후보로 추출한다.
      */
     public static String getReqUserIp(@NotNull HttpServletRequest request) {
-        String ip = request.getHeader("X-Forwarded-For");
-
-        if (!StringUtils.hasText(ip) || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("Proxy-Client-IP");
-        }
-        if (!StringUtils.hasText(ip) || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("WL-Proxy-Client-IP");
-        }
-        if (!StringUtils.hasText(ip) || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("HTTP_CLIENT_IP");
-        }
-        if (!StringUtils.hasText(ip) || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
-        }
-        if (!StringUtils.hasText(ip) || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getRemoteAddr();
-        }
-
-        if (!StringUtils.hasText(ip)) {
-            ip = request.getRemoteAddr();
-        }
-
-        if (ip != null && ip.length() > 23) { // IPv6
-            ip = ip.substring(0, 23);
-        }
+        String ip = CLIENT_IP_HEADER_NAMES.stream()
+                .map(request::getHeader)
+                .map(RequestUtil::firstValidIp)
+                .filter(StringUtils::hasText)
+                .findFirst()
+                .orElse(request.getRemoteAddr());
 
         log.debug("final requester ip : {}", ip);
         return ip;
@@ -166,25 +150,6 @@ public class RequestUtil {
     }
 
     /**
-     * Spring HttpHeaders 값을 Apache HttpClient 요청 객체에 추가한다.
-     */
-    public static void applyRequestHeaders(HttpUriRequest httpUriRequest, @Nullable HttpHeaders httpHeaders) {
-        if (httpHeaders == null || httpHeaders.isEmpty()) return;
-        httpHeaders.forEach((name, values) ->
-                values.forEach(value -> httpUriRequest.addHeader(name, value))
-        );
-    }
-
-    /**
-     * 문자열 또는 객체 request body를 JSON 문자열로 변환해 Apache HttpClient 요청 entity에 설정한다.
-     */
-    public static void applyRequestBody(HttpUriRequest httpUriRequest, @Nullable Object requestBody) throws Exception {
-        if (requestBody == null) return;
-        String requestBodyString = requestBody instanceof String ? requestBody.toString() : TypeConvertUtil.objectToJsonWithoutRootName(requestBody, false);
-        if (StringUtils.hasText(requestBodyString)) httpUriRequest.setEntity(new StringEntity(requestBodyString, StandardCharsets.UTF_8));
-    }
-
-    /**
      * 요청 시작 attribute와 현재 시각을 비교해 요청 처리 시간 DTO를 만든다.
      */
     public static RequestTimestampDto traceRequestDuration() {
@@ -226,6 +191,19 @@ public class RequestUtil {
                 .map(Object::toString)
                 .orElse("");
         return  (requestUri.startsWith("/api/") || requestUri.startsWith("/systemSupportApi/") || errorRequestUri.startsWith("/api/") || errorRequestUri.startsWith("/systemSupportApi/"));
+    }
+
+    private static String firstValidIp(String headerValue) {
+        if (!StringUtils.hasText(headerValue)) {
+            return "";
+        }
+
+        return Arrays.stream(headerValue.split(","))
+                .map(String::trim)
+                .filter(StringUtils::hasText)
+                .filter(value -> !"unknown".equalsIgnoreCase(value))
+                .findFirst()
+                .orElse("");
     }
 }
 

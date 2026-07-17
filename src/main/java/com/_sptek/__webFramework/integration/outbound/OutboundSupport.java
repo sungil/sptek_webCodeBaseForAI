@@ -8,7 +8,6 @@ import com._sptek.__webFramework.observability.logging.Enable_OutboundSupportDet
 import com._sptek.__webFramework.observability.logging.Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod;
 import com._sptek.__webFramework.observability.logging.LoggingConstants;
 import com._sptek.__webFramework.observability.logging.LoggingUtil;
-import com._sptek.__webFramework.web.util.RequestUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -62,8 +61,8 @@ public class OutboundSupport {
 
         if (httpHeaders == null) httpHeaders = new HttpHeaders();
         if (!StringUtils.hasText(httpHeaders.getFirst(HttpHeaders.CONTENT_TYPE))) httpHeaders.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-        RequestUtil.applyRequestHeaders(request, httpHeaders);
-        RequestUtil.applyRequestBody(request, requestBody);
+        OutboundRequestUtil.applyRequestHeaders(request, httpHeaders);
+        OutboundRequestUtil.applyRequestBody(request, requestBody);
 
         try (CloseableHttpResponse closeableHttpResponse = closeableHttpClient.execute(request)) {
             HttpHeaders responseHeaders = new HttpHeaders();
