@@ -2,7 +2,8 @@ package com._sptek._webFrameworkExample.unit.xss;
 
 import com._sptek.__webFramework.api.response.Enable_ResponseOfApiCommonSuccess_At_RestController;
 import com._sptek.__webFramework.api.response.Enable_ResponseOfApiGlobalException_At_RestController;
-import com._sptek.__webFramework.web.xss.Enable_XssProtectForApi_At_ControllerMethod;
+import com._sptek.__webFramework.web.xss.Enable_HtmlEntityEscapeForJsonResponse_At_RestControllerMethod;
+import com._sptek.__webFramework.web.xss.Enable_UnicodeEscapeForJsonResponse_At_RestControllerMethod;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,17 +26,24 @@ import org.springframework.web.bind.annotation.RestController;
 public class XssApiController {
 
     @PostMapping("/01/example/xss/xssProtectOff")
-    @Operation(summary = "01. XssProtect 어노테이션 미적용", description = "")
-    public Object xssProtectOff(@Parameter(name = "originBody", description = "스크립트 요소를 포함한 요청 body") @RequestBody String originBody) {
-        //@Enable_XssProtectForApi_At_Main 가 적용된 경우 @Enable_XssProtectForApi_At_ControllerMethod 가 없어도 일괄 XssProtect 적용됨
+    @Operation(summary = "01. 응답 escape 어노테이션 미적용", description = "")
+    public Object responseEscapeOff(@Parameter(name = "originBody", description = "스크립트 요소를 포함한 요청 body") @RequestBody String originBody) {
         return originBody;
     }
 
     @PostMapping("/02/example/xss/xssProtectOn")
-    @Enable_XssProtectForApi_At_ControllerMethod
-    @Operation(summary = "02. XssProtect 어노테이션 적용 (응답 결과를 Escape 처리함)", description = "")
-    public Object xssProtectOn(@Parameter(name = "originBody", description = "스크립트 요소를 포함한 요청 body") @RequestBody String originBody){
-        // 컨트롤러에 전달되는 값은 원본값 그데로임(json으로 변환되어 나깔때 HTML Entity 코드로 변함됨)
+    @Enable_HtmlEntityEscapeForJsonResponse_At_RestControllerMethod
+    @Operation(summary = "02. HTML entity 응답 escape 적용", description = "")
+    public Object htmlEntityEscapeOn(@Parameter(name = "originBody", description = "스크립트 요소를 포함한 요청 body") @RequestBody String originBody){
+        // HTML entity 방식은 JSON 파싱 후 값도 &lt; 같은 표시용 문자열로 바뀐다.
+        return originBody;
+    }
+
+    @PostMapping("/03/example/xss/unicodeEscapeOn")
+    @Enable_UnicodeEscapeForJsonResponse_At_RestControllerMethod
+    @Operation(summary = "03. JSON Unicode 응답 escape 적용", description = "")
+    public Object unicodeEscapeOn(@Parameter(name = "originBody", description = "스크립트 요소를 포함한 요청 body") @RequestBody String originBody){
+        // Unicode 방식은 JSON 문서 표현만 바꾸며, JSON 파싱 후 값은 원문으로 복원된다.
         return originBody;
     }
 }

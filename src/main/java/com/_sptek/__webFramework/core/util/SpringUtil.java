@@ -11,7 +11,6 @@ import org.jetbrains.annotations.Nullable;
 import org.openjdk.jol.info.ClassLayout;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.ListableBeanFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -44,7 +43,7 @@ public class SpringUtil implements ApplicationContextAware {
     /**
      * 프레임워크 표준 ObjectMapper를 정적 유틸에서 사용할 수 있도록 보관한다.
      */
-    public SpringUtil(@Qualifier("objectMapperWithXssProtectHelper") ObjectMapper objectMapper) {
+    public SpringUtil(ObjectMapper objectMapper) {
         SpringUtil.objectMapper = objectMapper;
     }
 

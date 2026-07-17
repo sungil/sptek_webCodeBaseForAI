@@ -2,7 +2,6 @@ package com._sptek._webFrameworkExample.unit.xss;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com._sptek.__webFramework.view.error.Enable_ResponseOfViewGlobalException_At_ViewController;
-import com._sptek.__webFramework.web.xss.Enable_XssProtectForView_At_ControllerMethod;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -37,9 +36,8 @@ public class XssViewController {
         return htmlBasePath + "simpleModelView";
     }
 
-    // 어노테이션을 통해 Xss 자동 처리 됨,
-    // 동일한 결과를 리턴하는 메소드라도 활용에 따라.. 예를 들어 게시글 수정의 경우는 원문을 내려줘야 escape된 내용으로 저장되는 오류를 피할 수 있음 (어노테이션 없게 구성)
-    @Enable_XssProtectForView_At_ControllerMethod
+    // View model은 중간 데이터이므로 프레임워크가 원본을 바꾸지 않는다.
+    // XSS 방어는 th:text, c:out 같은 View 기술의 출력 문맥 escape를 우선 사용한다.
     @GetMapping("/xss/xssProtectOn")
     public String xssProtectForViewModelOn(Model model) throws JsonProcessingException {
         model.addAttribute("result", makeTestMap());

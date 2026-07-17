@@ -1,5 +1,6 @@
 package com._sptek.__webFramework.web.messageConversion;
 
+import com._sptek.__webFramework.web.xss.ResponseEscapingMappingJackson2HttpMessageConverter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,8 +32,8 @@ public class MessageConverterConfig implements WebMvcConfigurer {
      * 프레임워크 ObjectMapper를 사용하는 JSON message converter를 생성한다.
      */
     //HTTP메시지(req, res) <-> object 변환 (MessageConverter 내부에서 ObjectMapper 사용)
-    private MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
-        MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
+    private ResponseEscapingMappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
+        ResponseEscapingMappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter = new ResponseEscapingMappingJackson2HttpMessageConverter();
         configureJacksonConverter(mappingJackson2HttpMessageConverter);
         return mappingJackson2HttpMessageConverter;
     }
@@ -46,9 +47,15 @@ public class MessageConverterConfig implements WebMvcConfigurer {
         boolean hasJacksonConverter = false;
         boolean hasStringConverter = false;
 
-        for (HttpMessageConverter<?> converter : converters) {
+        for (int i = 0; i < converters.size(); i++) {
+            HttpMessageConverter<?> converter = converters.get(i);
             if (converter instanceof MappingJackson2HttpMessageConverter jacksonConverter) {
-                configureJacksonConverter(jacksonConverter);
+                if (jacksonConverter instanceof ResponseEscapingMappingJackson2HttpMessageConverter responseEscapingJacksonConverter) {
+                    configureJacksonConverter(responseEscapingJacksonConverter);
+                } else {
+                    ResponseEscapingMappingJackson2HttpMessageConverter responseEscapingJacksonConverter = mappingJackson2HttpMessageConverter();
+                    converters.set(i, responseEscapingJacksonConverter);
+                }
                 hasJacksonConverter = true;
             }
 
