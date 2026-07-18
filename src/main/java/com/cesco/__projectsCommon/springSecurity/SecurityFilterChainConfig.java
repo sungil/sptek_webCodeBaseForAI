@@ -1,6 +1,5 @@
 package com.cesco.__projectsCommon.springSecurity;
 
-import com._sptek.__webFramework.security.authorization.*;
 import com._sptek.__webFramework.security.authentication.view.*;
 import com._sptek.__webFramework.security.jwt.*;
 import com._sptek.__webFramework.security.config.*;
@@ -21,6 +20,7 @@ import org.springframework.util.AntPathMatcher;
 @RequiredArgsConstructor
 @Configuration
 public class SecurityFilterChainConfig {
+    private static final String AUTH_SPECIAL_FOR_TEST = "AUTH_SPECIAL_FOR_TEST";
 
     private final CustomAuthenticationSuccessHandlerForView customAuthenticationSuccessHandlerForView;
     private final CustomAuthenticationFailureHandlerForView customAuthenticationFailureHandlerForView;
@@ -56,7 +56,7 @@ public class SecurityFilterChainConfig {
                             .requestMatchers(myPattern + "login/**").authenticated()
 
                             //authority 체크
-                            .requestMatchers(myPattern + "auth-special/**").hasAuthority(AuthorityEnum.AUTH_SPECIAL_FOR_TEST.name())
+                            .requestMatchers(myPattern + "auth-special/**").hasAuthority(AUTH_SPECIAL_FOR_TEST)
 
                             //role 체크
                             .requestMatchers(myPattern + "role-user/**").hasAnyRole("USER")
@@ -123,7 +123,7 @@ public class SecurityFilterChainConfig {
                             .requestMatchers(myPattern + "login/**").authenticated()
 
                             //authority 체크
-                            .requestMatchers(myPattern + "auth-special/**").hasAuthority(AuthorityEnum.AUTH_SPECIAL_FOR_TEST.name())
+                            .requestMatchers(myPattern + "auth-special/**").hasAuthority(AUTH_SPECIAL_FOR_TEST)
 
                             //role 체크
                             .requestMatchers(myPattern + "role-user/**").hasAnyRole("USER")

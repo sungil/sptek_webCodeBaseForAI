@@ -1,7 +1,7 @@
 package com._sptek._webFrameworkExample.unit.authentication;
 
 import com._sptek.__webFramework.view.error.Enable_ResponseOfViewGlobalException_At_ViewController;
-import com._sptek.__webFramework.security.userStore.dto.*;
+import com._sptek._webFrameworkExample.unit.authentication.userStore.dto.*;
 import com._sptek.__webFramework.security.util.AuthenticationUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -108,7 +108,7 @@ public class AuthenticationViewController {
      */
     @GetMapping({"/login/authentication/userUpdateForm", "/login/authentication/userUpdateForm/{email}"})
     //hasRole 과 hasAuthority 차이는 둘다 Authentication 의 authorities 에서 찾는데 hasRole('USER') 은 내부적으로 ROLE_USER 처럼 ROLE_ 를 붙여서 찾고 hasAuthority 는 그대로 찾는다.
-    @PreAuthorize("#email == null or #email == T(com._sptek.__webFramework.security.util.AuthenticationUtil).getMyEmail() or hasAuthority(T(com._sptek.__webFramework.security.authorization.AuthorityEnum).AUTH_SPECIAL_FOR_TEST)")
+    @PreAuthorize("#email == null or #email == T(com._sptek.__webFramework.security.util.AuthenticationUtil).getMyEmail() or hasAuthority(T(com._sptek._webFrameworkExample.unit.authentication.authorization.AuthorityEnum).AUTH_SPECIAL_FOR_TEST)")
     public String userUpdateForm(@PathVariable(value = "email", required = false) String email, Model model , UserUpdateRequestDto userUpdateRequestDto) { //thyleaf 쪽에서 입력 항목들의 default 값을 넣어주기 위해 signupRequestDto 필요함
         email = email != null ? email : AuthenticationUtil.getMyEmail();
         UserDto userDto = authenticationService.findUserByEmail(email);
@@ -129,7 +129,7 @@ public class AuthenticationViewController {
      * <p>검증 실패 시 Role과 약관 선택 목록을 다시 채워 동일 화면을 렌더링한다.</p>
      */
     @PostMapping("/login/authentication/userUpdate")
-    @PreAuthorize("#userUpdateRequestDto.email == T(com._sptek.__webFramework.security.util.AuthenticationUtil).getMyEmail() or hasAuthority(T(com._sptek.__webFramework.security.authorization.AuthorityEnum).AUTH_SPECIAL_FOR_TEST)")
+    @PreAuthorize("#userUpdateRequestDto.email == T(com._sptek.__webFramework.security.util.AuthenticationUtil).getMyEmail() or hasAuthority(T(com._sptek._webFrameworkExample.unit.authentication.authorization.AuthorityEnum).AUTH_SPECIAL_FOR_TEST)")
     public String userUpdate(Model model, RedirectAttributes redirectAttributes, @Valid UserUpdateRequestDto userUpdateRequestDto, BindingResult bindingResult) {
         //signupRequestDto 에 바인딩 하는 과정에서 에러가 있는 경우
         if (bindingResult.hasErrors()) {

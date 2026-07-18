@@ -4,7 +4,7 @@ import com._sptek.__webFramework.api.response.Enable_ResponseOfApiCommonSuccess_
 import com._sptek.__webFramework.api.response.Enable_ResponseOfApiGlobalException_At_RestController;
 import com._sptek.__webFramework.security.jwt.CustomJwtFilter;
 import com._sptek.__webFramework.security.jwt.GeneralTokenProvider;
-import com._sptek.__webFramework.security.userStore.dto.LoginRequestDto;
+import com._sptek._webFrameworkExample.unit.authentication.userStore.dto.LoginRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;

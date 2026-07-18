@@ -40,10 +40,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 		"com._sptek._webFrameworkExample"
 }) //필터쪽에 @WebFilter 를 사용하기 위해 필요함
 @EnableJpaRepositories(basePackages = {
-		"com._sptek.__webFramework.security.userStore.repository"
+		"com._sptek._webFrameworkExample.unit.authentication.userStore.repository"
 })
 @EntityScan(basePackages = {
-		"com._sptek.__webFramework.security.userStore.entity"
+		"com._sptek._webFrameworkExample.unit.authentication.userStore.entity"
 })
 
 /* TEST and CHECK */

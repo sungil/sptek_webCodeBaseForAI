@@ -2,7 +2,6 @@ package com._sptek.__webFramework.security.config;
 
 import com._sptek.__webFramework.security.authentication.view.CustomAuthenticationFailureHandlerForView;
 import com._sptek.__webFramework.security.authentication.view.CustomAuthenticationSuccessHandlerForView;
-import com._sptek.__webFramework.security.authorization.AuthorityEnum;
 import com._sptek.__webFramework.security.jwt.CustomJwtAccessDeniedHandlerForApi;
 import com._sptek.__webFramework.security.jwt.CustomJwtAuthenticationEntryPointForApi;
 import com._sptek.__webFramework.security.jwt.CustomJwtFilter;
@@ -32,6 +31,7 @@ import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 @RequiredArgsConstructor
 @Configuration
 public class FrameworkSecurityFilterChainConfig {
+    private static final String EXAMPLE_AUTH_SPECIAL_FOR_TEST = "AUTH_SPECIAL_FOR_TEST";
 
     private final CustomAuthenticationSuccessHandlerForView customAuthenticationSuccessHandlerForView;
     private final CustomAuthenticationFailureHandlerForView customAuthenticationFailureHandlerForView;
@@ -240,7 +240,7 @@ public class FrameworkSecurityFilterChainConfig {
                     authorize
 
                             .requestMatchers(exampleViewPattern + "login/**").authenticated() //로그인 만 되어 있으면 되는 경우
-                            .requestMatchers(exampleViewPattern + "auth-special/**").hasAuthority(AuthorityEnum.AUTH_SPECIAL_FOR_TEST.name()) //필터 에서 특정 authority 를 직접 확인 하는 케이스+
+                            .requestMatchers(exampleViewPattern + "auth-special/**").hasAuthority(EXAMPLE_AUTH_SPECIAL_FOR_TEST) //필터 에서 특정 authority 를 직접 확인 하는 케이스+
                             .requestMatchers(exampleViewPattern + "role-user/**").hasAnyRole("USER")
                             .requestMatchers(exampleViewPattern + "role-system/**").hasAnyRole("SYSTEM")
                             .requestMatchers(exampleViewPattern + "role-admin-adminSpecial/**").hasAnyRole("ADMIN", "ADMIN_SPECIAL")
@@ -311,7 +311,7 @@ public class FrameworkSecurityFilterChainConfig {
                                 .requestMatchers(HttpMethod.OPTIONS, "/api/**").permitAll()
                                 // 필요시 추가해 나감.
                                 .requestMatchers(exampleApiPattern + "login/**").authenticated() //로그인 만 되어 있으면 되는 경우
-                                .requestMatchers(exampleApiPattern + "auth-special/**").hasAuthority(AuthorityEnum.AUTH_SPECIAL_FOR_TEST.name()) //필터 에서 특정 authority 를 직접 확인 하는 케이스+
+                                .requestMatchers(exampleApiPattern + "auth-special/**").hasAuthority(EXAMPLE_AUTH_SPECIAL_FOR_TEST) //필터 에서 특정 authority 를 직접 확인 하는 케이스+
                                 .requestMatchers(exampleApiPattern + "role-user/**").hasAnyRole("USER")
                                 .requestMatchers(exampleApiPattern + "role-system/**").hasAnyRole("SYSTEM")
                                 .requestMatchers(exampleApiPattern + "role-admin-adminSpecial/**").hasAnyRole("ADMIN", "ADMIN_SPECIAL")

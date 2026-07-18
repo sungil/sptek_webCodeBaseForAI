@@ -5,7 +5,7 @@ import com._sptek.__webFramework.api.response.Enable_ResponseOfApiGlobalExceptio
 import com._sptek.__webFramework.view.error.Enable_ResponseOfViewGlobalException_At_ViewController;
 import com._sptek.__webFramework.security.crypto.encryptModule.RsaEncryptor;
 import com._sptek.__webFramework.security.authentication.view.CustomAuthenticationSuccessHandlerForView;
-import com._sptek.__webFramework.security.authentication.userStore.RedirectHelperAfterLogin;
+import com._sptek.__webFramework.security.authentication.view.RedirectHelperAfterLogin;
 import com._sptek.__webFramework.web.locale.LocaleUtil;
 import com._sptek.__webFramework.web.util.ResponseUtil;
 import com._sptek.__webFramework.security.util.SecurityUtil;

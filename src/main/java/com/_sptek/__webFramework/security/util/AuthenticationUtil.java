@@ -1,8 +1,7 @@
 package com._sptek.__webFramework.security.util;
 
 import com._sptek.__webFramework.security.SecurityConstants;
-import com._sptek.__webFramework.security.userStore.dto.UserDto;
-import com._sptek.__webFramework.security.authentication.userStore.CustomUserDetails;
+import com._sptek.__webFramework.security.authentication.principal.FrameworkAuthenticatedUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.Nullable;
 import org.springframework.security.core.Authentication;
@@ -14,10 +13,17 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-@Slf4j
 /**
- * Spring SecurityContextHolder에서 현재 인증 사용자, 사용자 DTO, 역할/권한 정보를 추출하는 유틸리티.
+ * Spring SecurityContextHolder에서 현재 인증 사용자, 역할/권한 정보를 추출하는 유틸리티.
+ *
+ * <p>프레임워크는 업무 사용자 DTO를 직접 알지 않고 {@link FrameworkAuthenticatedUser} principal만 해석한다.
+ * 세션 로그인과 JWT 인증 모두 이 principal을 사용하면 사용자 식별자 조회 결과가 동일하게 유지된다.</p>
+ *
+ * <p>SecurityContextHolder는 현재 요청 thread에 바인딩된 SecurityContext를 제공한다.
+ * 비로그인 요청도 AnonymousAuthenticationFilter 때문에 Authentication이 존재할 수 있으므로,
+ * 현재 사용자 조회 전에는 {@link #isRealLogin()} 기준으로 anonymous 사용자를 제외한다.</p>
  */
+@Slf4j
 public class AuthenticationUtil {
 
     /**
@@ -46,30 +52,37 @@ public class AuthenticationUtil {
     }
 
     /**
-     * 현재 인증 principal에서 프레임워크 사용자 DTO를 추출한다.
+     * 현재 인증 principal에서 프레임워크 공통 인증 사용자를 추출한다.
+     *
+     * <p>세션 로그인과 JWT 인증이 모두 FrameworkAuthenticatedUser를 principal로 사용해야 Optional에 값이 들어간다.
+     * Spring Security 기본 principal이나 anonymous principal은 업무 사용자로 해석하지 않는다.</p>
      */
-    public static Optional<UserDto> getMyUserDtoOptional() {
+    public static Optional<FrameworkAuthenticatedUser> getMyPrincipalOptional() {
         if (!isRealLogin()) return Optional.empty();
-        try {
-            return Optional.ofNullable(((CustomUserDetails) AuthenticationUtil.getMyAuthentication().getPrincipal()).getUserDto());
-        } catch (ClassCastException e) {
-            // todo: ClassCastException 하는 이유는 sessionId로(view) 인증 받는 케이스와 JWT로 인증 받는 케이스에 SecurityContextHolder 의 Authentication 정보 구조가 서로 다르기 때문임
-            return Optional.empty();
-        }
+
+        Object principal = AuthenticationUtil.getMyAuthentication().getPrincipal();
+        return principal instanceof FrameworkAuthenticatedUser frameworkAuthenticatedUser
+                ? Optional.of(frameworkAuthenticatedUser)
+                : Optional.empty();
     }
 
     /**
-     * 현재 사용자 DTO를 반환하거나 없으면 null을 반환한다.
+     * 현재 인증 principal을 반환하거나 없으면 null을 반환한다.
      */
-    public @Nullable static UserDto getMyUserDto() {
-        return getMyUserDtoOptional().orElse(null);
+    public @Nullable static FrameworkAuthenticatedUser getMyPrincipal() {
+        return getMyPrincipalOptional().orElse(null);
     }
 
     /**
      * 현재 사용자 PK를 Optional로 반환한다.
+     *
+     * <p>JWT subject와 세션 principal의 userId는 문자열로 보관하므로, 기존 Long 기반 호출자를 위해 숫자 변환을 시도한다.
+     * 이전 방식으로 발급된 token처럼 subject가 email이면 값이 비어 있을 수 있다.</p>
      */
     public static Optional<Long> getMyIdOptional() {
-        return getMyUserDtoOptional().map(UserDto::getId);
+        return getMyPrincipalOptional()
+                .map(FrameworkAuthenticatedUser::getUserId)
+                .flatMap(AuthenticationUtil::parseLong);
     }
 
     /**
@@ -80,14 +93,29 @@ public class AuthenticationUtil {
     }
 
     /**
-     * 현재 사용자 표시 이름으로 email 또는 UserDetails username을 반환한다.
+     * 현재 사용자 식별자를 문자열 Optional로 반환한다.
+     */
+    public static Optional<String> getMyUserIdOptional() {
+        return getMyPrincipalOptional().map(FrameworkAuthenticatedUser::getUserId);
+    }
+
+    /**
+     * 현재 사용자 식별자를 문자열로 반환하거나 없으면 null을 반환한다.
+     */
+    public @Nullable static String getMyUserId() {
+        return getMyUserIdOptional().orElse(null);
+    }
+
+    /**
+     * 현재 사용자 표시 이름을 반환한다.
      */
     public static String getMyName() {
         Authentication authentication = AuthenticationUtil.getMyAuthentication();
         if (!isRealLogin() || authentication == null) return SecurityConstants.ANONYMOUS_USER;
 
-        return getMyUserDtoOptional()
-                .map(UserDto::getEmail)
+        return getMyPrincipalOptional()
+                .map(FrameworkAuthenticatedUser::getDisplayName)
+                .filter(displayName -> displayName != null && !displayName.isBlank())
                 .orElseGet(() -> authentication.getPrincipal() instanceof UserDetails userDetails
                         ? userDetails.getUsername()
                         : SecurityConstants.ANONYMOUS_USER);
@@ -97,7 +125,7 @@ public class AuthenticationUtil {
      * 현재 사용자 email을 Optional로 반환한다.
      */
     public static Optional<String> getMyEmailOptional() {
-        return getMyUserDtoOptional().map(UserDto::getEmail);
+        return getMyPrincipalOptional().map(FrameworkAuthenticatedUser::getUsername);
     }
 
     /**
@@ -138,5 +166,13 @@ public class AuthenticationUtil {
 
         //log.debug("getMy{} : {}", authFilterStr, uniqueGrantedAuthorities);
         return uniqueGrantedAuthorities;
+    }
+
+    private static Optional<Long> parseLong(String value) {
+        try {
+            return Optional.ofNullable(value).map(Long::valueOf);
+        } catch (NumberFormatException e) {
+            return Optional.empty();
+        }
     }
 }

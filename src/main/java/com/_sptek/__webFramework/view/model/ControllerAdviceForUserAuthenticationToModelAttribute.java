@@ -24,7 +24,6 @@ public class ControllerAdviceForUserAuthenticationToModelAttribute {
         model.addAttribute("isLogin", AuthenticationUtil.isRealLogin());
 
         if (AuthenticationUtil.isRealLogin()) {
-            //model.addAttribute("UserDto", ((CustomUserDetails)SecurityUtil.getMyAuthentication().getPrincipal()).getUserDto());
             model.addAttribute("userId", AuthenticationUtil.getMyId());
             model.addAttribute("userName", AuthenticationUtil.getMyName());
             model.addAttribute("userEmail", AuthenticationUtil.getMyEmail());

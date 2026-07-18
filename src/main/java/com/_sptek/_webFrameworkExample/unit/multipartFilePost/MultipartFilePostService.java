@@ -3,7 +3,7 @@ package com._sptek._webFrameworkExample.unit.multipartFilePost;
 import com._sptek._webFrameworkExample.dto.ExamplePostDto;
 import com._sptek.__webFramework.core.exception.ServiceException;
 import com._sptek.__webFramework.data.mybatis.MyBatisCommonDao;
-import com._sptek.__webFramework.security.authorization.AuthorityEnum;
+import com._sptek._webFrameworkExample.unit.authentication.authorization.AuthorityEnum;
 import com._sptek.__webFramework.security.util.AuthenticationUtil;
 import com._sptek.__webFramework.core.file.FileUtil;
 import com._sptek.__webFramework.security.util.SecurityUtil;
@@ -257,16 +257,19 @@ public class MultipartFilePostService {
 
     public Path getPostOwnFilePathForAuth(PostBaseDto postBaseDto, Set<AuthorityEnum> authorities) throws Exception {
         if (!AuthenticationUtil.isRealLogin()) throw new ServiceException(ServiceErrorCodeEnum.DEFAULT_ERROR, "로그인 상태가 아닙니다.");
+        Set<String> authorityNames = authorities == null
+                ? null
+                : authorities.stream().map(Enum::name).collect(Collectors.toSet());
         if (authorities != null &&
                 Collections.disjoint(
                         AuthenticationUtil.getMyAuths(),
-                        authorities.stream().map(Enum::name).collect(Collectors.toSet())
+                        authorityNames
                 )) {
             throw new ServiceException(ServiceErrorCodeEnum.DEFAULT_ERROR, "해당 권한이 없습니다.");
         }
 
         return buildFilePath(
-                SecurityUtil.getSecuredFilePathForAuth(authorities),
+                SecurityUtil.getSecuredFilePathForAuth(authorityNames),
                 postBaseDto
         );
     }

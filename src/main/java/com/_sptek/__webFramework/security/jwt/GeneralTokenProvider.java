@@ -1,5 +1,6 @@
 package com._sptek.__webFramework.security.jwt;
 
+import com._sptek.__webFramework.security.authentication.principal.FrameworkAuthenticatedUser;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -10,25 +11,27 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 
 import java.security.Key;
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.Date;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
  * Spring Security Authentication과 JWT 문자열 사이의 변환 및 검증을 담당하는 provider.
  *
- * <p>JWT payload에는 subject와 authority 문자열만 담고, 위변조 검증은 설정에서 주입된 HMAC secret key로 수행한다.
+ * <p>JWT payload에는 사용자 식별자, username, displayName, authority 문자열만 담고,
+ * 위변조 검증은 설정에서 주입된 HMAC secret key로 수행한다.
  * JWT는 암호화가 아니라 서명된 Base64 구조이므로 민감 정보를 넣지 않는다.</p>
  */
 @Slf4j
 @Component
 public class GeneralTokenProvider implements InitializingBean {
     private static final String AUTHORITIES_KEY = "auth";
+    private static final String USERNAME_KEY = "username";
+    private static final String DISPLAY_NAME_KEY = "displayName";
     private final String secretKey;
     private final long tokenValidityInMilliseconds;
     private Key key;
@@ -48,20 +51,26 @@ public class GeneralTokenProvider implements InitializingBean {
     }
 
     /**
-     * 인증 객체의 name과 authorities를 JWT subject/claim으로 변환해 서명된 token을 생성한다.
+     * 인증 객체의 공통 principal 정보를 JWT subject/claim으로 변환해 서명된 token을 생성한다.
+     *
+     * <p>subject에는 username/email이 아니라 공통 principal의 userId를 넣는다.
+     * username과 displayName은 별도 claim으로 내려 세션 로그인과 JWT 인증 후 AuthenticationUtil 조회 결과를 맞춘다.</p>
      */
     public String convertAuthenticationToJwt(Authentication authentication){
         log.debug("origin authentication: {}", authentication);
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
+        FrameworkAuthenticatedUser authenticatedUser = toFrameworkAuthenticatedUser(authentication);
 
         // 토큰 만료 시간 설정
         long now = (new Date()).getTime();
         Date validity = new Date(now + this.tokenValidityInMilliseconds);
 
         return Jwts.builder()
-                .setSubject(authentication.getName())
+                .setSubject(authenticatedUser.getUserId())
+                .claim(USERNAME_KEY, authenticatedUser.getUsername())
+                .claim(DISPLAY_NAME_KEY, authenticatedUser.getDisplayName())
                 .claim(AUTHORITIES_KEY, authorities)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(validity)
@@ -80,7 +89,11 @@ public class GeneralTokenProvider implements InitializingBean {
     }
 
     /**
-     * JWT claims의 subject와 authority claim으로 Spring Security Authentication을 재구성한다.
+     * JWT claims의 사용자 식별자와 authority claim으로 Spring Security Authentication을 재구성한다.
+     *
+     * <p>JWT 요청은 서버 session에 저장된 SecurityContext를 읽지 않는다. 매 요청마다 token을 검증한 뒤
+     * claims로 FrameworkAuthenticatedUser principal을 새로 만들고, CustomJwtFilter가 이 Authentication을
+     * 현재 요청의 SecurityContextHolder에 넣어 Controller까지 전달한다.</p>
      */
     public Authentication convertJwtToAuthentication(String token){
         // 토큰을 이용하여 claim 생성
@@ -91,14 +104,43 @@ public class GeneralTokenProvider implements InitializingBean {
                 .parseClaimsJws(token)
                 .getBody();
 
-        // claim을 이용하여 authorities 생성
-        Collection<? extends GrantedAuthority> authorities =
-                Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList());
+        Set<String> authorityNames = Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
+                .filter(authority -> authority != null && !authority.isBlank())
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        String username = claims.get(USERNAME_KEY, String.class);
+        if (username == null || username.isBlank()) {
+            // 기존에 발급된 token에는 username/displayName claim이 없을 수 있어 subject로 fallback한다.
+            username = claims.getSubject();
+        }
+        String displayName = claims.get(DISPLAY_NAME_KEY, String.class);
+        if (displayName == null || displayName.isBlank()) {
+            displayName = username;
+        }
 
-        User principal = new User(claims.getSubject(), "", authorities);
-        return new UsernamePasswordAuthenticationToken(principal, token, authorities);
+        FrameworkAuthenticatedUser principal = FrameworkAuthenticatedUser.builder()
+                .userId(claims.getSubject())
+                .username(username)
+                .displayName(displayName)
+                .password("")
+                .authorityNames(authorityNames)
+                .build();
+        return new UsernamePasswordAuthenticationToken(principal, token, principal.getAuthorities());
+    }
+
+    private FrameworkAuthenticatedUser toFrameworkAuthenticatedUser(Authentication authentication) {
+        if (authentication.getPrincipal() instanceof FrameworkAuthenticatedUser frameworkAuthenticatedUser) {
+            return frameworkAuthenticatedUser;
+        }
+
+        return FrameworkAuthenticatedUser.builder()
+                .userId(authentication.getName())
+                .username(authentication.getName())
+                .displayName(authentication.getName())
+                .password("")
+                .authorityNames(authentication.getAuthorities().stream()
+                        .map(GrantedAuthority::getAuthority)
+                        .collect(Collectors.toCollection(LinkedHashSet::new)))
+                .build();
     }
 
     /**

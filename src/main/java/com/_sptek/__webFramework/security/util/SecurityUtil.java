@@ -3,7 +3,6 @@ package com._sptek.__webFramework.security.util;
 import com._sptek.__webFramework.core.resultCode.CommonErrorCodeEnum;
 import com._sptek.__webFramework.core.util.SpringUtil;
 import com._sptek.__webFramework.core.exception.ServiceException;
-import com._sptek.__webFramework.security.authorization.AuthorityEnum;
 import com._sptek.__webFramework.security.file.SecureFilePathTypeEnum;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -157,11 +156,11 @@ public class SecurityUtil {
     }
 
     /**
-     * 권한 enum 집합을 정렬해 권한 기반 저장소 보안 경로를 반환한다.
+     * 권한 문자열 집합을 정렬해 권한 기반 저장소 보안 경로를 반환한다.
      */
-    public static Path getSecuredFilePathForAuth(Set<AuthorityEnum> authorities) {
+    public static Path getSecuredFilePathForAuth(Set<String> authorities) {
         if (authorities == null || authorities.isEmpty()) throw new IllegalArgumentException("Authorities is required");
-        Set<String> sortedSet = authorities.stream().map(AuthorityEnum::name).collect(Collectors.toCollection(TreeSet::new));
+        Set<String> sortedSet = authorities.stream().filter(Objects::nonNull).collect(Collectors.toCollection(TreeSet::new));
         return Path.of(SecureFilePathTypeEnum.AUTH.getPathName(), String.join("-", sortedSet));
     }
 

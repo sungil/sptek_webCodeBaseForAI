@@ -1,12 +1,12 @@
 package com._sptek._webFrameworkExample.unit.authentication;
 
 import com._sptek.__webFramework.core.exception.ServiceException;
-import com._sptek.__webFramework.security.userStore.dto.*;
-import com._sptek.__webFramework.security.userStore.entity.*;
-import com._sptek.__webFramework.security.userStore.repository.AuthorityRepository;
-import com._sptek.__webFramework.security.userStore.repository.RoleRepository;
-import com._sptek.__webFramework.security.userStore.repository.TermsRepository;
-import com._sptek.__webFramework.security.userStore.repository.UserRepository;
+import com._sptek._webFrameworkExample.unit.authentication.userStore.dto.*;
+import com._sptek._webFrameworkExample.unit.authentication.userStore.entity.*;
+import com._sptek._webFrameworkExample.unit.authentication.userStore.repository.AuthorityRepository;
+import com._sptek._webFrameworkExample.unit.authentication.userStore.repository.RoleRepository;
+import com._sptek._webFrameworkExample.unit.authentication.userStore.repository.TermsRepository;
+import com._sptek._webFrameworkExample.unit.authentication.userStore.repository.UserRepository;
 import com._sptek._webFrameworkExample.common.resultCode.ServiceErrorCodeEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -185,7 +185,7 @@ public class AuthenticationService {
     /**
      * 메서드 보안에서 특정 Authority 보유 여부를 검사하는 예제 메서드.
      */
-    @PreAuthorize("hasAuthority(T(com._sptek.__webFramework.security.authorization.AuthorityEnum).AUTH_SPECIAL_FOR_TEST)")
+    @PreAuthorize("hasAuthority(T(com._sptek._webFrameworkExample.unit.authentication.authorization.AuthorityEnum).AUTH_SPECIAL_FOR_TEST)")
     public String iNeedAuth() {
         return "I Need Specific Auth";
     }
