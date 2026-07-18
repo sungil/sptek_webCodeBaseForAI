@@ -3,7 +3,7 @@ package com._sptek.__webFramework.core.serialization;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com._sptek.__webFramework.web.xss.JsonHtmlEntityEscapeModule;
+import com._sptek.__webFramework.web.responseEscape.JsonHtmlEntityEscapeModule;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;

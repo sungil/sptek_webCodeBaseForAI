@@ -1,6 +1,6 @@
 package com._sptek.__webFramework.web.messageConversion;
 
-import com._sptek.__webFramework.web.xss.ResponseEscapingMappingJackson2HttpMessageConverter;
+import com._sptek.__webFramework.web.responseEscape.ResponseEscapingMappingJackson2HttpMessageConverter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

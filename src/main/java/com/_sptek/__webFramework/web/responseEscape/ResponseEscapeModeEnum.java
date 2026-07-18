@@ -1,4 +1,4 @@
-package com._sptek.__webFramework.web.xss;
+package com._sptek.__webFramework.web.responseEscape;
 
 /**
  * RestController 메서드가 선택한 JSON 응답 escape 정책.

@@ -1,4 +1,4 @@
-package com._sptek.__webFramework.web.xss;
+package com._sptek.__webFramework.web.responseEscape;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.annotation.AnnotatedElementUtils;

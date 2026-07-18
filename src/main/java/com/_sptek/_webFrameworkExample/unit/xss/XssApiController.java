@@ -2,8 +2,8 @@ package com._sptek._webFrameworkExample.unit.xss;
 
 import com._sptek.__webFramework.api.response.Enable_ResponseOfApiCommonSuccess_At_RestController;
 import com._sptek.__webFramework.api.response.Enable_ResponseOfApiGlobalException_At_RestController;
-import com._sptek.__webFramework.web.xss.Enable_HtmlEntityEscapeForJsonResponse_At_RestControllerMethod;
-import com._sptek.__webFramework.web.xss.Enable_UnicodeEscapeForJsonResponse_At_RestControllerMethod;
+import com._sptek.__webFramework.web.responseEscape.Enable_HtmlEntityEscapeForJsonResponse_At_RestControllerMethod;
+import com._sptek.__webFramework.web.responseEscape.Enable_UnicodeEscapeForJsonResponse_At_RestControllerMethod;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

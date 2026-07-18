@@ -1,4 +1,4 @@
-package com._sptek.__webFramework.web.xss;
+package com._sptek.__webFramework.web.responseEscape;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;

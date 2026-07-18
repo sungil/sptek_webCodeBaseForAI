@@ -1,4 +1,4 @@
-package com._sptek.__webFramework.web.xss;
+package com._sptek.__webFramework.web.responseEscape;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,4 +1,4 @@
-package com._sptek.__webFramework.web.xss;
+package com._sptek.__webFramework.web.responseEscape;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
