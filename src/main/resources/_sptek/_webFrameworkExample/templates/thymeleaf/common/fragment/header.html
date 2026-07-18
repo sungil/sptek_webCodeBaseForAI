@@ -68,7 +68,7 @@
 
         <!-- 로그인 상태, authentication 는 thymeleaf 로 자동 으로 주입 되는 객체임 -->
         <p th:if="${#authentication?.getPrincipal() != null and #authentication?.getPrincipal() != 'anonymousUser'}">
-            Welcome, <span th:text="${#authentication.getPrincipal().userDto.email}" class="user-email">User</span> 님!
+            Welcome, <span th:text="${#authentication.getPrincipal().username}" class="user-email">User</span> 님!
         </p>
         <!--윗쪽 p테그에 한번에 묶지 못한 이유는 p테그안에 form 이 규칙상 못들어가기 때문, spring-security의 로그아웃 처리의 경우 CSRF 가능성있어서 post로 처리되는게 보통, get으로 해야 겠다면 csrf 토큰사용 disable 처리 필요//-->
         <form th:if="${#authentication?.getPrincipal() != null and #authentication?.getPrincipal() != 'anonymousUser'}"
