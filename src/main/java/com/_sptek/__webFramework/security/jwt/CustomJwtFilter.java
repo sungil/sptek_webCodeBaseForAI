@@ -5,10 +5,12 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.lang.Nullable;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
 
@@ -17,8 +19,8 @@ import java.io.IOException;
 /**
  * Authorization Bearer JWT가 있는 요청을 Spring Security Authentication으로 변환하는 필터.
  *
- * <p>JWT가 없거나 유효하지 않으면 직접 오류 응답을 만들지 않고 다음 security filter 흐름에 맡긴다.
- * 유효한 JWT만 SecurityContextHolder에 인증 객체로 저장한다.</p>
+ * <p>JWT가 없으면 익명 요청으로 다음 filter에 맡기고, Authorization header가 있지만 형식이 틀리거나
+ * 유효하지 않은 JWT는 AuthenticationEntryPoint에 위임해 API 공통 401 응답으로 종료한다.</p>
  */
 @Slf4j
 public class CustomJwtFilter extends GenericFilterBean {
@@ -27,9 +29,11 @@ public class CustomJwtFilter extends GenericFilterBean {
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String AUTHORIZATION_PREFIX  = "Bearer ";
     private final GeneralTokenProvider generalTokenProvider;
+    private final AuthenticationEntryPoint authenticationEntryPoint;
 
-    public CustomJwtFilter(GeneralTokenProvider generalTokenProvider){
+    public CustomJwtFilter(GeneralTokenProvider generalTokenProvider, AuthenticationEntryPoint authenticationEntryPoint){
         this.generalTokenProvider = generalTokenProvider;
+        this.authenticationEntryPoint = authenticationEntryPoint;
     }
 
     /**
@@ -55,30 +59,43 @@ public class CustomJwtFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+        HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         String requestUri = httpServletRequest.getRequestURI();
-        String jwt = getJwtFromRequest(httpServletRequest);
+        String authorizationHeader = httpServletRequest.getHeader(AUTHORIZATION_HEADER);
 
-        // 해더에 JWT가 정상적으로 있는경우 authentication을 만들어 SecurityContext에 저장
-        if(StringUtils.hasText(jwt) && generalTokenProvider.validateJwt(jwt)){
+        if (!StringUtils.hasText(authorizationHeader)) {
+            chain.doFilter(httpServletRequest, response);
+            return;
+        }
+
+        if (!authorizationHeader.startsWith(AUTHORIZATION_PREFIX)) {
+            failAuthentication(httpServletRequest, httpServletResponse, "Invalid Authorization header. uri: " + requestUri);
+            return;
+        }
+
+        String jwt = authorizationHeader.substring(AUTHORIZATION_PREFIX.length()).trim();
+        if (!StringUtils.hasText(jwt)) {
+            failAuthentication(httpServletRequest, httpServletResponse, "JWT token is empty. uri: " + requestUri);
+            return;
+        }
+
+        try {
+            if (!generalTokenProvider.validateJwt(jwt)) {
+                failAuthentication(httpServletRequest, httpServletResponse, "Invalid JWT token. uri: " + requestUri);
+                return;
+            }
+
             Authentication authentication = generalTokenProvider.convertJwtToAuthentication(jwt);
             SecurityContextHolder.getContext().setAuthentication(authentication);
             //log.debug("Authentication({}) has been saved in SecurityContextHolder, uri: {}", authentication, requestUri);
-        } else {
-            //jwt가 없거나 유효하지 않다도 직접 별다른 처리를 하지 않음(다른 필터에 맡김)
-            //log.debug("jwt is empty or fail to convert jwt({}) to authentication, uri: {}", jwt, requestUri);
+            chain.doFilter(httpServletRequest,response);
+        } catch (RuntimeException ex) {
+            failAuthentication(httpServletRequest, httpServletResponse, "Failed to authenticate JWT token. uri: " + requestUri);
         }
-        chain.doFilter(httpServletRequest,response);
     }
 
-    /**
-     * Authorization header에서 Bearer prefix를 제거한 JWT 문자열을 추출한다.
-     */
-    private @Nullable String getJwtFromRequest(HttpServletRequest request){
-        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
-        if(StringUtils.hasText(bearerToken) && bearerToken.startsWith(AUTHORIZATION_PREFIX)){
-            log.debug("Bearer : " + bearerToken);
-            return bearerToken.substring(AUTHORIZATION_PREFIX.length());
-        }
-        return null;
+    private void failAuthentication(HttpServletRequest request, HttpServletResponse response, String message) throws IOException, ServletException {
+        SecurityContextHolder.clearContext();
+        authenticationEntryPoint.commence(request, response, new BadCredentialsException(message));
     }
 }

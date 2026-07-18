@@ -39,7 +39,7 @@ public class ApplicationGlobalExceptionHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public Object handleAuthenticationException(Exception ex, HttpServletRequest request, HttpServletResponse response) throws Exception {
         // NOTE : view 요청에서 로그인이 안된상태여서 권한 에러가 났을때는 에러 페이지 보단 로그인 페이지로 더 친절히 이동해 줄까?
-        return handleError(request, response, ex, CommonErrorCodeEnum.FORBIDDEN_ERROR, "error/commonAuthenticationError");
+        return handleError(request, response, ex, CommonErrorCodeEnum.UNAUTHORIZED_ERROR, "error/commonAuthenticationError");
     }
 
     // 403
@@ -111,7 +111,8 @@ public class ApplicationGlobalExceptionHandler {
             case NOT_FOUND -> CommonErrorCodeEnum.NOT_FOUND_ERROR;
             case METHOD_NOT_ALLOWED -> CommonErrorCodeEnum.METHOD_NOT_ALLOWED;
             case PAYLOAD_TOO_LARGE -> CommonErrorCodeEnum.PAYLOAD_EXCEEDED_ERROR;
-            case FORBIDDEN, UNAUTHORIZED -> CommonErrorCodeEnum.FORBIDDEN_ERROR;
+            case UNAUTHORIZED -> CommonErrorCodeEnum.UNAUTHORIZED_ERROR;
+            case FORBIDDEN -> CommonErrorCodeEnum.FORBIDDEN_ERROR;
             default -> CommonErrorCodeEnum.INTERNAL_SERVER_ERROR;
         };
     }

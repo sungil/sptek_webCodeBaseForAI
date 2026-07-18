@@ -25,6 +25,8 @@ public class SecurityFilterChainConfig {
     private final CustomAuthenticationSuccessHandlerForView customAuthenticationSuccessHandlerForView;
     private final CustomAuthenticationFailureHandlerForView customAuthenticationFailureHandlerForView;
     private final GeneralTokenProvider generalTokenProvider;
+    private final CustomJwtAuthenticationEntryPointForApi customJwtAuthenticationEntryPointForApi;
+    private final CustomJwtAccessDeniedHandlerForApi customJwtAccessDeniedHandlerForApi;
     private AntPathMatcher antPathMatcher = new AntPathMatcher();
 
     @Bean
@@ -106,6 +108,12 @@ public class SecurityFilterChainConfig {
                 // todo: 테스트를 편하게 하기 위해 cors disable 임시 처리
                 .cors(AbstractHttpConfigurer::disable)
 
+                .exceptionHandling(exceptionHandling ->
+                        exceptionHandling
+                                .authenticationEntryPoint(customJwtAuthenticationEntryPointForApi)
+                                .accessDeniedHandler(customJwtAccessDeniedHandlerForApi)
+                )
+
                 // 필요에 따라 추가/삭제 하세요
                 .authorizeHttpRequests(authorize ->
                     authorize
@@ -132,7 +140,7 @@ public class SecurityFilterChainConfig {
                             //.anyRequest().authenticated()
                 )
 
-                .addFilterBefore(new CustomJwtFilter(generalTokenProvider), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new CustomJwtFilter(generalTokenProvider, customJwtAuthenticationEntryPointForApi), UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
     }

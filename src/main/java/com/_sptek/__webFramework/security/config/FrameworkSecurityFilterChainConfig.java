@@ -3,6 +3,8 @@ package com._sptek.__webFramework.security.config;
 import com._sptek.__webFramework.security.authentication.view.CustomAuthenticationFailureHandlerForView;
 import com._sptek.__webFramework.security.authentication.view.CustomAuthenticationSuccessHandlerForView;
 import com._sptek.__webFramework.security.authorization.AuthorityEnum;
+import com._sptek.__webFramework.security.jwt.CustomJwtAccessDeniedHandlerForApi;
+import com._sptek.__webFramework.security.jwt.CustomJwtAuthenticationEntryPointForApi;
 import com._sptek.__webFramework.security.jwt.CustomJwtFilter;
 import com._sptek.__webFramework.security.jwt.GeneralTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -34,10 +36,10 @@ public class FrameworkSecurityFilterChainConfig {
     private final CustomAuthenticationSuccessHandlerForView customAuthenticationSuccessHandlerForView;
     private final CustomAuthenticationFailureHandlerForView customAuthenticationFailureHandlerForView;
     private final GeneralTokenProvider generalTokenProvider;
+    private final CustomJwtAuthenticationEntryPointForApi customJwtAuthenticationEntryPointForApi;
+    private final CustomJwtAccessDeniedHandlerForApi customJwtAccessDeniedHandlerForApi;
 
 //    // 다른 방식으로 대체 함
-//    private final CustomJwtAuthenticationEntryPointForApi customJwtAuthenticationEntryPointForApi;
-//    private final CustomJwtAccessDeniedHandlerForApi customJwtAccessDeniedHandlerForApi;
 //    private final CustomAuthenticationProvider customAuthenticationProvider;
 
 //    @Bean
@@ -322,12 +324,12 @@ public class FrameworkSecurityFilterChainConfig {
                                 //.requestMatchers("/api/*/example/signup", "/api/*/example/login", "/api/*/example/logout").permitAll()
                 )
 
-                // CustomErrorController 를 이용 해서 Controller 외부 에러(필터쪽이나.. 기타 등등) 상황에 대한 처리를 하고 있어서 사용할 필요가 없음 (Controller 에러 처리 흐름과 동일하게 처리되도록 함)
-                //.exceptionHandling(exceptionHandling ->
-                //        exceptionHandling
-                //                .authenticationEntryPoint(customJwtAuthenticationEntryPointForApi) //인증 오류 진입점
-                //                .accessDeniedHandler(customJwtAccessDeniedHandlerForApi) //인가 오류 진입점
-                //)
+                // Security filter chain 내부의 인증/인가 실패는 CustomErrorController로 가지 않을 수 있어 API 공통 응답 handler를 직접 연결함
+                .exceptionHandling(exceptionHandling ->
+                        exceptionHandling
+                                .authenticationEntryPoint(customJwtAuthenticationEntryPointForApi)
+                                .accessDeniedHandler(customJwtAccessDeniedHandlerForApi)
+                )
 
                 // security와 관련해서 custom하게 만든 필터가 있다면 적정 위치에 추가할 수 있다.
                 // UsernamePasswordAuthenticationFilter 은 스프링 자체 필터로, post 방식, {loginProcessingUrl} 경로 요청시 동작하며
@@ -335,7 +337,7 @@ public class FrameworkSecurityFilterChainConfig {
                 // jwt 방식일 경우(일반적으로 브라우저가 아닌 클라이언트의 API호출) UsernamePasswordAuthenticationFilter 에서는 Bearer token 인증을 처리할 수 없음
                 // 그래서 그 앞에 CustomJwtFilter를 두어 Authorization: Bearer 값이 있는 요청을 Authentication으로 변환함
                 // API 체인은 STATELESS이므로 View 로그인 세션이 있더라도 이 체인에서는 세션 기반 SecurityContext를 인증 근거로 사용하지 않음
-                .addFilterBefore(new CustomJwtFilter(generalTokenProvider), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new CustomJwtFilter(generalTokenProvider, customJwtAuthenticationEntryPointForApi), UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
     }
 }
