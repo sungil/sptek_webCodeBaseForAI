@@ -10,9 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -22,8 +20,6 @@ import org.springframework.util.AntPathMatcher;
 @Slf4j
 @RequiredArgsConstructor
 @Configuration
-@EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true) //application  메소드에서도 접근제어 가능하게 함
 public class SecurityFilterChainConfig {
 
     private final CustomAuthenticationSuccessHandlerForView customAuthenticationSuccessHandlerForView;

@@ -12,9 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
@@ -30,9 +28,6 @@ import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 @Slf4j
 @RequiredArgsConstructor
 @Configuration
-@EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true) // Controller 나 Service 레벨의 Method 단위 에서 인증 체크를 사용할 수 있게 함
-
 public class FrameworkSecurityFilterChainConfig {
 
     private final CustomAuthenticationSuccessHandlerForView customAuthenticationSuccessHandlerForView;
