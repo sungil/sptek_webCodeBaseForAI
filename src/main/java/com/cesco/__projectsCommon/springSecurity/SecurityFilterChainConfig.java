@@ -50,7 +50,6 @@ public class SecurityFilterChainConfig {
                 // 필요에 따라 추가/삭제 하세요
                 .authorizeHttpRequests(authorize ->
                     authorize
-                            .requestMatchers(HttpMethod.OPTIONS, "/api/**").permitAll()
                             //로그인 만 되어 있으면 되는 경우
                             .requestMatchers(myPattern + "login/**").authenticated()
 
@@ -110,6 +109,8 @@ public class SecurityFilterChainConfig {
                 // 필요에 따라 추가/삭제 하세요
                 .authorizeHttpRequests(authorize ->
                     authorize
+                            .requestMatchers(HttpMethod.OPTIONS, "/api/**").permitAll()
+
                             //로그인 만 되어 있으면 되는 경우
                             .requestMatchers(myPattern + "login/**").authenticated()
 
