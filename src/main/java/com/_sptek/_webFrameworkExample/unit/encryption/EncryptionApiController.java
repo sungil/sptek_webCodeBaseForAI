@@ -85,7 +85,7 @@ public class EncryptionApiController {
         private String field1;
 
         @Enable_DecryptAuto_At_DtoString
-        @Schema(example = "ENC_sptAES(i7SNnO3OyWwC5CbizW5OovemxzXdFhPMbt1uuEG+kRg=)")
+        @Schema(example = "ENC_sptAES(AQIDBAUGBwgJCgsMY4M/uYimAe12ZsXwTlitU6qhFzQtZA==)")
         private String field2;
 
     }

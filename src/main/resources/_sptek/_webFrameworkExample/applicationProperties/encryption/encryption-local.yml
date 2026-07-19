@@ -16,6 +16,9 @@ jasypt:
 #  encryptor:
 #    password: default_encryption_password_abc
 
-
+# AES 키는 랜덤 바이트를 Base64로 인코딩한 값을 사용한다.
+# 16 byte 랜덤 키 -> Base64 -> AES-128
+# 24 byte 랜덤 키 -> Base64 -> AES-192
+# 32 byte 랜덤 키 -> Base64 -> AES-256
 aesEncryptor:
-  base64SecretKey: ${AESENCRYPTOR_BASE64SECRETKEY:1234567890123456789012345678901234567890123} #Base64 형식의 43자 이상(256bit 이상, 1자 6bit)
+  base64SecretKey: ${AESENCRYPTOR_BASE64SECRETKEY:AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=} # local 예제용 32 byte AES-256 키
