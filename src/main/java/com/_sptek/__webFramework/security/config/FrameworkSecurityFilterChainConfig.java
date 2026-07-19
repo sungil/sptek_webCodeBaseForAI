@@ -28,19 +28,6 @@ public class FrameworkSecurityFilterChainConfig {
     private final ViewFormLoginSuccessHandler customAuthenticationSuccessHandlerForView;
     private final ViewFormLoginFailureHandler customAuthenticationFailureHandlerForView;
 
-//    // 다른 방식으로 대체 함
-//    private final FormLoginAuthenticationProvider customAuthenticationProvider;
-
-//    @Bean
-//    public SecurityFilterChain securityFilterChainForRoot(HttpSecurity httpSecurity) throws Exception {
-//        httpSecurity
-//                .securityMatcher("/")
-//                .authorizeHttpRequests(authorize -> authorize
-//                        .requestMatchers("/").permitAll()
-//                );
-//        return httpSecurity.build();
-//    }
-
     /**
      * 운영 profile에서 Swagger, H2 경로를 차단한다.
      */
@@ -85,31 +72,18 @@ public class FrameworkSecurityFilterChainConfig {
         httpSecurity
                 .securityMatcher("/", "/view/index", "/view/login", "/view/loginProcess", "/view/logout")
 
-                // CSRF를 비활성화할 경로 지정
                 .csrf(csrf -> csrf
-                        //.ignoringRequestMatchers("/**") // NOTE: 테스트를 편하게 하기 위해 모든 경로에서 dsrf 토큰을 무시할 경우
                         .csrfTokenRepository(new HttpSessionCsrfTokenRepository())
                 )
 
-                // .httpBasic(Customizer.withDefaults()) //얼럿창형
-                // .formLogin(withDefaults()) //form형 디폴트 로그인 (--:8443/login 으로 고정되어 있는듯 8443 포트에서만 정상 동작됨)
                 .formLogin(form -> form
                         .loginPage("/view/login")
                         .loginProcessingUrl("/view/loginProcess") // 실제 컨트럴 존재하지 않음, 해당 요청시 FormLoginAuthenticationProvider 에서 처리함
-                        //.defaultSuccessUrl("/")
                         .successHandler(customAuthenticationSuccessHandlerForView)
                         .failureHandler(customAuthenticationFailureHandlerForView)
                 )
                 .logout(logout -> logout
-                                // 로그아웃 처리 url 설정 (해당 req 매핑이 존재할 필요는 없음)
-                                .logoutUrl("/view/logout")
-
-                        // 추가적인 로직이 필요한 경우
-                        //.logoutSuccessHandler((request, response, authentication) -> {
-                        //    log.debug("User has logged out: " + (authentication != null ? authentication.getName() : "Anonymous"));
-                        //    response.sendRedirect("{logoutUrl}?logout"); // custom 코드를 넣었다면 마지막 리다이렉션 처리까지 직접 해줘야함.
-                        //})
-
+                        .logoutUrl("/view/logout")
                 );
 
         return httpSecurity.build();
