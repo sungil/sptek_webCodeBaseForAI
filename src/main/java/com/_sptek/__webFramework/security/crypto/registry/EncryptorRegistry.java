@@ -24,7 +24,7 @@ public class EncryptorRegistry {
      * 전역 암복호화 wrapper 에 기록되는 모듈 식별자.
      */
     public enum Type {
-        sptAES, sptDES, sptJASYPT, sptRSA;
+        sptAES, sptJASYPT, sptRSA;
     }
 
     private static final String encKeyword = "ENC_";

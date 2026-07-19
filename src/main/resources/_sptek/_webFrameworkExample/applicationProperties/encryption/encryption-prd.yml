@@ -19,7 +19,3 @@ jasypt:
 
 aesEncryptor:
   base64SecretKey: ${AESENCRYPTOR_BASE64SECRETKEY} #Base64 형식의 43자 이상(256bit 이상, 1자 6bit)
-
-desEncryptor:
-  base64SecretKey: ${DESENCRYPTOR_BASE64SECRETKEY} #Base64 형식의 11자 이상(64bit 이상, 1자 6bit)
-
