@@ -1,6 +1,6 @@
 package com._sptek.__webFramework.observability.mdc;
 
-import com._sptek.__webFramework.security.SecurityConstants;
+import com._sptek.__webFramework.security.support.SecurityConstants;
 import com._sptek.__webFramework.observability.logging.LoggingConstants;
 import com._sptek.__webFramework.security.support.CurrentAuthenticationUtil;
 import jakarta.annotation.PostConstruct;

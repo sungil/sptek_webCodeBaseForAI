@@ -1,6 +1,5 @@
 package com._sptek.__webFramework.security.support;
 
-import com._sptek.__webFramework.security.SecurityConstants;
 import com._sptek.__webFramework.security.authentication.principal.FrameworkUserDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.Nullable;
