@@ -22,7 +22,7 @@ public class SecurityFilterChainConfig {
 
     private final ViewFormLoginSuccessHandler customAuthenticationSuccessHandlerForView;
     private final ViewFormLoginFailureHandler customAuthenticationFailureHandlerForView;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtAuthenticationTokenService jwtAuthenticationTokenService;
     private final JwtApiAuthenticationEntryPoint jwtApiAuthenticationEntryPoint;
     private final JwtApiAccessDeniedHandler jwtApiAccessDeniedHandler;
 
@@ -129,7 +129,7 @@ public class SecurityFilterChainConfig {
                             //.anyRequest().authenticated()
                 )
 
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, jwtApiAuthenticationEntryPoint), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(jwtAuthenticationTokenService, jwtApiAuthenticationEntryPoint), UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
     }

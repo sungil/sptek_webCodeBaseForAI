@@ -4,13 +4,13 @@ import com._sptek.__webFramework.security.authentication.principal.FrameworkUser
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.security.Key;
 import java.util.Arrays;
@@ -28,17 +28,15 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Component
-public class JwtTokenProvider implements InitializingBean {
+public class JwtAuthenticationTokenService implements InitializingBean {
     private static final String AUTHORITIES_KEY = "auth";
     private static final String USERNAME_KEY = "username";
     private static final String DISPLAY_NAME_KEY = "displayName";
-    private final String secretKey;
-    private final long tokenValidityInMilliseconds;
+    private final JwtProperties jwtProperties;
     private Key key;
 
-    public JwtTokenProvider(@Value("${jwt.base64SecretKey}") String secretKey, @Value("${jwt.tokenValidityInMilliseconds}") long tokenValidityInMilliseconds) {
-        this.secretKey = secretKey;
-        this.tokenValidityInMilliseconds = tokenValidityInMilliseconds;
+    public JwtAuthenticationTokenService(JwtProperties jwtProperties) {
+        this.jwtProperties = jwtProperties;
     }
 
     /**
@@ -46,7 +44,8 @@ public class JwtTokenProvider implements InitializingBean {
      */
     @Override
     public void afterPropertiesSet() {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        jwtProperties.validate();
+        byte[] keyBytes = Decoders.BASE64.decode(jwtProperties.getBase64SecretKey());
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
@@ -65,7 +64,7 @@ public class JwtTokenProvider implements InitializingBean {
 
         // 토큰 만료 시간 설정
         long now = (new Date()).getTime();
-        Date validity = new Date(now + this.tokenValidityInMilliseconds);
+        Date validity = new Date(now + jwtProperties.getTokenValidityInMilliseconds());
 
         return Jwts.builder()
                 .setSubject(authenticatedUser.getUserId())
@@ -96,21 +95,14 @@ public class JwtTokenProvider implements InitializingBean {
      * 현재 요청의 SecurityContextHolder에 넣어 Controller까지 전달한다.</p>
      */
     public Authentication convertJwtToAuthentication(String token){
-        // 토큰을 이용하여 claim 생성
-        Claims claims = Jwts
-                .parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-
-        Set<String> authorityNames = Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
-                .filter(authority -> authority != null && !authority.isBlank())
-                .collect(Collectors.toCollection(LinkedHashSet::new));
+        Claims claims = parseClaims(token);
+        validateAuthenticationClaims(claims);
+        String subject = getRequiredSubject(claims);
+        Set<String> authorityNames = getAuthorityNames(claims);
         String username = claims.get(USERNAME_KEY, String.class);
         if (username == null || username.isBlank()) {
             // 기존에 발급된 token에는 username/displayName claim이 없을 수 있어 subject로 fallback한다.
-            username = claims.getSubject();
+            username = subject;
         }
         String displayName = claims.get(DISPLAY_NAME_KEY, String.class);
         if (displayName == null || displayName.isBlank()) {
@@ -118,7 +110,7 @@ public class JwtTokenProvider implements InitializingBean {
         }
 
         FrameworkUserDetails principal = FrameworkUserDetails.builder()
-                .userId(claims.getSubject())
+                .userId(subject)
                 .username(username)
                 .displayName(displayName)
                 .password("")
@@ -147,15 +139,58 @@ public class JwtTokenProvider implements InitializingBean {
      * JWT 서명, 만료, 지원 여부를 검증한다.
      */
     public boolean validateJwt(String jwt){
-        try{
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
+        try {
+            validateAuthenticationClaims(parseClaims(jwt));
             return true;
+        } catch (JwtAuthenticationException e) {
+            log.error(e.getMessage());
         }
-        catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) { log.error("Invalid JWT signature"); }
-        catch (ExpiredJwtException e) { log.error("Expired JWT token"); }
-        catch (UnsupportedJwtException e) { log.error("Unsupported JWT token"); }
-        catch (IllegalArgumentException e) { log.error("Invalid JWT token"); }
 
         return false;
+    }
+
+    private Claims parseClaims(String jwt) {
+        try {
+            return Jwts
+                    .parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(jwt)
+                    .getBody();
+        } catch (io.jsonwebtoken.security.SecurityException e) {
+            throw new JwtAuthenticationException("Invalid JWT signature", e);
+        } catch (MalformedJwtException e) {
+            throw new JwtAuthenticationException("Malformed JWT token", e);
+        } catch (ExpiredJwtException e) {
+            throw new JwtAuthenticationException("Expired JWT token", e);
+        } catch (UnsupportedJwtException e) {
+            throw new JwtAuthenticationException("Unsupported JWT token", e);
+        } catch (IllegalArgumentException e) {
+            throw new JwtAuthenticationException("Invalid JWT token", e);
+        }
+    }
+
+    private void validateAuthenticationClaims(Claims claims) {
+        getRequiredSubject(claims);
+        getAuthorityNames(claims);
+    }
+
+    private String getRequiredSubject(Claims claims) {
+        String subject = claims.getSubject();
+        if (!StringUtils.hasText(subject)) {
+            throw new JwtAuthenticationException("JWT subject claim is required");
+        }
+        return subject;
+    }
+
+    private Set<String> getAuthorityNames(Claims claims) {
+        Object authoritiesClaim = claims.get(AUTHORITIES_KEY);
+        if (authoritiesClaim == null) {
+            throw new JwtAuthenticationException("JWT authority claim is required");
+        }
+
+        return Arrays.stream(String.valueOf(authoritiesClaim).split(","))
+                .filter(StringUtils::hasText)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 }

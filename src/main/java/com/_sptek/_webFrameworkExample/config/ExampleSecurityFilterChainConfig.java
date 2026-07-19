@@ -5,7 +5,7 @@ import com._sptek.__webFramework.security.authentication.view.ViewFormLoginSucce
 import com._sptek.__webFramework.security.token.jwt.JwtApiAccessDeniedHandler;
 import com._sptek.__webFramework.security.token.jwt.JwtApiAuthenticationEntryPoint;
 import com._sptek.__webFramework.security.token.jwt.JwtAuthenticationFilter;
-import com._sptek.__webFramework.security.token.jwt.JwtTokenProvider;
+import com._sptek.__webFramework.security.token.jwt.JwtAuthenticationTokenService;
 import com._sptek._webFrameworkExample.unit.authentication.authorization.DomainAuthorityEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +38,7 @@ public class ExampleSecurityFilterChainConfig {
 
     private final ViewFormLoginSuccessHandler customAuthenticationSuccessHandlerForView;
     private final ViewFormLoginFailureHandler customAuthenticationFailureHandlerForView;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtAuthenticationTokenService jwtAuthenticationTokenService;
     private final JwtApiAuthenticationEntryPoint jwtApiAuthenticationEntryPoint;
     private final JwtApiAccessDeniedHandler jwtApiAccessDeniedHandler;
 
@@ -147,7 +147,7 @@ public class ExampleSecurityFilterChainConfig {
                         .authenticationEntryPoint(jwtApiAuthenticationEntryPoint)
                         .accessDeniedHandler(jwtApiAccessDeniedHandler)
                 )
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, jwtApiAuthenticationEntryPoint), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(jwtAuthenticationTokenService, jwtApiAuthenticationEntryPoint), UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
     }

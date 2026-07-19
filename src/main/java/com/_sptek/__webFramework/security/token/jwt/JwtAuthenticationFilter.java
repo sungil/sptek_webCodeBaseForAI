@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.util.StringUtils;
@@ -28,11 +29,11 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String AUTHORIZATION_PREFIX  = "Bearer ";
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtAuthenticationTokenService jwtAuthenticationTokenService;
     private final AuthenticationEntryPoint authenticationEntryPoint;
 
-    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, AuthenticationEntryPoint authenticationEntryPoint){
-        this.jwtTokenProvider = jwtTokenProvider;
+    public JwtAuthenticationFilter(JwtAuthenticationTokenService jwtAuthenticationTokenService, AuthenticationEntryPoint authenticationEntryPoint){
+        this.jwtAuthenticationTokenService = jwtAuthenticationTokenService;
         this.authenticationEntryPoint = authenticationEntryPoint;
     }
 
@@ -80,22 +81,23 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         }
 
         try {
-            if (!jwtTokenProvider.validateJwt(jwt)) {
-                failAuthentication(httpServletRequest, httpServletResponse, "Invalid JWT token. uri: " + requestUri);
-                return;
-            }
-
-            Authentication authentication = jwtTokenProvider.convertJwtToAuthentication(jwt);
+            Authentication authentication = jwtAuthenticationTokenService.convertJwtToAuthentication(jwt);
             SecurityContextHolder.getContext().setAuthentication(authentication);
             //log.debug("Authentication({}) has been saved in SecurityContextHolder, uri: {}", authentication, requestUri);
             chain.doFilter(httpServletRequest,response);
+        } catch (JwtAuthenticationException ex) {
+            failAuthentication(httpServletRequest, httpServletResponse, ex);
         } catch (RuntimeException ex) {
-            failAuthentication(httpServletRequest, httpServletResponse, "Failed to authenticate JWT token. uri: " + requestUri);
+            failAuthentication(httpServletRequest, httpServletResponse, new BadCredentialsException("Failed to authenticate JWT token. uri: " + requestUri, ex));
         }
     }
 
     private void failAuthentication(HttpServletRequest request, HttpServletResponse response, String message) throws IOException, ServletException {
+        failAuthentication(request, response, new BadCredentialsException(message));
+    }
+
+    private void failAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
         SecurityContextHolder.clearContext();
-        authenticationEntryPoint.commence(request, response, new BadCredentialsException(message));
+        authenticationEntryPoint.commence(request, response, exception);
     }
 }
