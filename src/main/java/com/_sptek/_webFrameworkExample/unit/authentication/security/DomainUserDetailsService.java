@@ -1,4 +1,4 @@
-package com._sptek._webFrameworkExample.unit.authentication.userStore;
+package com._sptek._webFrameworkExample.unit.authentication.security;
 
 import com._sptek.__webFramework.security.authentication.principal.FrameworkUserDetails;
 import com._sptek._webFrameworkExample.unit.authentication.userStore.entity.User;
@@ -16,19 +16,20 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * 예제 업무 사용자 entity를 프레임워크 공통 인증 principal로 변환하는 UserDetailsService.
+ * 업무 사용자 저장소를 Spring Security UserDetailsService 계약에 연결하는 adapter.
  *
- * <p>프레임워크는 사용자 저장소 구조를 알지 않고, 업무 영역이 조회한 사용자 정보를
- * {@link FrameworkUserDetails} 계약에 맞춰 반환한다.</p>
+ * <p>프레임워크는 사용자 테이블, repository, role/authority entity 구조를 직접 알지 않는다.
+ * 업무 프로젝트가 이 구현체에서 사용자를 조회한 뒤 프레임워크 공통 principal인
+ * {@link FrameworkUserDetails}로 변환해 반환한다.</p>
  *
- * <p>Spring Security의 form login은 AuthenticationProvider를 통해 이 서비스를 호출한다.
- * 이 클래스는 DB 조회와 업무 User -> FrameworkUserDetails 변환까지만 담당하고,
- * password 일치 여부 판단은 AuthenticationProvider가 수행한다.</p>
+ * <p>이 클래스는 사용자 조회와 principal 변환까지만 담당한다.
+ * password 일치 여부 판단과 인증 완료 Authentication 생성은 프레임워크의
+ * AuthenticationProvider가 이어서 처리한다.</p>
  */
 @Slf4j
 @Service("userDetailsService")
 @RequiredArgsConstructor
-public class CustomUserDetailsService implements UserDetailsService {
+public class DomainUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
