@@ -31,20 +31,21 @@ class MakeMdcFilterTest {
     }
 
     @Test
-    void createsSessionForNonMinorRequest() throws ServletException, IOException {
+    void doesNotCreateSessionForNonMinorRequest() throws ServletException, IOException {
         MakeMdcFilter filter = new MakeMdcFilter();
         MockHttpServletRequest request = new MockHttpServletRequest("GET", "/api/test");
         MockHttpServletResponse response = new MockHttpServletResponse();
         FilterChain filterChain = (servletRequest, servletResponse) -> {
             HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
-            String maskedSessionId = httpServletRequest.getSession(false).getId().substring(0, 8) + "**";
 
-            assertThat(httpServletRequest.getSession(false)).isNotNull();
-            assertThat(MDC.get("sessionId")).isEqualTo(maskedSessionId);
+            assertThat(httpServletRequest.getSession(false)).isNull();
+            assertThat(MDC.get("sessionId")).isEmpty();
+            assertThat(MDC.get("correlationId")).isNotBlank();
         };
 
         filter.doFilter(request, response, filterChain);
 
-        assertThat(request.getSession(false)).isNotNull();
+        assertThat(request.getSession(false)).isNull();
+        assertThat(response.getHeader("Correlation-Id")).isNotBlank();
     }
 }

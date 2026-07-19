@@ -53,10 +53,14 @@ class RequestMappingAnnotationRegisterTest {
         HandlerMethod formHandler = findHandler("samePathForm");
 
         assertThat(register.hasAnnotation(jsonHandler, Enable_PreventDuplicateRequest_At_RestController_RestControllerMethod.class)).isTrue();
-        assertThat(register.hasAnnotation(jsonHandler, Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class)).isFalse();
+        assertThat(register.hasAnnotation(jsonHandler, Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class)).isTrue();
+        assertThat(register.getAnnotationAttributes(jsonHandler, Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class))
+                .contains(Map.of("value", "class-tag"));
 
         assertThat(register.hasAnnotation(formHandler, Enable_PreventDuplicateRequest_At_RestController_RestControllerMethod.class)).isFalse();
         assertThat(register.hasAnnotation(formHandler, Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class)).isTrue();
+        assertThat(register.getAnnotationAttributes(formHandler, Enable_ReqResDetailLog_At_Main_Controller_ControllerMethod.class))
+                .contains(Map.of("value", "form-tag"));
     }
 
     @Test
