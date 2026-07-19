@@ -3,6 +3,7 @@ package com._sptek.__webFramework.security.support;
 import com._sptek.__webFramework.security.authentication.principal.FrameworkUserDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.Nullable;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -40,14 +41,12 @@ public class CurrentAuthenticationUtil {
      * principal 값을 기준으로 한 번 더 구분한다.</p>
      */
     public static boolean isRealLogin() {
-        // spring security 가 다 로딩 되기 전의 호출이나 filter chain 이 적용 되지 않는 request 등을 위한 방어
-        try {
-            if(CurrentAuthenticationUtil.getMyAuthentication() == null)
-                return false;
-            return !SecurityConstants.ANONYMOUS_USER.equals(CurrentAuthenticationUtil.getMyAuthentication().getPrincipal().toString());
-        } catch (Exception e) {
-            return false;
-        }
+        Authentication authentication = CurrentAuthenticationUtil.getMyAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) return false;
+        if (authentication instanceof AnonymousAuthenticationToken) return false;
+
+        Object principal = authentication.getPrincipal();
+        return !SecurityConstants.ANONYMOUS_USER.equals(String.valueOf(principal));
     }
 
     /**

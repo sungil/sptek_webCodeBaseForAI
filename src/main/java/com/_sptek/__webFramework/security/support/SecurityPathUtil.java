@@ -227,33 +227,47 @@ public class SecurityPathUtil {
      * 현재 사용자가 지정 보안 경로에 접근할 수 있는지 경로 prefix와 인증 정보를 기준으로 확인한다.
      */
     public static boolean hasPermissionForSecuredFilePath(Path securedFilePath) throws Exception {
-        if (securedFilePath == null) throw new ServiceException(CommonErrorCodeEnum.BAD_REQUEST_ERROR, "securedFilePath is required");
+        validateSecuredFilePath(securedFilePath);
 
-        try {
-            String SecurePathType = securedFilePath.getName(0).toString();
+        String securePathType = securedFilePath.getName(0).toString();
 
-            if (SecurePathType.equals(SecureFilePathTypeEnum.ANYONE.getPathName())) {
-                return true;
+        if (securePathType.equals(SecureFilePathTypeEnum.ANYONE.getPathName())) {
+            return true;
 
-            } else if (SecurePathType.equals(SecureFilePathTypeEnum.LOGIN.getPathName())) {
-                return CurrentAuthenticationUtil.isRealLogin();
+        } else if (securePathType.equals(SecureFilePathTypeEnum.LOGIN.getPathName())) {
+            return CurrentAuthenticationUtil.isRealLogin();
 
-            } else if (SecurePathType.equals(SecureFilePathTypeEnum.USER.getPathName())) {
-                return securedFilePath.getName(1).toString().equals(String.valueOf(CurrentAuthenticationUtil.getMyId()));
+        } else if (securePathType.equals(SecureFilePathTypeEnum.USER.getPathName())) {
+            requireMinimumNameCount(securedFilePath, 2);
+            return CurrentAuthenticationUtil.isRealLogin()
+                    && securedFilePath.getName(1).toString().equals(String.valueOf(CurrentAuthenticationUtil.getMyId()));
 
-            } else if (SecurePathType.equals(SecureFilePathTypeEnum.ROLE.getPathName())) {
-                Set<String> rolesInSecuredFilePath = Arrays.stream(securedFilePath.getName(1).toString().split("-")).collect(Collectors.toSet());
-                return !Collections.disjoint(rolesInSecuredFilePath, CurrentAuthenticationUtil.getMyRoles());
+        } else if (securePathType.equals(SecureFilePathTypeEnum.ROLE.getPathName())) {
+            requireMinimumNameCount(securedFilePath, 2);
+            Set<String> rolesInSecuredFilePath = getPermissionNamesInSecuredFilePath(securedFilePath);
+            return CurrentAuthenticationUtil.isRealLogin()
+                    && !Collections.disjoint(rolesInSecuredFilePath, CurrentAuthenticationUtil.getMyRoles());
 
-            } else if (SecurePathType.equals(SecureFilePathTypeEnum.AUTH.getPathName())) {
-                Set<String> authsInSecuredFilePath = Arrays.stream(securedFilePath.getName(1).toString().split("-")).collect(Collectors.toSet());
-                return !Collections.disjoint(authsInSecuredFilePath, CurrentAuthenticationUtil.getMyAuths());
+        } else if (securePathType.equals(SecureFilePathTypeEnum.AUTH.getPathName())) {
+            requireMinimumNameCount(securedFilePath, 2);
+            Set<String> authsInSecuredFilePath = getPermissionNamesInSecuredFilePath(securedFilePath);
+            return CurrentAuthenticationUtil.isRealLogin()
+                    && !Collections.disjoint(authsInSecuredFilePath, CurrentAuthenticationUtil.getMyAuths());
 
-            } else {
-                throw new Exception("Unsupported securedFilePath: " +  securedFilePath);
-            }
-        } catch (Exception ex) {
-            throw new Exception("Unsupported securedFilePath: " +  securedFilePath);
+        } else {
+            throw new ServiceException(CommonErrorCodeEnum.BAD_REQUEST_ERROR, "Unsupported securedFilePath: " + securedFilePath);
         }
+    }
+
+    private static void requireMinimumNameCount(Path securedFilePath, int minimumNameCount) {
+        if (securedFilePath.getNameCount() < minimumNameCount) {
+            throw new ServiceException(CommonErrorCodeEnum.BAD_REQUEST_ERROR, "Invalid securedFilePath: " + securedFilePath);
+        }
+    }
+
+    private static Set<String> getPermissionNamesInSecuredFilePath(Path securedFilePath) {
+        return Arrays.stream(securedFilePath.getName(1).toString().split("-"))
+                .filter(permissionName -> !permissionName.isBlank())
+                .collect(Collectors.toSet());
     }
 }
