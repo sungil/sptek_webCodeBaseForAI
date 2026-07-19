@@ -1,8 +1,13 @@
 package com._sptek.__webFramework.security.authentication.view;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * View form login 성공 후 saved request 또는 명시 redirect parameter 기준으로 이동시키는 handler.
@@ -12,25 +17,34 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-
-// 현재는 SavedRequestAwareAuthenticationSuccessHandler 의 옵션 설정 외 그데로 사용.
 public class ViewFormLoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
     public final static String LOGIN_SUCCESS_TARGETURL_PARAMETER = "redirectTo";
+    private final ViewLoginAuthenticationProperties properties;
 
-    //초기 필요 옵션 설정
-    ViewFormLoginSuccessHandler() {
-        this.setDefaultTargetUrl("/");
+    public ViewFormLoginSuccessHandler(ViewLoginAuthenticationProperties properties) {
+        this.properties = properties;
+        this.setDefaultTargetUrl(properties.getDefaultTargetUrl());
         this.setTargetUrlParameter(LOGIN_SUCCESS_TARGETURL_PARAMETER);
     }
 
-//    @Override
-//    protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response) {
-//
-//    }
+    /**
+     * redirectTo parameter는 같은 application 안의 context-relative URL만 허용한다.
+     */
+    @Override
+    protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+        String targetUrlParameter = getTargetUrlParameter();
+        if (StringUtils.hasText(targetUrlParameter)) {
+            String requestedTargetUrl = request.getParameter(targetUrlParameter);
+            if (StringUtils.hasText(requestedTargetUrl)) {
+                if (ViewLoginRedirectHelper.isSafeContextRelativeRedirectUrl(requestedTargetUrl)) {
+                    return requestedTargetUrl;
+                }
+                log.warn("Unsafe view login redirect target was ignored.");
+                return properties.getDefaultTargetUrl();
+            }
+        }
 
-//    @Override
-//    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-//
-//    }
+        return super.determineTargetUrl(request, response, authentication);
+    }
 
 }

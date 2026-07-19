@@ -9,6 +9,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 
@@ -20,28 +21,31 @@ import java.io.IOException;
 @Slf4j
 @Component
 public class ViewFormLoginFailureHandler implements AuthenticationFailureHandler {
+    private final ViewLoginAuthenticationProperties properties;
+
+    public ViewFormLoginFailureHandler(ViewLoginAuthenticationProperties properties) {
+        this.properties = properties;
+    }
 
     /**
      * Spring Security form login 실패를 로그인 화면 query parameter로 변환한다.
      */
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-        String exCode = "000";
-
         if (exception instanceof UsernameNotFoundException) {
-            log.error("Username not found");
-            exCode = "EX001";
+            log.debug("Username not found");
 
         } else if (exception instanceof BadCredentialsException) {
-            log.error("Bad credentials");
-            exCode = "EX002";
+            log.debug("Bad credentials");
 
         } else {
-            log.error("Unknown exception");
-            exCode = "EX000";
+            log.warn("Unknown view form login failure.", exception);
         }
 
-        //NOTE : exception 케이스별로 메시지를 내릴수도 있지만 보안상의 이유로 안내려주는게 더 안전하니 적절히 판단 필요
-        response.sendRedirect("/view/login?error=" + exCode);
+        String redirectUrl = UriComponentsBuilder.fromPath("/view/login")
+                .queryParam("error", properties.getAuthenticationFailureCode())
+                .build()
+                .toUriString();
+        response.sendRedirect(redirectUrl);
     }
 }

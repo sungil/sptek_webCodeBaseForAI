@@ -9,7 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 /**
@@ -28,7 +28,7 @@ import org.springframework.stereotype.Component;
 public class FormLoginAuthenticationProvider implements AuthenticationProvider {
 
     private final UserDetailsService userDetailsService;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * email을 username으로 간주해 사용자 정보를 조회하고 password hash를 검증한다.
@@ -42,17 +42,17 @@ public class FormLoginAuthenticationProvider implements AuthenticationProvider {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) authentication;
 
         // email 값을 Name(일반적id개념) 으로 사용하는 케이스
-        String email = usernamePasswordAuthenticationToken.getName();
-        String password = (String) usernamePasswordAuthenticationToken.getCredentials();
-        log.debug("requested login id : {}", email);
+        String username = usernamePasswordAuthenticationToken.getName();
+        String password = getSubmittedPassword(usernamePasswordAuthenticationToken);
+        log.debug("requested login id : {}", username);
 
         // 해당 계정이 존재하는지 확인(password 확인은 하지 않음)
-        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
         // password 가 일치 하지 않으면 BadCredentialsException 처리
-        if (!bCryptPasswordEncoder.matches(password, userDetails.getPassword())) {
+        if (!passwordEncoder.matches(password, userDetails.getPassword())) {
             log.debug("Password does not match.");
-            throw new BadCredentialsException(userDetails.getUsername() + " : Password does not match.");
+            throw new BadCredentialsException("Bad credentials");
         } else {
             log.debug("Password matched.");
         }
@@ -60,8 +60,8 @@ public class FormLoginAuthenticationProvider implements AuthenticationProvider {
 
         // principal은 이후 SecurityContext에서 "현재 사용자"로 꺼내 쓰이는 객체다.
         // 여기서는 세션 로그인과 JWT 인증을 같은 형태로 다루기 위해 UserDetailsService가 만든 공통 principal을 그대로 넣는다.
-        // credentials에는 사용자가 제출한 password가 들어가지만, 이후 Spring Security 흐름에서 노출이 제한된다.
-        return new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
+        // 성공 Authentication에는 제출된 raw password를 다시 담지 않는다.
+        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 
     /**
@@ -71,6 +71,14 @@ public class FormLoginAuthenticationProvider implements AuthenticationProvider {
     public boolean supports(Class<?> authentication) {
         // AuthenticationManager는 등록된 provider 중 supports()가 true인 provider에게 인증 처리를 위임한다.
         // form login은 username/password 요청을 UsernamePasswordAuthenticationToken으로 표현한다.
-        return authentication.equals(UsernamePasswordAuthenticationToken.class);
+        return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);
+    }
+
+    private String getSubmittedPassword(UsernamePasswordAuthenticationToken authentication) {
+        Object credentials = authentication.getCredentials();
+        if (credentials instanceof String password && !password.isBlank()) {
+            return password;
+        }
+        throw new BadCredentialsException("Bad credentials");
     }
 }

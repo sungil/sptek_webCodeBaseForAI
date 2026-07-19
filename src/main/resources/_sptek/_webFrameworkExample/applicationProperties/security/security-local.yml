@@ -1,0 +1,17 @@
+web-framework:
+  security:
+    view-login:
+      default-target-url: /
+      authentication-failure-code: EX_AUTH_FAILED
+      not-redirect-urls:
+        - login
+        - /login
+        - /view/login
+        - logout
+        - /logout
+        - /view/logout
+        - signup
+        - /signup
+        - /view/signup
+        - /view/example/authentication/signup
+        - /view/example/authentication/signupForm

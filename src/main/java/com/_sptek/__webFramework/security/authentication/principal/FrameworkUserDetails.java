@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -37,7 +38,8 @@ public class FrameworkUserDetails implements UserDetails {
     /**
      * Spring Security의 username에 해당하는 로그인 식별자.
      *
-     * <p>현재 예제 업무에서는 email을 username으로 사용한다.</p>
+     * <p>프레임워크는 username의 의미를 강제하지 않는다.
+     * 업무 UserDetailsService가 email, loginId, 사번처럼 해당 프로젝트의 로그인 식별자를 선택해 넣는다.</p>
      */
     private String username;
 
@@ -58,7 +60,8 @@ public class FrameworkUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorityNames.stream()
+        return Optional.ofNullable(authorityNames).orElseGet(Set::of).stream()
+                .filter(authority -> authority != null && !authority.isBlank())
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }

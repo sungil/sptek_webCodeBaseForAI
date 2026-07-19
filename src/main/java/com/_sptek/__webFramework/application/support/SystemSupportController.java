@@ -37,6 +37,7 @@ import java.util.Base64;
 public class SystemSupportController {
     private final InfoEndpoint infoEndpoint;
     private final HealthEndpoint healthEndpoint;
+    private final ViewLoginRedirectHelper viewLoginRedirectHelper;
 
     @GetMapping("/serverName")
     @Operation(summary = "시스템 환경 설정에 따른 서버 네임 제공", description = "")
@@ -101,7 +102,7 @@ public class SystemSupportController {
         // 공통 기능 으로 분류하여 이곳에 작성
         @GetMapping({"/view/login"})
         public String login(Model model , HttpServletRequest request, HttpServletResponse response) {
-            model.addAttribute(ViewFormLoginSuccessHandler.LOGIN_SUCCESS_TARGETURL_PARAMETER, ViewLoginRedirectHelper.getRedirectUrlAfterLogging(request, response));
+            model.addAttribute(ViewFormLoginSuccessHandler.LOGIN_SUCCESS_TARGETURL_PARAMETER, viewLoginRedirectHelper.getRedirectUrlAfterLogging(request, response));
             return  "pages/_systemSupport/login";
         }
 
