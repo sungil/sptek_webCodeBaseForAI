@@ -2,7 +2,6 @@ package com.cesco.__projectsCommon.springSecurity;
 
 import com._sptek.__webFramework.security.authentication.view.*;
 import com._sptek.__webFramework.security.jwt.*;
-import com._sptek.__webFramework.security.config.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +13,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.util.AntPathMatcher;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -27,7 +25,6 @@ public class SecurityFilterChainConfig {
     private final GeneralTokenProvider generalTokenProvider;
     private final CustomJwtAuthenticationEntryPointForApi customJwtAuthenticationEntryPointForApi;
     private final CustomJwtAccessDeniedHandlerForApi customJwtAccessDeniedHandlerForApi;
-    private AntPathMatcher antPathMatcher = new AntPathMatcher();
 
     @Bean
     @Order(100)
@@ -36,12 +33,8 @@ public class SecurityFilterChainConfig {
         String myPattern = "/view/";
 
         httpSecurity
-                // example 용 view 는 제외
-                .securityMatcher(request -> {
-                    String requestUri = request.getRequestURI();
-                    return antPathMatcher.match(myPattern + "**", requestUri)
-                            && !antPathMatcher.match(FrameworkSecurityFilterChainConfig.exampleViewPattern + "**", requestUri);
-                })
+                // example 업무 체인은 더 낮은 @Order에서 먼저 매칭되므로 여기서는 일반 업무 /view/** 전체를 잡는다.
+                .securityMatcher(myPattern + "**")
 
                 // CSRF 비활성화 경로 지정
                 .csrf(csrf -> csrf
@@ -92,12 +85,8 @@ public class SecurityFilterChainConfig {
         String myPattern = "/api/*/"; // *->는 버전 용도임
 
         httpSecurity
-                // example 용 api 는 제외
-                .securityMatcher(request -> {
-                    String requestUri = request.getRequestURI();
-                    return antPathMatcher.match(myPattern + "**", requestUri)
-                            && !antPathMatcher.match(FrameworkSecurityFilterChainConfig.exampleApiPattern + "**", requestUri);
-                })
+                // example 업무 체인은 더 낮은 @Order에서 먼저 매칭되므로 여기서는 일반 업무 /api/*/** 전체를 잡는다.
+                .securityMatcher(myPattern + "**")
 
                 // JWT를 사용하는 경우 CSRF방지 기능을 사용 할 필요가 없음.(CSRF 공격이 쿠키 방식의 session 문제에 기인한 것으로 JWT만 사용하여 세션을 사용하지 않는다면 disable 처리)
                 .csrf(AbstractHttpConfigurer::disable)
