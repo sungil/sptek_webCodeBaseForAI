@@ -41,7 +41,7 @@ public class CustomAuthenticationFailureHandlerForView implements Authentication
             exCode = "EX000";
         }
 
-        //todo : exception 케이스별로 메시지를 내릴수도 있지만 보안상의 이유로 안내려주는게 더 안전하니 적절히 판단 필요
+        //NOTE : exception 케이스별로 메시지를 내릴수도 있지만 보안상의 이유로 안내려주는게 더 안전하니 적절히 판단 필요
         response.sendRedirect("/view/login?error=" + exCode);
     }
 }

@@ -48,7 +48,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
         // 해당 계정이 존재하는지 확인(password 확인은 하지 않음)
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-        log.debug("user info from userDetailsService by userName : {}, {}", userDetails.getUsername(), userDetails.getAuthorities());
 
         // password 가 일치 하지 않으면 BadCredentialsException 처리
         if (!bCryptPasswordEncoder.matches(password, userDetails.getPassword())) {
@@ -57,6 +56,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         } else {
             log.debug("Password matched.");
         }
+        log.debug("user info from userDetailsService by userName : {}, {}", userDetails.getUsername(), userDetails.getAuthorities());
 
         // principal은 이후 SecurityContext에서 "현재 사용자"로 꺼내 쓰이는 객체다.
         // 여기서는 세션 로그인과 JWT 인증을 같은 형태로 다루기 위해 UserDetailsService가 만든 공통 principal을 그대로 넣는다.

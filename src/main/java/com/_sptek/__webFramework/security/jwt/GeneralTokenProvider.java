@@ -76,7 +76,7 @@ public class GeneralTokenProvider implements InitializingBean {
                 .setExpiration(validity)
                 .compact();
         /*
-        todo:
+        NOTE:
         최종 토큰 형태 : eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdW5naWxyeTFAbmF2ZXIuY29tIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTc1MjEzNzUxNn0.qfb5BBjZktqcif9XBCSDpk2okoYj5qO19qUGSaM1xjSF9hc-xylgjvGtgkbzd9XmpD5-zi6PdlmghyTW8EZ9xw
         토큰은 암호화 된것이 아니라 Base64 인코딩된 상태로 그런 이유로 주요 정보는 포함하지 않아야 함.
         그러한 이유로 브라우저에서 직접 로그인하고 sessionId로 인증 처리가 되는 케이스와(view) 와 Authorization: Bearer 토큰으로 인증받은 케이스의 SecurityContextHolder 에서 Authentication 을 가져왔을때 서로 정보의 량이 틀릴수 있음을 꼭 알아야 함!)

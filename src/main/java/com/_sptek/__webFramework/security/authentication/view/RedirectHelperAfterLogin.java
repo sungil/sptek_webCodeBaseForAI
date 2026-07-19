@@ -19,7 +19,7 @@ import java.util.Optional;
  */
 @Slf4j
 
-// todo: 해당 동작은 기본적으로 링크를 클릭 하여 접속 되는 경우 동작 하며 browser 에 주소를 직접 일력 하는 방식 에서는 동작 하지 않음.
+// NOTE: 해당 동작은 기본적으로 링크를 클릭 하여 접속 되는 경우 동작 하며 browser 에 주소를 직접 일력 하는 방식 에서는 동작 하지 않음.
 public class RedirectHelperAfterLogin {
 
     private final static String LOGIN_SUCCESS_REDIRECT_URL = "LOGIN_SUCCESS_REDIRECT_URL";
@@ -28,7 +28,7 @@ public class RedirectHelperAfterLogin {
     // 로그인 전 시도한 요청을 세션에 저장 하기 위한 용도 (로그인 전 로그인 필요 페이지 를 클릭 했을때 로그인 페이지 로 이동 하여 로그인 이후 원래의 요청 페이지 로 연결 하기 위함)
     private final static HttpSessionRequestCache requestCache = new HttpSessionRequestCache();
 
-    // todo: 필요시 추가 (로그인 이후 리다이리렉트 되면 안되는 경로)
+    // NOTE: 필요시 추가 (로그인 이후 리다이리렉트 되면 안되는 경로)
     private static List<String> NOT_REDIRECT_URLS = List.of(
             "login", "/login", "/view/login",
             "logout", "/logout", "view/logout",
