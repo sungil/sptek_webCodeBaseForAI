@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,10 +40,10 @@ public class AuthenticationService {
     private final RoleRepository roleRepository;
     private final TermsRepository termsRepository;
     private final AuthorityRepository authorityRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     /**
-     * 가입 요청의 Role, 약관 이름을 기준 데이터와 매칭하고 비밀번호를 암호화해 사용자를 저장한다.
+     * 가입 요청의 Role, 약관 이름을 기준 데이터와 매칭하고 비밀번호를 해시해 사용자를 저장한다.
      */
     @Transactional
     public UserDto saveUser(SignupRequestDto signupRequestDto){
@@ -52,7 +52,7 @@ public class AuthenticationService {
 
         signupRequestDto.setRoles(roles);
         signupRequestDto.setTerms(terms);
-        signupRequestDto.setPassword(bCryptPasswordEncoder.encode(signupRequestDto.getPassword()));
+        signupRequestDto.setPassword(passwordEncoder.encode(signupRequestDto.getPassword()));
         User user = modelMapper.map(signupRequestDto, User.class);
         log.debug("new userEntity : {}", user);
         return modelMapper.map(userRepository.save(user), UserDto.class);
@@ -70,7 +70,7 @@ public class AuthenticationService {
 
         userUpdateRequestDto.setRoles(roles);
         userUpdateRequestDto.setTerms(terms);
-        userUpdateRequestDto.setPassword(bCryptPasswordEncoder.encode(userUpdateRequestDto.getPassword()));
+        userUpdateRequestDto.setPassword(passwordEncoder.encode(userUpdateRequestDto.getPassword()));
 
         User originUser = userRepository.findByEmail(userUpdateRequestDto.getEmail())
                 .orElseThrow(() -> new ServiceException(ServiceErrorCodeEnum.NO_RESOURCE_ERROR, String.format("No user found with this email : %s", userUpdateRequestDto.getEmail())));
