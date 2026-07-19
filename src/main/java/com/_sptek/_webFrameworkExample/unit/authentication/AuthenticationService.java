@@ -185,7 +185,7 @@ public class AuthenticationService {
     /**
      * 메서드 보안에서 특정 Authority 보유 여부를 검사하는 예제 메서드.
      */
-    @PreAuthorize("hasAuthority(T(com._sptek._webFrameworkExample.unit.authentication.authorization.AuthorityEnum).AUTH_SPECIAL_FOR_TEST.name())")
+    @PreAuthorize("hasAuthority(T(com._sptek._webFrameworkExample.unit.authentication.authorization.DomainAuthorityEnum).AUTH_SPECIAL_FOR_TEST.name())")
     public String iNeedAuth() {
         return "I Need Specific Auth";
     }

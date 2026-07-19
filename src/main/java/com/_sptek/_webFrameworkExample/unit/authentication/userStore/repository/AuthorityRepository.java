@@ -1,6 +1,6 @@
 package com._sptek._webFrameworkExample.unit.authentication.userStore.repository;
 
-import com._sptek._webFrameworkExample.unit.authentication.authorization.AuthorityEnum;
+import com._sptek._webFrameworkExample.unit.authentication.authorization.DomainAuthorityEnum;
 import com._sptek._webFrameworkExample.unit.authentication.userStore.entity.Authority;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -12,7 +12,7 @@ import java.util.List;
 public interface AuthorityRepository extends JpaRepository<Authority, Long> {
 
     /**
-     * AuthorityEnum 목록에 해당하는 권한 entity들을 조회한다.
+     * DomainAuthorityEnum 목록에 해당하는 권한 entity들을 조회한다.
      */
-    List<Authority> findByAuthorityIn(List<AuthorityEnum> authorities);
+    List<Authority> findByAuthorityIn(List<DomainAuthorityEnum> authorities);
 }

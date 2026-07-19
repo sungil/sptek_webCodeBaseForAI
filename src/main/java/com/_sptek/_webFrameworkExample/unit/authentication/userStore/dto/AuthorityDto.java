@@ -1,6 +1,6 @@
 package com._sptek._webFrameworkExample.unit.authentication.userStore.dto;
 
-import com._sptek._webFrameworkExample.unit.authentication.authorization.AuthorityEnum;
+import com._sptek._webFrameworkExample.unit.authentication.authorization.DomainAuthorityEnum;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -17,5 +17,5 @@ public class AuthorityDto {
     private Long id;
 
     @NotNull
-    private AuthorityEnum authority;
+    private DomainAuthorityEnum authority;
 }

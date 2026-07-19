@@ -6,7 +6,7 @@ import com._sptek.__webFramework.security.token.jwt.JwtApiAccessDeniedHandler;
 import com._sptek.__webFramework.security.token.jwt.JwtApiAuthenticationEntryPoint;
 import com._sptek.__webFramework.security.token.jwt.JwtAuthenticationFilter;
 import com._sptek.__webFramework.security.token.jwt.JwtTokenProvider;
-import com._sptek._webFrameworkExample.unit.authentication.authorization.AuthorityEnum;
+import com._sptek._webFrameworkExample.unit.authentication.authorization.DomainAuthorityEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -34,7 +34,7 @@ import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 public class ExampleSecurityFilterChainConfig {
     private static final String EXAMPLE_VIEW_PATTERN = "/view/example/";
     private static final String EXAMPLE_API_PATTERN = "/api/*/example/";
-    private static final String AUTH_SPECIAL_FOR_TEST = AuthorityEnum.AUTH_SPECIAL_FOR_TEST.name();
+    private static final String AUTH_SPECIAL_FOR_TEST = DomainAuthorityEnum.AUTH_SPECIAL_FOR_TEST.name();
 
     private final ViewFormLoginSuccessHandler customAuthenticationSuccessHandlerForView;
     private final ViewFormLoginFailureHandler customAuthenticationFailureHandlerForView;

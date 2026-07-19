@@ -3,7 +3,7 @@ package com._sptek._webFrameworkExample.unit.multipartFilePost;
 import com._sptek._webFrameworkExample.dto.ExamplePostDto;
 import com._sptek.__webFramework.core.exception.ServiceException;
 import com._sptek.__webFramework.data.mybatis.MyBatisCommonDao;
-import com._sptek._webFrameworkExample.unit.authentication.authorization.AuthorityEnum;
+import com._sptek._webFrameworkExample.unit.authentication.authorization.DomainAuthorityEnum;
 import com._sptek.__webFramework.security.support.CurrentAuthenticationUtil;
 import com._sptek.__webFramework.core.file.FileUtil;
 import com._sptek.__webFramework.security.support.SecurityPathUtil;
@@ -116,7 +116,7 @@ public class MultipartFilePostService {
         //Path postOwnFilePath = getPostOwnFilePathForLogin(postBaseDto);
         //Path postOwnFilePath = getPostOwnFilePathForUser(postBaseDto);  // ---> 아래 케이스 부터 테스트 필요함!! , 이미지 바이트 스트림 메소드등 등 파일 위치등의 조정이 필요함, 필터쪽에 if문 제확인 필요
         //Path postOwnFilePath = getPostOwnFilePathForRole(postBaseDto, Set.of("ROLE_ADMIN", "ROLE_ADMIN_SPECIAL", "ROLE_SYSTEM"));
-        //Path postOwnFilePath = getPostOwnFilePathForAuth(postBaseDto, Set.of(AuthorityEnum.AUTH_SPECIAL_FOR_TEST, AuthorityEnum.AUTH_RETRIEVE_USER_ALL_FOR_MARKETING));
+        //Path postOwnFilePath = getPostOwnFilePathForAuth(postBaseDto, Set.of(DomainAuthorityEnum.AUTH_SPECIAL_FOR_TEST, DomainAuthorityEnum.AUTH_RETRIEVE_USER_ALL_FOR_MARKETING));
         //---------------------------------------------------------------------------
 
         Path realPostFilePath = SecurityPathUtil.resolveStoragePath(postOwnFilePath);
@@ -255,7 +255,7 @@ public class MultipartFilePostService {
         );
     }
 
-    public Path getPostOwnFilePathForAuth(PostBaseDto postBaseDto, Set<AuthorityEnum> authorities) throws Exception {
+    public Path getPostOwnFilePathForAuth(PostBaseDto postBaseDto, Set<DomainAuthorityEnum> authorities) throws Exception {
         if (!CurrentAuthenticationUtil.isRealLogin()) throw new ServiceException(ServiceErrorCodeEnum.DEFAULT_ERROR, "로그인 상태가 아닙니다.");
         Set<String> authorityNames = authorities == null
                 ? null

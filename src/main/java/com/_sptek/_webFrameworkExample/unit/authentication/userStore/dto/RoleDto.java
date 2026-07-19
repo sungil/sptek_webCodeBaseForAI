@@ -1,6 +1,6 @@
 package com._sptek._webFrameworkExample.unit.authentication.userStore.dto;
 
-import com._sptek._webFrameworkExample.unit.authentication.authorization.AuthorityEnum;
+import com._sptek._webFrameworkExample.unit.authentication.authorization.DomainAuthorityEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -29,12 +29,12 @@ public class RoleDto {
     private List<AuthorityDto> authorities;
 
     @Setter(AccessLevel.NONE)
-    private List<AuthorityEnum> authorityEnums;
+    private List<DomainAuthorityEnum> authorityEnums;
 
     /**
-     * authority DTO 목록을 Spring Security에서 사용하는 AuthorityEnum 목록으로 변환한다.
+     * authority DTO 목록을 Spring Security에서 사용하는 DomainAuthorityEnum 목록으로 변환한다.
      */
-    public List<AuthorityEnum> getAuthorityEnums() {
+    public List<DomainAuthorityEnum> getAuthorityEnums() {
         return Optional.ofNullable(authorities).orElseGet(Collections::emptyList)
                 .stream().map(AuthorityDto::getAuthority).collect(Collectors.toList());
     }

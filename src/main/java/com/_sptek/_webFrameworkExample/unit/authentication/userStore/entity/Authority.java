@@ -1,6 +1,6 @@
 package com._sptek._webFrameworkExample.unit.authentication.userStore.entity;
 
-import com._sptek._webFrameworkExample.unit.authentication.authorization.AuthorityEnum;
+import com._sptek._webFrameworkExample.unit.authentication.authorization.DomainAuthorityEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,7 +27,7 @@ public class Authority {
 
     @Column(unique = true)
     @Enumerated(EnumType.STRING)
-    private AuthorityEnum authority;
+    private DomainAuthorityEnum authority;
 
     @Column(unique = true)
     private String code;
@@ -44,7 +44,7 @@ public class Authority {
     //@PostLoad
     //@PostPersist
     /**
-     * AuthorityEnum의 보조 식별자 필드를 entity 컬럼에 동기화한다.
+     * DomainAuthorityEnum의 보조 식별자 필드를 entity 컬럼에 동기화한다.
      */
     @PrePersist
     @PreUpdate
