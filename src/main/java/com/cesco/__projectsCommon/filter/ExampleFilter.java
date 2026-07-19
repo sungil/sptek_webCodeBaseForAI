@@ -1,6 +1,6 @@
 package com.cesco.__projectsCommon.filter;
 
-import com._sptek.__webFramework.security.util.SecurityUtil;
+import com._sptek.__webFramework.security.support.SecurityPathUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,7 +27,7 @@ public class ExampleFilter extends OncePerRequestFilter {
     public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
 
         //필터 제외 케이스
-        if (SecurityUtil.isNotEssentialRequest() || SecurityUtil.isStaticResourceRequest()) {
+        if (SecurityPathUtil.isNotEssentialRequest() || SecurityPathUtil.isStaticResourceRequest()) {
             filterChain.doFilter(request, response);
             return;
         }

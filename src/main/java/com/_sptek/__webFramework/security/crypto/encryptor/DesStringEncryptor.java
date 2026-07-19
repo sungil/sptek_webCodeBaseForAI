@@ -1,6 +1,6 @@
-package com._sptek.__webFramework.security.crypto.encryptModule;
+package com._sptek.__webFramework.security.crypto.encryptor;
 
-import com._sptek.__webFramework.security.crypto.GlobalEncryptor;
+import com._sptek.__webFramework.security.crypto.registry.EncryptorRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.StringEncryptor;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,17 +18,17 @@ import java.util.Base64;
  *
  * <p>DES는 보안성이 낮으므로 호환성처럼 꼭 필요한 경우에만 사용한다. 새 데이터 암호화에는
  * AES 또는 요구사항에 맞는 다른 모듈을 우선 검토한다. Spring Bean 생성 시
- * {@link GlobalEncryptor}에 {@code sptDES} 타입으로 등록된다.</p>
+ * {@link EncryptorRegistry}에 {@code sptDES} 타입으로 등록된다.</p>
  */
 @Slf4j
 @Component
-public class DesEncryptor implements StringEncryptor {
+public class DesStringEncryptor implements StringEncryptor {
     private final String ALGORITHM = "DES";
     private final String TRANSFORMATION = "DES/CBC/PKCS5Padding";
 
     private final SecretKeySpec secretKey;
 
-    DesEncryptor(@Value("${desEncryptor.base64SecretKey}") String base64SecretKey) {
+    DesStringEncryptor(@Value("${desEncryptor.base64SecretKey}") String base64SecretKey) {
         byte[] secretKeyBytes = Base64.getDecoder().decode(base64SecretKey);
         if (secretKeyBytes.length != 8) {
             // DES 키는 반드시 8바이트 (64비트)여야 함
@@ -37,7 +37,7 @@ public class DesEncryptor implements StringEncryptor {
         this.secretKey = new SecretKeySpec(secretKeyBytes, ALGORITHM);
 
         //Encryption 에 사용 등록 처리
-        GlobalEncryptor.register(GlobalEncryptor.Type.sptDES, this);
+        EncryptorRegistry.register(EncryptorRegistry.Type.sptDES, this);
     }
 
     /**

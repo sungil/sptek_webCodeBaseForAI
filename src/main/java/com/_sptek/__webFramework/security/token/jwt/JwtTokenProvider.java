@@ -1,6 +1,6 @@
-package com._sptek.__webFramework.security.jwt;
+package com._sptek.__webFramework.security.token.jwt;
 
-import com._sptek.__webFramework.security.authentication.principal.FrameworkAuthenticatedUser;
+import com._sptek.__webFramework.security.authentication.principal.FrameworkUserDetails;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Component
-public class GeneralTokenProvider implements InitializingBean {
+public class JwtTokenProvider implements InitializingBean {
     private static final String AUTHORITIES_KEY = "auth";
     private static final String USERNAME_KEY = "username";
     private static final String DISPLAY_NAME_KEY = "displayName";
@@ -36,7 +36,7 @@ public class GeneralTokenProvider implements InitializingBean {
     private final long tokenValidityInMilliseconds;
     private Key key;
 
-    public GeneralTokenProvider(@Value("${jwt.base64SecretKey}") String secretKey, @Value("${jwt.tokenValidityInMilliseconds}") long tokenValidityInMilliseconds) {
+    public JwtTokenProvider(@Value("${jwt.base64SecretKey}") String secretKey, @Value("${jwt.tokenValidityInMilliseconds}") long tokenValidityInMilliseconds) {
         this.secretKey = secretKey;
         this.tokenValidityInMilliseconds = tokenValidityInMilliseconds;
     }
@@ -54,14 +54,14 @@ public class GeneralTokenProvider implements InitializingBean {
      * 인증 객체의 공통 principal 정보를 JWT subject/claim으로 변환해 서명된 token을 생성한다.
      *
      * <p>subject에는 username/email이 아니라 공통 principal의 userId를 넣는다.
-     * username과 displayName은 별도 claim으로 내려 세션 로그인과 JWT 인증 후 AuthenticationUtil 조회 결과를 맞춘다.</p>
+     * username과 displayName은 별도 claim으로 내려 세션 로그인과 JWT 인증 후 CurrentAuthenticationUtil 조회 결과를 맞춘다.</p>
      */
     public String convertAuthenticationToJwt(Authentication authentication){
         log.debug("origin authentication: {}", authentication);
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
-        FrameworkAuthenticatedUser authenticatedUser = toFrameworkAuthenticatedUser(authentication);
+        FrameworkUserDetails authenticatedUser = toFrameworkUserDetails(authentication);
 
         // 토큰 만료 시간 설정
         long now = (new Date()).getTime();
@@ -92,7 +92,7 @@ public class GeneralTokenProvider implements InitializingBean {
      * JWT claims의 사용자 식별자와 authority claim으로 Spring Security Authentication을 재구성한다.
      *
      * <p>JWT 요청은 서버 session에 저장된 SecurityContext를 읽지 않는다. 매 요청마다 token을 검증한 뒤
-     * claims로 FrameworkAuthenticatedUser principal을 새로 만들고, CustomJwtFilter가 이 Authentication을
+     * claims로 FrameworkUserDetails principal을 새로 만들고, JwtAuthenticationFilter가 이 Authentication을
      * 현재 요청의 SecurityContextHolder에 넣어 Controller까지 전달한다.</p>
      */
     public Authentication convertJwtToAuthentication(String token){
@@ -117,7 +117,7 @@ public class GeneralTokenProvider implements InitializingBean {
             displayName = username;
         }
 
-        FrameworkAuthenticatedUser principal = FrameworkAuthenticatedUser.builder()
+        FrameworkUserDetails principal = FrameworkUserDetails.builder()
                 .userId(claims.getSubject())
                 .username(username)
                 .displayName(displayName)
@@ -127,12 +127,12 @@ public class GeneralTokenProvider implements InitializingBean {
         return new UsernamePasswordAuthenticationToken(principal, token, principal.getAuthorities());
     }
 
-    private FrameworkAuthenticatedUser toFrameworkAuthenticatedUser(Authentication authentication) {
-        if (authentication.getPrincipal() instanceof FrameworkAuthenticatedUser frameworkAuthenticatedUser) {
-            return frameworkAuthenticatedUser;
+    private FrameworkUserDetails toFrameworkUserDetails(Authentication authentication) {
+        if (authentication.getPrincipal() instanceof FrameworkUserDetails frameworkUserDetails) {
+            return frameworkUserDetails;
         }
 
-        return FrameworkAuthenticatedUser.builder()
+        return FrameworkUserDetails.builder()
                 .userId(authentication.getName())
                 .username(authentication.getName())
                 .displayName(authentication.getName())

@@ -2,7 +2,7 @@ package com._sptek.__webFramework.observability.mdc;
 
 import com._sptek.__webFramework.security.SecurityConstants;
 import com._sptek.__webFramework.observability.logging.LoggingConstants;
-import com._sptek.__webFramework.security.util.AuthenticationUtil;
+import com._sptek.__webFramework.security.support.CurrentAuthenticationUtil;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -43,7 +43,7 @@ public class MakeMdcFilter extends OncePerRequestFilter {
         // MDC는 thread-local 기반이므로 요청 종료 시 반드시 clear해야 한다.
         try {
             HttpSession session = request.getSession(false);
-            MDC.put("memberId", AuthenticationUtil.isRealLogin() ? mask(AuthenticationUtil.getMyName(), 4) : SecurityConstants.ANONYMOUS_USER);
+            MDC.put("memberId", CurrentAuthenticationUtil.isRealLogin() ? mask(CurrentAuthenticationUtil.getMyName(), 4) : SecurityConstants.ANONYMOUS_USER);
             MDC.put("sessionId", session != null ? mask(session.getId(), 8) : "");
 
             // 분산 시스템에서 API 호출 흐름을 trace 하기 위한 값으로 추후 사용을 위해 적용함

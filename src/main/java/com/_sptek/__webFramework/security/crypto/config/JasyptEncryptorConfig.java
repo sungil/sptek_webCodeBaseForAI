@@ -1,8 +1,8 @@
-package com._sptek.__webFramework.security.crypto.encryptModule;
+package com._sptek.__webFramework.security.crypto.config;
 
-import com._sptek.__webFramework.security.crypto.Enable_EncryptorJasypt_At_Main;
+import com._sptek.__webFramework.security.crypto.annotation.Enable_EncryptorJasypt_At_Main;
 import com._sptek.__webFramework.bootstrap.annotationCondition.HasAnnotationOnMain_At_Bean;
-import com._sptek.__webFramework.security.crypto.GlobalEncryptor;
+import com._sptek.__webFramework.security.crypto.registry.EncryptorRegistry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.StringEncryptor;
@@ -19,13 +19,13 @@ import org.springframework.util.StringUtils;
  *
  * <p>정적 설정값이나 property 주요 정보를 암복호화하는 용도의 PBE 기반 모듈이다.
  * 실시간 대량 데이터 암복호화보다는 설정값 보호에 맞춰 사용하고, 생성한 Bean은
- * {@link GlobalEncryptor}에 {@code sptJASYPT} 타입으로 등록한다.</p>
+ * {@link EncryptorRegistry}에 {@code sptJASYPT} 타입으로 등록한다.</p>
  */
 @Slf4j
 @RequiredArgsConstructor
 @Configuration
 @HasAnnotationOnMain_At_Bean(Enable_EncryptorJasypt_At_Main.class)
-public class JasyptStringEncryptorConfig {
+public class JasyptEncryptorConfig {
 
     final private Environment environment;
 
@@ -51,7 +51,7 @@ public class JasyptStringEncryptorConfig {
         pooledPBEStringEncryptor.setConfig(getSimpleStringPBEConfig(pbePassword, pbeAlgorithm));
 
         //Encryption 에 사용 등록 처리
-        GlobalEncryptor.register(GlobalEncryptor.Type.sptJASYPT, pooledPBEStringEncryptor);
+        EncryptorRegistry.register(EncryptorRegistry.Type.sptJASYPT, pooledPBEStringEncryptor);
 
         //최종 인코딩된 암호값에는 알고리즘정보 및 salt가 포함됨(salt가 포함됨으로 별도로 salt를 관리할 필요가 없음, salt가 노출된다고 해도 암호를 풀 방법이 쉬워질건 없음)
         return pooledPBEStringEncryptor;

@@ -3,12 +3,12 @@ package com._sptek.__webFramework.application.support;
 import com._sptek.__webFramework.api.response.Enable_ResponseOfApiCommonSuccess_At_RestController;
 import com._sptek.__webFramework.api.response.Enable_ResponseOfApiGlobalException_At_RestController;
 import com._sptek.__webFramework.view.error.Enable_ResponseOfViewGlobalException_At_ViewController;
-import com._sptek.__webFramework.security.crypto.encryptModule.RsaEncryptor;
-import com._sptek.__webFramework.security.authentication.view.CustomAuthenticationSuccessHandlerForView;
-import com._sptek.__webFramework.security.authentication.view.RedirectHelperAfterLogin;
+import com._sptek.__webFramework.security.crypto.encryptor.RsaStringEncryptor;
+import com._sptek.__webFramework.security.authentication.view.ViewFormLoginSuccessHandler;
+import com._sptek.__webFramework.security.authentication.view.ViewLoginRedirectHelper;
 import com._sptek.__webFramework.web.locale.LocaleUtil;
 import com._sptek.__webFramework.web.util.ResponseUtil;
-import com._sptek.__webFramework.security.util.SecurityUtil;
+import com._sptek.__webFramework.security.support.SecurityPathUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -62,7 +62,7 @@ public class SystemSupportController {
     @GetMapping("/rsaPublicKeyBase64")
     @Operation(summary = "클라이언트 RSA 암호화를 위한 public key 제공", description = "") //swagger
     public Object rsaPublicKeyBase64() {
-        return Base64.getEncoder().encodeToString(RsaEncryptor.getPublicKey().getEncoded());
+        return Base64.getEncoder().encodeToString(RsaStringEncryptor.getPublicKey().getEncoded());
     }
 
     @GetMapping("/supportedLocaleLanguage")
@@ -75,7 +75,7 @@ public class SystemSupportController {
     @Operation(summary = "File 에 대한 바이트 스트림 제공 (권한 처리 포함) ", description = "") //swagger
     public Object fileByteFromStorage(@RequestParam("securedFilePath") String securedFilePath)  throws Exception {
         // 테스트 securedFilePath >> SELECT CONCAT(FILE_PATH, '/', FILE_NAME) AS FULL_PATH FROM POST_FILES;
-        return ResponseUtil.makeResponseEntityFromFile(SecurityUtil.parseSecuredFilePath(securedFilePath));
+        return ResponseUtil.makeResponseEntityFromFile(SecurityPathUtil.parseSecuredFilePath(securedFilePath));
     }
 
     @Controller
@@ -101,7 +101,7 @@ public class SystemSupportController {
         // 공통 기능 으로 분류하여 이곳에 작성
         @GetMapping({"/view/login"})
         public String login(Model model , HttpServletRequest request, HttpServletResponse response) {
-            model.addAttribute(CustomAuthenticationSuccessHandlerForView.LOGIN_SUCCESS_TARGETURL_PARAMETER, RedirectHelperAfterLogin.getRedirectUrlAfterLogging(request, response));
+            model.addAttribute(ViewFormLoginSuccessHandler.LOGIN_SUCCESS_TARGETURL_PARAMETER, ViewLoginRedirectHelper.getRedirectUrlAfterLogging(request, response));
             return  "pages/_systemSupport/login";
         }
 

@@ -1,6 +1,6 @@
 package com._sptek._webFrameworkExample.dto;
 
-import com._sptek.__webFramework.security.crypto.Enable_DecryptAuto_At_DtoString;
+import com._sptek.__webFramework.security.crypto.annotation.Enable_DecryptAuto_At_DtoString;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

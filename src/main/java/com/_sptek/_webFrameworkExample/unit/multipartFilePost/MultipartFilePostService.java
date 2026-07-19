@@ -4,9 +4,9 @@ import com._sptek._webFrameworkExample.dto.ExamplePostDto;
 import com._sptek.__webFramework.core.exception.ServiceException;
 import com._sptek.__webFramework.data.mybatis.MyBatisCommonDao;
 import com._sptek._webFrameworkExample.unit.authentication.authorization.AuthorityEnum;
-import com._sptek.__webFramework.security.util.AuthenticationUtil;
+import com._sptek.__webFramework.security.support.CurrentAuthenticationUtil;
 import com._sptek.__webFramework.core.file.FileUtil;
-import com._sptek.__webFramework.security.util.SecurityUtil;
+import com._sptek.__webFramework.security.support.SecurityPathUtil;
 import com._sptek._webFrameworkExample.common.resultCode.ServiceErrorCodeEnum;
 import com.cesco.__projectsCommon.commonObject.dto.PostBaseDto;
 import com.cesco.__projectsCommon.commonObject.dto.UploadFileDto;
@@ -53,10 +53,10 @@ public class MultipartFilePostService {
     }
 
     public void setCurrentUserInfo(PostBaseDto postBaseDto) throws Exception {
-        if (AuthenticationUtil.isRealLogin()) {
-            postBaseDto.setUserId(AuthenticationUtil.getMyId());
-            postBaseDto.setUserName(AuthenticationUtil.getMyName());
-            postBaseDto.setUserEmail(AuthenticationUtil.getMyEmail());
+        if (CurrentAuthenticationUtil.isRealLogin()) {
+            postBaseDto.setUserId(CurrentAuthenticationUtil.getMyId());
+            postBaseDto.setUserName(CurrentAuthenticationUtil.getMyName());
+            postBaseDto.setUserEmail(CurrentAuthenticationUtil.getMyEmail());
         }
     }
 
@@ -119,7 +119,7 @@ public class MultipartFilePostService {
         //Path postOwnFilePath = getPostOwnFilePathForAuth(postBaseDto, Set.of(AuthorityEnum.AUTH_SPECIAL_FOR_TEST, AuthorityEnum.AUTH_RETRIEVE_USER_ALL_FOR_MARKETING));
         //---------------------------------------------------------------------------
 
-        Path realPostFilePath = SecurityUtil.resolveStoragePath(postOwnFilePath);
+        Path realPostFilePath = SecurityPathUtil.resolveStoragePath(postOwnFilePath);
         // 멀티 파일의 내용이 uploadFileDtos 에 없으면 uploadFileDtos 에 추가 (fileName 과 fileOrder 값 입력)
         for (int i = 0; i < multipartFiles.size(); i++) {
             MultipartFile multipartFile = multipartFiles.get(i);
@@ -232,44 +232,44 @@ public class MultipartFilePostService {
     }
 
     public Path getPostOwnFilePathForAnyone(PostBaseDto postBaseDto) {
-        return buildFilePath(SecurityUtil.getSecuredFilePathForAnyone(), postBaseDto);
+        return buildFilePath(SecurityPathUtil.getSecuredFilePathForAnyone(), postBaseDto);
     }
 
     public Path getPostOwnFilePathForLogin(PostBaseDto postBaseDto) throws Exception {
-        if (!AuthenticationUtil.isRealLogin()) throw new ServiceException(ServiceErrorCodeEnum.DEFAULT_ERROR, "로그인 상태가 아닙니다.");
-        return buildFilePath(SecurityUtil.getSecuredFilePathForLogin(), postBaseDto);
+        if (!CurrentAuthenticationUtil.isRealLogin()) throw new ServiceException(ServiceErrorCodeEnum.DEFAULT_ERROR, "로그인 상태가 아닙니다.");
+        return buildFilePath(SecurityPathUtil.getSecuredFilePathForLogin(), postBaseDto);
     }
 
     public Path getPostOwnFilePathForUser(PostBaseDto postBaseDto) throws Exception {
-        if (!AuthenticationUtil.isRealLogin()) throw new ServiceException(ServiceErrorCodeEnum.DEFAULT_ERROR, "로그인 상태가 아닙니다.");
-        return buildFilePath(SecurityUtil.getSecuredFilePathForUser(), postBaseDto);
+        if (!CurrentAuthenticationUtil.isRealLogin()) throw new ServiceException(ServiceErrorCodeEnum.DEFAULT_ERROR, "로그인 상태가 아닙니다.");
+        return buildFilePath(SecurityPathUtil.getSecuredFilePathForUser(), postBaseDto);
     }
 
     public Path getPostOwnFilePathForRole(PostBaseDto postBaseDto, Set<String> roles) throws Exception {
-        if (!AuthenticationUtil.isRealLogin()) throw new ServiceException(ServiceErrorCodeEnum.DEFAULT_ERROR, "로그인 상태가 아닙니다.");
-        if (roles != null && Collections.disjoint(AuthenticationUtil.getMyRoles(), roles)) throw new ServiceException(ServiceErrorCodeEnum.DEFAULT_ERROR, "해당 롤이 없습니다.");
+        if (!CurrentAuthenticationUtil.isRealLogin()) throw new ServiceException(ServiceErrorCodeEnum.DEFAULT_ERROR, "로그인 상태가 아닙니다.");
+        if (roles != null && Collections.disjoint(CurrentAuthenticationUtil.getMyRoles(), roles)) throw new ServiceException(ServiceErrorCodeEnum.DEFAULT_ERROR, "해당 롤이 없습니다.");
 
         return buildFilePath(
-                SecurityUtil.getSecuredFilePathForRole(roles),
+                SecurityPathUtil.getSecuredFilePathForRole(roles),
                 postBaseDto
         );
     }
 
     public Path getPostOwnFilePathForAuth(PostBaseDto postBaseDto, Set<AuthorityEnum> authorities) throws Exception {
-        if (!AuthenticationUtil.isRealLogin()) throw new ServiceException(ServiceErrorCodeEnum.DEFAULT_ERROR, "로그인 상태가 아닙니다.");
+        if (!CurrentAuthenticationUtil.isRealLogin()) throw new ServiceException(ServiceErrorCodeEnum.DEFAULT_ERROR, "로그인 상태가 아닙니다.");
         Set<String> authorityNames = authorities == null
                 ? null
                 : authorities.stream().map(Enum::name).collect(Collectors.toSet());
         if (authorities != null &&
                 Collections.disjoint(
-                        AuthenticationUtil.getMyAuths(),
+                        CurrentAuthenticationUtil.getMyAuths(),
                         authorityNames
                 )) {
             throw new ServiceException(ServiceErrorCodeEnum.DEFAULT_ERROR, "해당 권한이 없습니다.");
         }
 
         return buildFilePath(
-                SecurityUtil.getSecuredFilePathForAuth(authorityNames),
+                SecurityPathUtil.getSecuredFilePathForAuth(authorityNames),
                 postBaseDto
         );
     }

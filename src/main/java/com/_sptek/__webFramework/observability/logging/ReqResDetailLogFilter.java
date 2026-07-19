@@ -1,7 +1,7 @@
 package com._sptek.__webFramework.observability.logging;
 
 import com._sptek.__webFramework.bootstrap.registry.MainClassAnnotationRegister;
-import com._sptek.__webFramework.security.util.SecurityUtil;
+import com._sptek.__webFramework.security.support.SecurityPathUtil;
 import com._sptek.__webFramework.web.filter.Enable_MinorRequestOptimization_At_Main;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.FilterChain;
@@ -48,7 +48,7 @@ public class ReqResDetailLogFilter extends OncePerRequestFilter {
     @Override
     public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
         boolean isMinorRequest = MainClassAnnotationRegister.hasAnnotation(Enable_MinorRequestOptimization_At_Main.class)
-                && (SecurityUtil.isNotEssentialRequest(request) || SecurityUtil.isStaticResourceRequest(request));
+                && (SecurityPathUtil.isNotEssentialRequest(request) || SecurityPathUtil.isStaticResourceRequest(request));
         if (isMinorRequest || isExcludedFromReqResDetailLog(request)) {
             filterChain.doFilter(request, response);
             return;

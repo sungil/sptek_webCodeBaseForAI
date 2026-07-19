@@ -1,4 +1,4 @@
-package com._sptek.__webFramework.security.jwt;
+package com._sptek.__webFramework.security.token.jwt;
 
 import com._sptek.__webFramework.api.response.ApiCommonErrorResponseDto;
 import com._sptek.__webFramework.core.resultCode.CommonErrorCodeEnum;
@@ -25,7 +25,7 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class CustomJwtAccessDeniedHandlerForApi implements AccessDeniedHandler {
+public class JwtApiAccessDeniedHandler implements AccessDeniedHandler {
     private final ObjectMapper objectMapper;
 
     /**

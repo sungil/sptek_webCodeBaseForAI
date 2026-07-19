@@ -21,7 +21,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true) //컨트롤로에서 개별적 권한 관리가 가능
-public class SecurityConfig {
+public class SpringSecurityEnableConfig {
 
     /**
      * HttpSecurity가 공유하는 AuthenticationManagerBuilder를 기반으로 AuthenticationManager를 생성한다.
@@ -46,7 +46,7 @@ public class SecurityConfig {
 //    // spring 로그에서 권장되지 않는 방식이라 WARN이 발생함, 추후 필터 체인에서 나머지 경로에 대한 permitAll() 설정으로 대체하는 것이 좋음
 //    public WebSecurityCustomizer webSecurityCustomizer() {
 //        return (webSecurity) -> webSecurity.ignoring()
-//                .requestMatchers(SecurityUtil.getNotEssentialRequestPatternsArray())
+//                .requestMatchers(SecurityPathUtil.getNotEssentialRequestPatternsArray())
 //                ;
 //        //return (webSecurity) -> webSecurity.ignoring().requestMatchers("/**");
 //    }

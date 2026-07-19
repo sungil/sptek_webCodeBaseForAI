@@ -1,6 +1,6 @@
-package com._sptek.__webFramework.security.crypto.encryptModule;
+package com._sptek.__webFramework.security.crypto.encryptor;
 
-import com._sptek.__webFramework.security.crypto.GlobalEncryptor;
+import com._sptek.__webFramework.security.crypto.registry.EncryptorRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.StringEncryptor;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,23 +17,23 @@ import java.util.Base64;
  * AES/CBC/PKCS5Padding 기반의 문자열 암복호화 모듈.
  *
  * <p>설정에서 Base64 인코딩된 대칭키를 받아 사용하고, 암호화 결과에는 매번 생성한 IV와
- * 암호문을 함께 Base64로 인코딩한다. Spring Bean 생성 시 {@link GlobalEncryptor}에
+ * 암호문을 함께 Base64로 인코딩한다. Spring Bean 생성 시 {@link EncryptorRegistry}에
  * {@code sptAES} 타입으로 등록된다.</p>
  */
 @Slf4j
 @Component
-public class AesEncryptor implements StringEncryptor {
+public class AesStringEncryptor implements StringEncryptor {
     private final String ALGORITHM = "AES";
     private final String AES_CBC_PADDING = "AES/CBC/PKCS5Padding";
 
     private final SecretKeySpec secretKey;
 
-    AesEncryptor(@Value("${aesEncryptor.base64SecretKey}") String base64SecretKey) {
+    AesStringEncryptor(@Value("${aesEncryptor.base64SecretKey}") String base64SecretKey) {
         byte[] secretKeyBytes = Base64.getDecoder().decode(base64SecretKey);
         this.secretKey = new SecretKeySpec(secretKeyBytes, ALGORITHM);
 
         //Encryption 에 사용 등록 처리
-        GlobalEncryptor.register(GlobalEncryptor.Type.sptAES, this);
+        EncryptorRegistry.register(EncryptorRegistry.Type.sptAES, this);
     }
 
     /**

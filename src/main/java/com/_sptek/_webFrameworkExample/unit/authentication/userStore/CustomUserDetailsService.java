@@ -1,6 +1,6 @@
 package com._sptek._webFrameworkExample.unit.authentication.userStore;
 
-import com._sptek.__webFramework.security.authentication.principal.FrameworkAuthenticatedUser;
+import com._sptek.__webFramework.security.authentication.principal.FrameworkUserDetails;
 import com._sptek._webFrameworkExample.unit.authentication.userStore.entity.User;
 import com._sptek._webFrameworkExample.unit.authentication.userStore.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,10 +19,10 @@ import java.util.stream.Collectors;
  * 예제 업무 사용자 entity를 프레임워크 공통 인증 principal로 변환하는 UserDetailsService.
  *
  * <p>프레임워크는 사용자 저장소 구조를 알지 않고, 업무 영역이 조회한 사용자 정보를
- * {@link FrameworkAuthenticatedUser} 계약에 맞춰 반환한다.</p>
+ * {@link FrameworkUserDetails} 계약에 맞춰 반환한다.</p>
  *
  * <p>Spring Security의 form login은 AuthenticationProvider를 통해 이 서비스를 호출한다.
- * 이 클래스는 DB 조회와 업무 User -> FrameworkAuthenticatedUser 변환까지만 담당하고,
+ * 이 클래스는 DB 조회와 업무 User -> FrameworkUserDetails 변환까지만 담당하고,
  * password 일치 여부 판단은 AuthenticationProvider가 수행한다.</p>
  */
 @Slf4j
@@ -39,7 +39,7 @@ public class CustomUserDetailsService implements UserDetailsService {
      * Spring Security의 hasRole/hasAuthority 검사는 결국 이 문자열 목록을 기준으로 동작한다.</p>
      */
     @Override
-    public FrameworkAuthenticatedUser loadUserByUsername(String userEmail) {
+    public FrameworkUserDetails loadUserByUsername(String userEmail) {
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new UsernameNotFoundException(String.format("User(%s) not found.", userEmail)));
 
@@ -54,7 +54,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 })
                 .collect(Collectors.toCollection(LinkedHashSet::new));
 
-        FrameworkAuthenticatedUser frameworkAuthenticatedUser = FrameworkAuthenticatedUser.builder()
+        FrameworkUserDetails frameworkUserDetails = FrameworkUserDetails.builder()
                 .userId(String.valueOf(user.getId()))
                 .username(user.getEmail())
                 .displayName(user.getName())
@@ -62,8 +62,8 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .authorityNames(authorityNames)
                 .build();
 
-        log.debug("user info from userDetailsService by userName : {}, {}", frameworkAuthenticatedUser.getUsername(),
-                frameworkAuthenticatedUser.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList());
-        return frameworkAuthenticatedUser;
+        log.debug("user info from userDetailsService by userName : {}, {}", frameworkUserDetails.getUsername(),
+                frameworkUserDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList());
+        return frameworkUserDetails;
     }
 }

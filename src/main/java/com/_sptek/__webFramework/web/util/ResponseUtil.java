@@ -2,7 +2,7 @@ package com._sptek.__webFramework.web.util;
 
 import com._sptek.__webFramework.core.resultCode.CommonErrorCodeEnum;
 import com._sptek.__webFramework.core.exception.ServiceException;
-import com._sptek.__webFramework.security.util.SecurityUtil;
+import com._sptek.__webFramework.security.support.SecurityPathUtil;
 import com._sptek.__webFramework.core.util.TypeConvertUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -68,11 +68,11 @@ public class ResponseUtil {
      */
     public static ResponseEntity<Resource> makeResponseEntityFromFile(Path securedFilePath) throws Exception {
         if (securedFilePath == null) throw new ServiceException(CommonErrorCodeEnum.BAD_REQUEST_ERROR, "securedFilePath is required");
-        if (!SecurityUtil.hasPermissionForSecuredFilePath(securedFilePath)) {
+        if (!SecurityPathUtil.hasPermissionForSecuredFilePath(securedFilePath)) {
             throw new ServiceException(CommonErrorCodeEnum.FORBIDDEN_ERROR);
         }
 
-        Path resolvedPath = SecurityUtil.resolveStoragePath(securedFilePath);
+        Path resolvedPath = SecurityPathUtil.resolveStoragePath(securedFilePath);
         if (!Files.isRegularFile(resolvedPath)) {
             throw new ServiceException(CommonErrorCodeEnum.NOT_FOUND_ERROR, "file not found");
         }

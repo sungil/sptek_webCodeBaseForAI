@@ -19,7 +19,7 @@ import java.io.IOException;
  */
 @Slf4j
 @Component
-public class CustomAuthenticationFailureHandlerForView implements AuthenticationFailureHandler {
+public class ViewFormLoginFailureHandler implements AuthenticationFailureHandler {
 
     /**
      * Spring Security form login 실패를 로그인 화면 query parameter로 변환한다.

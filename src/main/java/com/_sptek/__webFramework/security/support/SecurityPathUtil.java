@@ -1,4 +1,4 @@
-package com._sptek.__webFramework.security.util;
+package com._sptek.__webFramework.security.support;
 
 import com._sptek.__webFramework.core.resultCode.CommonErrorCodeEnum;
 import com._sptek.__webFramework.core.util.SpringUtil;
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 /**
  * HTML escape, 요청 패턴 분류, 보안 파일 경로 생성/검증/권한 확인을 제공하는 보안 보조 유틸리티.
  */
-public class SecurityUtil {
+public class SecurityPathUtil {
 
     /**
      * 전달된 문자열을 HTML 엔티티로 escape 한다.
@@ -143,7 +143,7 @@ public class SecurityUtil {
      * 현재 로그인 사용자 전용 저장소 보안 경로를 반환한다.
      */
     public static Path getSecuredFilePathForUser() throws Exception {
-        return Path.of(SecureFilePathTypeEnum.USER.getPathName(), AuthenticationUtil.getMyId().toString());
+        return Path.of(SecureFilePathTypeEnum.USER.getPathName(), CurrentAuthenticationUtil.getMyId().toString());
     }
 
     /**
@@ -236,18 +236,18 @@ public class SecurityUtil {
                 return true;
 
             } else if (SecurePathType.equals(SecureFilePathTypeEnum.LOGIN.getPathName())) {
-                return AuthenticationUtil.isRealLogin();
+                return CurrentAuthenticationUtil.isRealLogin();
 
             } else if (SecurePathType.equals(SecureFilePathTypeEnum.USER.getPathName())) {
-                return securedFilePath.getName(1).toString().equals(String.valueOf(AuthenticationUtil.getMyId()));
+                return securedFilePath.getName(1).toString().equals(String.valueOf(CurrentAuthenticationUtil.getMyId()));
 
             } else if (SecurePathType.equals(SecureFilePathTypeEnum.ROLE.getPathName())) {
                 Set<String> rolesInSecuredFilePath = Arrays.stream(securedFilePath.getName(1).toString().split("-")).collect(Collectors.toSet());
-                return !Collections.disjoint(rolesInSecuredFilePath, AuthenticationUtil.getMyRoles());
+                return !Collections.disjoint(rolesInSecuredFilePath, CurrentAuthenticationUtil.getMyRoles());
 
             } else if (SecurePathType.equals(SecureFilePathTypeEnum.AUTH.getPathName())) {
                 Set<String> authsInSecuredFilePath = Arrays.stream(securedFilePath.getName(1).toString().split("-")).collect(Collectors.toSet());
-                return !Collections.disjoint(authsInSecuredFilePath, AuthenticationUtil.getMyAuths());
+                return !Collections.disjoint(authsInSecuredFilePath, CurrentAuthenticationUtil.getMyAuths());
 
             } else {
                 throw new Exception("Unsupported securedFilePath: " +  securedFilePath);

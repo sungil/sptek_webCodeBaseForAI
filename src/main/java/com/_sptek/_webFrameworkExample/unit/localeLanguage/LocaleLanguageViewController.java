@@ -1,7 +1,7 @@
 package com._sptek._webFrameworkExample.unit.localeLanguage;
 
 import com._sptek.__webFramework.view.error.Enable_ResponseOfViewGlobalException_At_ViewController;
-import com._sptek.__webFramework.security.util.AuthenticationUtil;
+import com._sptek.__webFramework.security.support.CurrentAuthenticationUtil;
 import com._sptek.__webFramework.web.locale.LocaleUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
@@ -41,8 +41,8 @@ public class LocaleLanguageViewController {
         String language = LocaleUtil.getI18nMessage("language");
         //Controller 에서 다국어 변환을 직접 하는 케이스
         String welcome = LocaleUtil.getI18nMessage("welcome"
-                , new Object[] {AuthenticationUtil.getMyName()
-                        , AuthenticationUtil.getMyRoles().toString()});
+                , new Object[] {CurrentAuthenticationUtil.getMyName()
+                        , CurrentAuthenticationUtil.getMyRoles().toString()});
 
         model.addAttribute("systemFormattedDateTime", systemFormattedDateTime);
         model.addAttribute("userFormattedDateTime", userFormattedDateTime);

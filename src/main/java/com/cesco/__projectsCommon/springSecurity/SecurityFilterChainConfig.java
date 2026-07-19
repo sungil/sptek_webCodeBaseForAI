@@ -1,7 +1,7 @@
 package com.cesco.__projectsCommon.springSecurity;
 
 import com._sptek.__webFramework.security.authentication.view.*;
-import com._sptek.__webFramework.security.jwt.*;
+import com._sptek.__webFramework.security.token.jwt.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -20,11 +20,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityFilterChainConfig {
     private static final String AUTH_SPECIAL_FOR_TEST = "AUTH_SPECIAL_FOR_TEST";
 
-    private final CustomAuthenticationSuccessHandlerForView customAuthenticationSuccessHandlerForView;
-    private final CustomAuthenticationFailureHandlerForView customAuthenticationFailureHandlerForView;
-    private final GeneralTokenProvider generalTokenProvider;
-    private final CustomJwtAuthenticationEntryPointForApi customJwtAuthenticationEntryPointForApi;
-    private final CustomJwtAccessDeniedHandlerForApi customJwtAccessDeniedHandlerForApi;
+    private final ViewFormLoginSuccessHandler customAuthenticationSuccessHandlerForView;
+    private final ViewFormLoginFailureHandler customAuthenticationFailureHandlerForView;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtApiAuthenticationEntryPoint jwtApiAuthenticationEntryPoint;
+    private final JwtApiAccessDeniedHandler jwtApiAccessDeniedHandler;
 
     @Bean
     @Order(100)
@@ -99,8 +99,8 @@ public class SecurityFilterChainConfig {
 
                 .exceptionHandling(exceptionHandling ->
                         exceptionHandling
-                                .authenticationEntryPoint(customJwtAuthenticationEntryPointForApi)
-                                .accessDeniedHandler(customJwtAccessDeniedHandlerForApi)
+                                .authenticationEntryPoint(jwtApiAuthenticationEntryPoint)
+                                .accessDeniedHandler(jwtApiAccessDeniedHandler)
                 )
 
                 // 필요에 따라 추가/삭제 하세요
@@ -129,7 +129,7 @@ public class SecurityFilterChainConfig {
                             //.anyRequest().authenticated()
                 )
 
-                .addFilterBefore(new CustomJwtFilter(generalTokenProvider, customJwtAuthenticationEntryPointForApi), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, jwtApiAuthenticationEntryPoint), UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
     }

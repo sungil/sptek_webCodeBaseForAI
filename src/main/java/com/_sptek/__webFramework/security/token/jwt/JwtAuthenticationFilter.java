@@ -1,4 +1,4 @@
-package com._sptek.__webFramework.security.jwt;
+package com._sptek.__webFramework.security.token.jwt;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -23,16 +23,16 @@ import java.io.IOException;
  * 유효하지 않은 JWT는 AuthenticationEntryPoint에 위임해 API 공통 401 응답으로 종료한다.</p>
  */
 @Slf4j
-public class CustomJwtFilter extends GenericFilterBean {
+public class JwtAuthenticationFilter extends GenericFilterBean {
     // todo: 유효 토큰으로 요청이 온다면 response 로 유효시간을 새로 늘린 토큰을 보내줘야 할까?? 검토 필요, 마찮가지고 sessionId 도 요청때마다 유효시간을 다시 늘려서 내려야 할지 검토 필요
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String AUTHORIZATION_PREFIX  = "Bearer ";
-    private final GeneralTokenProvider generalTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationEntryPoint authenticationEntryPoint;
 
-    public CustomJwtFilter(GeneralTokenProvider generalTokenProvider, AuthenticationEntryPoint authenticationEntryPoint){
-        this.generalTokenProvider = generalTokenProvider;
+    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, AuthenticationEntryPoint authenticationEntryPoint){
+        this.jwtTokenProvider = jwtTokenProvider;
         this.authenticationEntryPoint = authenticationEntryPoint;
     }
 
@@ -80,12 +80,12 @@ public class CustomJwtFilter extends GenericFilterBean {
         }
 
         try {
-            if (!generalTokenProvider.validateJwt(jwt)) {
+            if (!jwtTokenProvider.validateJwt(jwt)) {
                 failAuthentication(httpServletRequest, httpServletResponse, "Invalid JWT token. uri: " + requestUri);
                 return;
             }
 
-            Authentication authentication = generalTokenProvider.convertJwtToAuthentication(jwt);
+            Authentication authentication = jwtTokenProvider.convertJwtToAuthentication(jwt);
             SecurityContextHolder.getContext().setAuthentication(authentication);
             //log.debug("Authentication({}) has been saved in SecurityContextHolder, uri: {}", authentication, requestUri);
             chain.doFilter(httpServletRequest,response);

@@ -5,7 +5,7 @@ import com._sptek.__webFramework.api.deduplicationRequest.PreventDuplicateReques
 import com._sptek.__webFramework.observability.logging.ReqResDetailLogDecisionInterceptor;
 import com._sptek.__webFramework.observability.logging.VisitHistoryLoggingInterceptor;
 import com._sptek.__webFramework.view.error.ViewErrorLogSupportInterceptor;
-import com._sptek.__webFramework.security.util.SecurityUtil;
+import com._sptek.__webFramework.security.support.SecurityPathUtil;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.Nullable;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -46,29 +46,29 @@ public class InterceptorGlobalConfig implements WebMvcConfigurer {
         // ReqResDetailLogDecisionInterceptor 는 다른 인터셉터/컨트롤러에서 사용할 로그 대상 attribute 를 먼저 세팅한다.
         if(reqResDetailLogDecisionInterceptor != null) {
             interceptorRegistry.addInterceptor(this.reqResDetailLogDecisionInterceptor).addPathPatterns("/**")
-                    .excludePathPatterns(SecurityUtil.getNotEssentialRequestPatterns())
-                    .excludePathPatterns(SecurityUtil.getStaticResourceRequestPatterns());
+                    .excludePathPatterns(SecurityPathUtil.getNotEssentialRequestPatterns())
+                    .excludePathPatterns(SecurityPathUtil.getStaticResourceRequestPatterns());
         }
 
         if(preventDuplicateRequestInterceptor != null) {
             interceptorRegistry.addInterceptor(this.preventDuplicateRequestInterceptor).addPathPatterns("/api/**")
-                    .excludePathPatterns(SecurityUtil.getNotEssentialRequestPatterns())
-                    .excludePathPatterns(SecurityUtil.getStaticResourceRequestPatterns());
+                    .excludePathPatterns(SecurityPathUtil.getNotEssentialRequestPatterns())
+                    .excludePathPatterns(SecurityPathUtil.getStaticResourceRequestPatterns());
         }
 
         //필요한 interceptor 등록 (exampleInterceptor 참고)
         if(visitHistoryLoggingInterceptor != null) {
             interceptorRegistry.addInterceptor(this.visitHistoryLoggingInterceptor).addPathPatterns("/**")
                     .excludePathPatterns("/api/**")
-                    .excludePathPatterns(SecurityUtil.getNotEssentialRequestPatterns())
-                    .excludePathPatterns(SecurityUtil.getStaticResourceRequestPatterns());
+                    .excludePathPatterns(SecurityPathUtil.getNotEssentialRequestPatterns())
+                    .excludePathPatterns(SecurityPathUtil.getStaticResourceRequestPatterns());
         }
 
         if(viewErrorLogSupportInterceptor != null) {
             interceptorRegistry.addInterceptor(this.viewErrorLogSupportInterceptor).addPathPatterns("/**")
                     .excludePathPatterns("/api/**")
-                    .excludePathPatterns(SecurityUtil.getNotEssentialRequestPatterns())
-                    .excludePathPatterns(SecurityUtil.getStaticResourceRequestPatterns());
+                    .excludePathPatterns(SecurityPathUtil.getNotEssentialRequestPatterns())
+                    .excludePathPatterns(SecurityPathUtil.getStaticResourceRequestPatterns());
         }
 
         WebMvcConfigurer.super.addInterceptors(interceptorRegistry);

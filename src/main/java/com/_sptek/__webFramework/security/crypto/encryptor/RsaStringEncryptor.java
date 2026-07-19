@@ -1,6 +1,6 @@
-package com._sptek.__webFramework.security.crypto.encryptModule;
+package com._sptek.__webFramework.security.crypto.encryptor;
 
-import com._sptek.__webFramework.security.crypto.GlobalEncryptor;
+import com._sptek.__webFramework.security.crypto.registry.EncryptorRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.StringEncryptor;
 import org.springframework.stereotype.Component;
@@ -17,17 +17,17 @@ import java.util.Base64;
  */
 @Slf4j
 @Component
-public class RsaEncryptor implements StringEncryptor {
+public class RsaStringEncryptor implements StringEncryptor {
     private final String ALGORITHM = "RSA";
     private static KeyPair keyPair;
 
-    RsaEncryptor() throws NoSuchAlgorithmException {
+    RsaStringEncryptor() throws NoSuchAlgorithmException {
         KeyPairGenerator keyGen = KeyPairGenerator.getInstance(ALGORITHM);
         keyGen.initialize(2048); // 키 길이: 2048bit
         keyPair = keyGen.generateKeyPair();
 
         //Encryption 에 사용 등록 처리
-        GlobalEncryptor.register(GlobalEncryptor.Type.sptRSA, this);
+        EncryptorRegistry.register(EncryptorRegistry.Type.sptRSA, this);
     }
 
     /**

@@ -5,7 +5,7 @@ package com._sptek.__webFramework.security.authorization;
  *
  * <p>enum 기반 권한 정의와 DB 저장용 권한 entity가 같은 code, alias, description, status 구조를 공유하게 한다.</p>
  */
-public interface AuthorityIf {
+public interface AuthorityDefinition {
     String getCode();
     String getAlias();
     String getDescription();

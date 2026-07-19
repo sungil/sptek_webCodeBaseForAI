@@ -11,7 +11,7 @@ import com._sptek.__webFramework.observability.monitoring.Enable_HikariDataSourc
 import com._sptek.__webFramework.observability.monitoring.Enable_HttpConnectorWorkerMonitoring_At_Main;
 import com._sptek.__webFramework.observability.monitoring.Enable_OutboundSupportMonitoring_At_Main;
 import com._sptek.__webFramework.observability.timing.Enable_RequestTimestampLog_At_Main;
-import com._sptek.__webFramework.security.crypto.Enable_EncryptorJasypt_At_Main;
+import com._sptek.__webFramework.security.crypto.annotation.Enable_EncryptorJasypt_At_Main;
 import com._sptek.__webFramework.view.model.Enable_UserAuthenticationToModelAttribute_At_Main;
 import com._sptek.__webFramework.web.cors.Enable_CorsPolicyFilter_At_Main;
 import com._sptek.__webFramework.web.error.Enable_ResponseOfApplicationGlobalException_At_Main;

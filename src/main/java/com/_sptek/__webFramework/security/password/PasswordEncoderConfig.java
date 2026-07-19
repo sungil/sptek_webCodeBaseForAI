@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Slf4j
 @Configuration
-public class BCryptPasswordEncoder {
+public class PasswordEncoderConfig {
     /**
      * 기본 strength 10으로 BCrypt password encoder를 등록한다.
      */

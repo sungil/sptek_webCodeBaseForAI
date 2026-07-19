@@ -23,8 +23,8 @@ public class InterceptorConfig implements WebMvcConfigurer {
         //if(exampleInterceptor != null) {
         //    interceptorRegistry.addInterceptor(this.exampleInterceptor).addPathPatterns("/*/01/projectName/interceptor/**")
         //            .excludePathPatterns("/api/**")
-        //            .excludePathPatterns(SecurityUtil.getNotEssentialRequestPatterns())
-        //            .excludePathPatterns(SecurityUtil.getStaticResourceRequestPatterns())
+        //            .excludePathPatterns(SecurityPathUtil.getNotEssentialRequestPatterns())
+        //            .excludePathPatterns(SecurityPathUtil.getStaticResourceRequestPatterns())
         //    ;
         //}
 

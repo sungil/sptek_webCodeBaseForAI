@@ -1,7 +1,7 @@
 package com._sptek.__webFramework.web.session;
 
 import com._sptek.__webFramework.observability.logging.LoggingConstants;
-import com._sptek.__webFramework.security.util.SecurityUtil;
+import com._sptek.__webFramework.security.support.SecurityPathUtil;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -54,7 +54,7 @@ public class MinorRequestSessionRepositorySkipFilter extends OncePerRequestFilte
     @Override
      public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
         // 중용하지 않은 req 에 대해 session 비 생성 처리
-        if (SecurityUtil.isNotEssentialRequest(request) || SecurityUtil.isStaticResourceRequest(request)) {
+        if (SecurityPathUtil.isNotEssentialRequest(request) || SecurityPathUtil.isStaticResourceRequest(request)) {
             request.setAttribute(SPRING_SESSION_REPOSITORY_FILTERED_ATTRIBUTE, Boolean.TRUE); //세션 처리를 끝낸것 처럼 강제 세팅함
             filterChain.doFilter(request, response);
             return;

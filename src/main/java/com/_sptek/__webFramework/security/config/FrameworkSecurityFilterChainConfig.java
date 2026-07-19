@@ -1,7 +1,7 @@
 package com._sptek.__webFramework.security.config;
 
-import com._sptek.__webFramework.security.authentication.view.CustomAuthenticationFailureHandlerForView;
-import com._sptek.__webFramework.security.authentication.view.CustomAuthenticationSuccessHandlerForView;
+import com._sptek.__webFramework.security.authentication.view.ViewFormLoginFailureHandler;
+import com._sptek.__webFramework.security.authentication.view.ViewFormLoginSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -25,11 +25,11 @@ import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 @Configuration
 public class FrameworkSecurityFilterChainConfig {
 
-    private final CustomAuthenticationSuccessHandlerForView customAuthenticationSuccessHandlerForView;
-    private final CustomAuthenticationFailureHandlerForView customAuthenticationFailureHandlerForView;
+    private final ViewFormLoginSuccessHandler customAuthenticationSuccessHandlerForView;
+    private final ViewFormLoginFailureHandler customAuthenticationFailureHandlerForView;
 
 //    // 다른 방식으로 대체 함
-//    private final CustomAuthenticationProvider customAuthenticationProvider;
+//    private final FormLoginAuthenticationProvider customAuthenticationProvider;
 
 //    @Bean
 //    public SecurityFilterChain securityFilterChainForRoot(HttpSecurity httpSecurity) throws Exception {
@@ -95,7 +95,7 @@ public class FrameworkSecurityFilterChainConfig {
                 // .formLogin(withDefaults()) //form형 디폴트 로그인 (--:8443/login 으로 고정되어 있는듯 8443 포트에서만 정상 동작됨)
                 .formLogin(form -> form
                         .loginPage("/view/login")
-                        .loginProcessingUrl("/view/loginProcess") // 실제 컨트럴 존재하지 않음, 해당 요청시 CustomAuthenticationProvider 에서 처리함
+                        .loginProcessingUrl("/view/loginProcess") // 실제 컨트럴 존재하지 않음, 해당 요청시 FormLoginAuthenticationProvider 에서 처리함
                         //.defaultSuccessUrl("/")
                         .successHandler(customAuthenticationSuccessHandlerForView)
                         .failureHandler(customAuthenticationFailureHandlerForView)

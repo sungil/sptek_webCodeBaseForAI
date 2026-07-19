@@ -1,11 +1,11 @@
 package com._sptek._webFrameworkExample.config;
 
-import com._sptek.__webFramework.security.authentication.view.CustomAuthenticationFailureHandlerForView;
-import com._sptek.__webFramework.security.authentication.view.CustomAuthenticationSuccessHandlerForView;
-import com._sptek.__webFramework.security.jwt.CustomJwtAccessDeniedHandlerForApi;
-import com._sptek.__webFramework.security.jwt.CustomJwtAuthenticationEntryPointForApi;
-import com._sptek.__webFramework.security.jwt.CustomJwtFilter;
-import com._sptek.__webFramework.security.jwt.GeneralTokenProvider;
+import com._sptek.__webFramework.security.authentication.view.ViewFormLoginFailureHandler;
+import com._sptek.__webFramework.security.authentication.view.ViewFormLoginSuccessHandler;
+import com._sptek.__webFramework.security.token.jwt.JwtApiAccessDeniedHandler;
+import com._sptek.__webFramework.security.token.jwt.JwtApiAuthenticationEntryPoint;
+import com._sptek.__webFramework.security.token.jwt.JwtAuthenticationFilter;
+import com._sptek.__webFramework.security.token.jwt.JwtTokenProvider;
 import com._sptek._webFrameworkExample.unit.authentication.authorization.AuthorityEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,11 +36,11 @@ public class ExampleSecurityFilterChainConfig {
     private static final String EXAMPLE_API_PATTERN = "/api/*/example/";
     private static final String AUTH_SPECIAL_FOR_TEST = AuthorityEnum.AUTH_SPECIAL_FOR_TEST.name();
 
-    private final CustomAuthenticationSuccessHandlerForView customAuthenticationSuccessHandlerForView;
-    private final CustomAuthenticationFailureHandlerForView customAuthenticationFailureHandlerForView;
-    private final GeneralTokenProvider generalTokenProvider;
-    private final CustomJwtAuthenticationEntryPointForApi customJwtAuthenticationEntryPointForApi;
-    private final CustomJwtAccessDeniedHandlerForApi customJwtAccessDeniedHandlerForApi;
+    private final ViewFormLoginSuccessHandler customAuthenticationSuccessHandlerForView;
+    private final ViewFormLoginFailureHandler customAuthenticationFailureHandlerForView;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtApiAuthenticationEntryPoint jwtApiAuthenticationEntryPoint;
+    private final JwtApiAccessDeniedHandler jwtApiAccessDeniedHandler;
 
     /**
      * 운영 profile에서 예제 업무 View/API 경로를 차단한다.
@@ -144,10 +144,10 @@ public class ExampleSecurityFilterChainConfig {
                         .anyRequest().permitAll()
                 )
                 .exceptionHandling(exceptionHandling -> exceptionHandling
-                        .authenticationEntryPoint(customJwtAuthenticationEntryPointForApi)
-                        .accessDeniedHandler(customJwtAccessDeniedHandlerForApi)
+                        .authenticationEntryPoint(jwtApiAuthenticationEntryPoint)
+                        .accessDeniedHandler(jwtApiAccessDeniedHandler)
                 )
-                .addFilterBefore(new CustomJwtFilter(generalTokenProvider, customJwtAuthenticationEntryPointForApi), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, jwtApiAuthenticationEntryPoint), UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
     }

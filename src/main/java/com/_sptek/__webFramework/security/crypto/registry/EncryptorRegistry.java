@@ -1,5 +1,6 @@
-package com._sptek.__webFramework.security.crypto;
+package com._sptek.__webFramework.security.crypto.registry;
 
+import com._sptek.__webFramework.security.crypto.annotation.Enable_DecryptAuto_At_DtoString;
 import jakarta.validation.constraints.NotNull;
 import org.jasypt.encryption.StringEncryptor;
 
@@ -18,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * {@code ENC_sptTYPE(...)} 형식의 wrapper 문자열을 기준으로 복호화 모듈을 선택한다.
  * DTO 복호화는 명시적으로 표시된 String 필드만 대상으로 삼아 일반 필드 변환과 구분한다.</p>
  */
-public class GlobalEncryptor {
+public class EncryptorRegistry {
     /**
      * 전역 암복호화 wrapper 에 기록되는 모듈 식별자.
      */

@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FrameworkAuthenticatedUser implements UserDetails {
+public class FrameworkUserDetails implements UserDetails {
     /**
      * 업무 사용자 PK를 문자열로 보관한다.
      *

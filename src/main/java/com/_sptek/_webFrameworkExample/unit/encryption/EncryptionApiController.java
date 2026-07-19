@@ -1,9 +1,9 @@
 package com._sptek._webFrameworkExample.unit.encryption;
 
-import com._sptek.__webFramework.security.crypto.Enable_DecryptAuto_At_DtoString;
+import com._sptek.__webFramework.security.crypto.annotation.Enable_DecryptAuto_At_DtoString;
 import com._sptek.__webFramework.api.response.Enable_ResponseOfApiCommonSuccess_At_RestController;
 import com._sptek.__webFramework.api.response.Enable_ResponseOfApiGlobalException_At_RestController;
-import com._sptek.__webFramework.security.crypto.GlobalEncryptor;
+import com._sptek.__webFramework.security.crypto.registry.EncryptorRegistry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -38,17 +38,17 @@ public class EncryptionApiController {
     public Object allTypeEncryptForString(@RequestBody String plainText) {
         //4가지 방식으로 암호화 처리
         HashMap<String, String> encryptedMap = new HashMap<>();
-        encryptedMap.put(GlobalEncryptor.Type.sptDES.name(), GlobalEncryptor.encrypt(GlobalEncryptor.Type.sptDES, plainText)); // 보안 취약
-        encryptedMap.put(GlobalEncryptor.Type.sptAES.name(), GlobalEncryptor.encrypt(GlobalEncryptor.Type.sptAES, plainText));
-        encryptedMap.put(GlobalEncryptor.Type.sptRSA.name(), GlobalEncryptor.encrypt(GlobalEncryptor.Type.sptRSA, plainText)); // RSA는 저장하는 용도로 사용 하지 말것
-        encryptedMap.put(GlobalEncryptor.Type.sptJASYPT.name(), GlobalEncryptor.encrypt(GlobalEncryptor.Type.sptJASYPT, plainText));
+        encryptedMap.put(EncryptorRegistry.Type.sptDES.name(), EncryptorRegistry.encrypt(EncryptorRegistry.Type.sptDES, plainText)); // 보안 취약
+        encryptedMap.put(EncryptorRegistry.Type.sptAES.name(), EncryptorRegistry.encrypt(EncryptorRegistry.Type.sptAES, plainText));
+        encryptedMap.put(EncryptorRegistry.Type.sptRSA.name(), EncryptorRegistry.encrypt(EncryptorRegistry.Type.sptRSA, plainText)); // RSA는 저장하는 용도로 사용 하지 말것
+        encryptedMap.put(EncryptorRegistry.Type.sptJASYPT.name(), EncryptorRegistry.encrypt(EncryptorRegistry.Type.sptJASYPT, plainText));
 
         //암호화된 모든 값을 다시 복호화
         HashMap<String, String> decryptedMap = new HashMap<>();
-        decryptedMap.put(GlobalEncryptor.Type.sptDES.name(), GlobalEncryptor.decrypt(encryptedMap.get(GlobalEncryptor.Type.sptDES.name())));
-        decryptedMap.put(GlobalEncryptor.Type.sptAES.name(), GlobalEncryptor.decrypt(encryptedMap.get(GlobalEncryptor.Type.sptAES.name())));
-        decryptedMap.put(GlobalEncryptor.Type.sptRSA.name(), GlobalEncryptor.decrypt(encryptedMap.get(GlobalEncryptor.Type.sptRSA.name())));
-        decryptedMap.put(GlobalEncryptor.Type.sptJASYPT.name(), GlobalEncryptor.decrypt(encryptedMap.get(GlobalEncryptor.Type.sptJASYPT.name())));
+        decryptedMap.put(EncryptorRegistry.Type.sptDES.name(), EncryptorRegistry.decrypt(encryptedMap.get(EncryptorRegistry.Type.sptDES.name())));
+        decryptedMap.put(EncryptorRegistry.Type.sptAES.name(), EncryptorRegistry.decrypt(encryptedMap.get(EncryptorRegistry.Type.sptAES.name())));
+        decryptedMap.put(EncryptorRegistry.Type.sptRSA.name(), EncryptorRegistry.decrypt(encryptedMap.get(EncryptorRegistry.Type.sptRSA.name())));
+        decryptedMap.put(EncryptorRegistry.Type.sptJASYPT.name(), EncryptorRegistry.decrypt(encryptedMap.get(EncryptorRegistry.Type.sptJASYPT.name())));
 
         //결과 처리
         Map<String, Object> resultMap = new LinkedHashMap<>();
@@ -61,13 +61,13 @@ public class EncryptionApiController {
     @PostMapping("/03/example/encryption/allTypeDecryptForString")
     @Operation(summary = "03. 암호화된 (DES, AES, RSA, Jasypt) 파람 값의 복호화", description = "")
     public Object allTypeDecryptForString(@RequestBody String encryptText) {
-        return GlobalEncryptor.decrypt(encryptText);
+        return EncryptorRegistry.decrypt(encryptText);
     }
 
     @PostMapping("/04/example/encryption/allTypeDecryptForDto")
     @Operation(summary = "04. 암호화된(DES, AES, RSA, Jasypt) 필드를 포함 하는 객체의 복호화", description = "")
     public Object allTypeDecryptForDto(@RequestBody ParentDto parentDto) throws Exception {
-        return GlobalEncryptor.decrypt(parentDto);
+        return EncryptorRegistry.decrypt(parentDto);
     }
 
 

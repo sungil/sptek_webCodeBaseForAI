@@ -2,7 +2,7 @@ package com._sptek.__webFramework.observability.timing;
 
 import com._sptek.__webFramework.bootstrap.registry.MainClassAnnotationRegister;
 import com._sptek.__webFramework.observability.logging.LoggingConstants;
-import com._sptek.__webFramework.security.util.SecurityUtil;
+import com._sptek.__webFramework.security.support.SecurityPathUtil;
 import com._sptek.__webFramework.web.filter.Enable_MinorRequestOptimization_At_Main;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.FilterChain;
@@ -42,7 +42,7 @@ public class MakeRequestTimestampFilter extends OncePerRequestFilter {
         //log.debug("MakeRequestTimestampFilter start");
 
         if (MainClassAnnotationRegister.hasAnnotation(Enable_MinorRequestOptimization_At_Main.class)) {
-            if (SecurityUtil.isNotEssentialRequest() || SecurityUtil.isStaticResourceRequest()) {
+            if (SecurityPathUtil.isNotEssentialRequest() || SecurityPathUtil.isStaticResourceRequest()) {
                 filterChain.doFilter(request, response);
                 return;
             }

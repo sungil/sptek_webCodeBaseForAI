@@ -2,8 +2,8 @@ package com._sptek._webFrameworkExample.unit.authentication;
 
 import com._sptek.__webFramework.api.response.Enable_ResponseOfApiCommonSuccess_At_RestController;
 import com._sptek.__webFramework.api.response.Enable_ResponseOfApiGlobalException_At_RestController;
-import com._sptek.__webFramework.security.jwt.CustomJwtFilter;
-import com._sptek.__webFramework.security.jwt.GeneralTokenProvider;
+import com._sptek.__webFramework.security.token.jwt.JwtAuthenticationFilter;
+import com._sptek.__webFramework.security.token.jwt.JwtTokenProvider;
 import com._sptek._webFrameworkExample.unit.authentication.userStore.dto.LoginRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthenticationApiController {
 
     private final AuthenticationManager authenticationManager;
-    private final GeneralTokenProvider generalTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationService authenticationService;
 
     @GetMapping("/01/example/authentication/authFree")
@@ -114,14 +114,14 @@ public class AuthenticationApiController {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername(), loginRequestDto.getPassword());
         Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication); //다음 요청을 위한 것이 아니라 현재 요청 내 이코드 이후 코드 에서 사용될 여지가 있기에 저장함
-        String jwt = generalTokenProvider.convertAuthenticationToJwt(authentication);
+        String jwt = jwtTokenProvider.convertAuthenticationToJwt(authentication);
 
         //아래 방식으로 변경
         //HttpHeaders httpHeaders = new HttpHeaders();
-        //httpHeaders.add(CustomJwtFilter.getAuthorizationHeader(), CustomJwtFilter.getAuthorizationPrefix() + jwt);
+        //httpHeaders.add(JwtAuthenticationFilter.getAuthorizationHeader(), JwtAuthenticationFilter.getAuthorizationPrefix() + jwt);
         //return ResponseEntity.ok().headers(httpHeaders).body(new ApiCommonSuccessResponseDto<>(jwt));
 
-        response.setHeader(CustomJwtFilter.getAuthorizationHeader(), CustomJwtFilter.getAuthorizationPrefix() + jwt);
+        response.setHeader(JwtAuthenticationFilter.getAuthorizationHeader(), JwtAuthenticationFilter.getAuthorizationPrefix() + jwt);
         return jwt;
     }
 
