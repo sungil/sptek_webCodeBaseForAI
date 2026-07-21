@@ -17,11 +17,7 @@
 - 새로 생성하거나 수정하는 텍스트 파일은 UTF-8로 저장한다. PowerShell에서 파일을 쓸 때는 가능한 경우 `-Encoding UTF8` 또는 UTF-8 no BOM API를 사용한다.
 - 관련성이 높은 최소 파일만 열고, 큰 디렉터리 전체를 무작정 읽지 않는다.
 - 프레임워크 기능과 연결되면 필요한 항목만 추가로 추적한다.
-  - `SptWfwApplication`의 활성화 `@Enable_*` 애노테이션
-  - 커스텀 `@Enable_*` 애노테이션과 조건/등록 코드
-  - `_frameworkWebCoreResources/_frameworkApplicationProperties`
-  - `_projectCommonResources/_projectApplicationProperties`
-  - `_projectCommon` 확장 구현체와 `_example` 사용 예제
+
 
 ## 변경과 보고
 

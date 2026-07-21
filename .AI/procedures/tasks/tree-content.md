@@ -9,7 +9,7 @@
 3. `.AI/assets/scripts/tree-content/export-tree-content.py`를 사용한다.
 4. 기본 출력 형식은 모든 디렉토리/파일명을 트리로 쓰고, `.md` 파일 내용만 파일명 바로 아래에 한 단계 더 들여써 붙인다.
 5. 인자를 생략하면 현재 작업 폴더에서 `.AI`를 우선 찾고, 없으면 `.ai`를 대상으로 사용한다.
-6. 출력 위치를 생략하면 `~/AI-tree-content.md`에 저장한다.
+6. 출력 위치를 생략하면 `~/AI-tree-content-{yyyyMMdd-HHmmss}.md`에 저장한다.
 7. `.md`가 아닌 파일은 확장자와 위치에 관계없이 파일명만 기록한다.
 
 예:

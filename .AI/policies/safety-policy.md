@@ -22,7 +22,7 @@
 ## 민감 파일과 값
 
 - 신규 비밀값, 토큰, 실제 비밀번호, 개인 경로를 커밋하지 않는다.
-- `http-client/http-client.private.env.json`과 `src/main/resources/_frameworkWebCoreResources/keystore/keystore.p12`는 명시적 요청 없이 내용을 출력하거나 수정/교체하지 않는다.
+- `http-client/http-client.private.env.json`과 `src/main/resources/**/keystore/*.p12`는 명시적 요청 없이 내용을 출력하거나 수정/교체하지 않는다.
 - 암호화된 값은 복호화하거나 평문으로 치환하지 않는다.
 - `prd`와 `stg` 설정은 명시적 요청 없이 실제 값으로 채우지 않는다.
 

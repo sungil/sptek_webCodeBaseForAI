@@ -6,7 +6,7 @@
 
 1. `git status --short`로 사용자 변경을 확인한다.
 2. 요청 대상의 정의, 호출자, 설정, 테스트, 예제를 `rg`로 찾는다.
-3. Base 코드나 프로젝트 공통 확장 지점으로 처리 가능한지 먼저 판단한다. 특히 CORS, XSS, 공통 응답/예외, 로그, 모니터링, datasource, 암복호화, ArgumentResolver, 중복 요청 방지는 `.AI/context/framework-annotations.md`와 `_annotation` 패키지의 커스텀 애노테이션을 먼저 확인한다.
+3. Base 프레임워크 기능으로 처리 가능한지 먼저 판단한다. 특히 CORS, JSON 응답 escape, 공통 응답/예외, 로그, 모니터링, datasource, 암복호화, ArgumentResolver, 중복 요청 방지는 `.AI/context/framework-annotations.md`와 해당 기능 패키지의 커스텀 애노테이션을 먼저 확인한다. 여러 업무 프로젝트에서 공유해야 하는 코드일 때만 `com.{companyName}.__projectsCommon` 배치를 검토한다.
 4. 변경 범위를 요청과 직접 관련된 파일로 제한한다.
 5. 실행 동작이 바뀌는 Base 코드 변경이면 영향 범위와 장단점을 먼저 설명하고 확인을 받는다.
 6. 변경 후 `.AI/procedures/common/change-verification.md` 기준으로 검증한다.

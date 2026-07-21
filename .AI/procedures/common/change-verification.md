@@ -11,7 +11,7 @@
 
 ## Gradle 명령
 
-Gradle wrapper에 실행 비트가 없으므로 Unix 계열에서는 `bash ./gradlew`를 사용한다.
+Gradle wrapper에 실행 비트가 없는경우 Unix 계열에서는 `bash ./gradlew`를 사용한다.
 
 ```bash
 # Windows PowerShell 기준

@@ -1,6 +1,7 @@
 # Code Analysis Procedure
 
-이 문서는 Base 코드와 Base 코드 관례를 바탕으로 작성되는 실제 업무 코드를 분석할 때 따르는 실행 절차다. 저장소 공통 원칙, 보안/민감 파일 규칙, profile 정책, Base 코드 우선 원칙은 루트 `AI.md`와 `.AI/policies/**`를 기준으로 하고 여기서는 반복하지 않는다.
+이 문서는 Base 코드와 Base 코드 관례를 바탕으로 작성되는 실제 업무 코드를 분석할 때 따르는 실행 절차다.
+저장소 공통 원칙, 보안/민감 파일 규칙, profile 정책, Base 코드 우선 원칙은 루트 `AI.md`와 `.AI/policies/**`를 기준으로 하고 여기서는 반복하지 않는다.
 
 ## 역할
 
@@ -24,7 +25,8 @@
 - 커스텀 `@Enable_*` 애노테이션 정의와 조건 클래스
 - Bean 등록 방식: `@Component`, `@Configuration`, `@Bean`, `@Conditional`
 - 필터, 인터셉터, AOP, ArgumentResolver, ControllerAdvice 적용 순서
-- `__webFramework`, `_projectCommon`, `example`의 사용 예제와 확장 지점
+- `__webFramework`의 프레임워크 기능과 `_webFrameworkExample`의 사용 예제
+- 실제 업무 프로젝트 간 공유 코드가 관련된 경우에만 `com.{companyName}.__projectsCommon` 확장 지점
 - 관련 테스트와 `http-client` 공개 예제
 
 ## 요청 유형별 체크리스트

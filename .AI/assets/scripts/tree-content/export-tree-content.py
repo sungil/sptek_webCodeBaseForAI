@@ -4,10 +4,16 @@
 from __future__ import annotations
 
 import argparse
+from datetime import datetime
 from pathlib import Path
 
 
-DEFAULT_OUTPUT = Path.home() / "AI-tree-content.md"
+DEFAULT_OUTPUT_NAME_PREFIX = "AI-tree-content"
+
+
+def default_output() -> Path:
+    timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+    return Path.home() / f"{DEFAULT_OUTPUT_NAME_PREFIX}-{timestamp}.md"
 
 
 def sorted_children(path: Path) -> tuple[list[Path], list[Path]]:
@@ -58,6 +64,7 @@ def emit_dir(path: Path, root: Path, level: int, args: argparse.Namespace, lines
 
 
 def parse_args() -> argparse.Namespace:
+    output_default = default_output()
     parser = argparse.ArgumentParser(
         description="Export a directory tree and indent Markdown file content below each .md file name."
     )
@@ -66,8 +73,8 @@ def parse_args() -> argparse.Namespace:
         "-o",
         "--output",
         type=Path,
-        default=DEFAULT_OUTPUT,
-        help=f"Output file. Default: {DEFAULT_OUTPUT}",
+        default=output_default,
+        help=f"Output file. Default: {output_default}",
     )
     parser.add_argument("--indent", default="  ", help="Indent string. Default: two spaces.")
     return parser.parse_args()

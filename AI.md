@@ -1,39 +1,65 @@
-# AI.md
+## 프로젝트 이해
 
-이 파일은 Codex, Claude, GitHub Copilot 등 AI 코딩 도구가 공통으로 읽는 최상위 안내 문서다. 상세 규칙, 저장소 맥락, 반복 절차는 특정 도구에 종속되지 않는 `.AI/**` 문서에 둔다.
+- 이 저장소는 실제 업무 시스템을 개발하기 위한 작업 공간이며 동시에 업무 개발을 반복해서 더 일관되게 하기 위한 Base 프레임워크 코드와,
+그 프레임워크를 어떻게 사용하는지 보여주는 예시 업무 프로젝트를 함께 포함한다.
 
-## 문서 우선순위
+- `com._sptek.__webFramework`는 Base 프레임워크 영역이다.
+공통 응답, 예외 처리, 보안, 인증, JWT, CORS, 파일 처리, locale, message conversion, logging, monitoring, datasource, JPA/ MyBatis 설정처럼
+여러 업무 프로젝트에서 반복해서 필요한 기술 기능을 이곳에 둔다. 이 영역은 특정 업무 규칙을 담는 곳이 아니라, 업무 프로젝트들이 가져다 쓸 수 있는 공통 기술 기반이다.
 
-1. 현재 작업 범위에 더 가까운 하위 `AI.md`, `AGENTS.md`, `CLAUDE.md`가 있으면 그 문서를 먼저 따른다.
-2. 하위 문서가 없거나 공통 원칙이 필요하면 이 파일과 `.AI/README.md`를 따른다.
-3. 문서 간 내용이 충돌하면 더 구체적인 하위 문서가 우선하되, 루트의 안전 원칙과 Base 코드 경계는 우회하지 않는다.
+- `com._sptek._webFrameworkExample`은 프레임워크 활용 방식을 보여주는 예시 업무 프로젝트다.
+새로운 업무 기능을 만들 때는 이 예시 프로젝트에서 컨트롤러, 서비스, DTO, 보안 설정, 화면, profile 설정을 어떻게 연결했는지 먼저 확인한다.
+다만 예시 URL, 테스트용 권한, 샘플 데이터, 임시 주석은 실제 업무 코드로 그대로 옮기지 않는다.
 
-## 필수 원칙
+- `com.{companyName}` 아래는 실제 업무 프로젝트 영역이다. 예를 들어 특정 회사나 업무 프로젝트의 도메인 코드가 이 아래에 들어간다.
+실제 기능 구현은 이 업무 프로젝트 패키지 아래에 작 성한다. `{companyName}`은 실제 업무 프로젝트의 최상위 도메인 패키지명이다.
+한 저장소 안에 하나 이상 존재할 수 있으며, 특정 회사명이나 프로젝트명으로 고정해서 설명하지 않는다.
+
+- `com.{companyName}.__projectsCommon`은 프레임워크 영역이 아니다. 실제 업무 프로젝트를 구성하다 보면
+여러 업무 도메인이나 여러 업무 프로젝트가 함께 써야 하는 코드가 생길 수 있는데, 그런 공유 코드만 이 영역에 둔다.
+특정 도메인 전용 로직이나 프레임워크 핵심 로직을 여기에 넣지 않는다.
+
+- 리소스도 같은 기준으로 본다. `_sptek/_webFrameworkExample` 아래의 resources는 예시 업무 프로젝트가 사용하는 설정, Thymeleaf 템플릿, 정적 파일이다.
+실제 업무 리소스는 `{companyName}` 아래에 둔다. profile 설정은 `local`, `dev`, `stg`, `prd`를 기준으로 나뉘며,
+기능별 설정 파일이 profile별로 분리되어 있으면 `application-{profile}.yml`의 `spring.config.import`까지 함께 확인한다.
+
+- AI agent가 이 저장소에서 작업할 때는 먼저 현재 요청이 Base 프레임워크 변경인지, 예시 프로젝트 보정인지, 실제 업무 기능 구현인지 구분해야 한다.
+Base 프레임워크의 실행 동작을 바꾸는 변경은 여러 업무 프로젝트에 영향을 줄 수 있으므로 영향 범위를 먼저 설명하고 확인을 받는다.
+반대로 실제 업무 기능은 프레임워크와 예시 프로젝트를 참고하여, 업무 패키지와 업무 정책에 맞게 구현한다.
+
+- 상세 구조는 문서에 고정된 내용만 믿지 말고
+현재 디렉토리명, 파일명, JavaDoc, `@Enable_*` 애노테이션, Bean 등록 조건, Filter/Interceptor/Aspect 연결 지점, 테스트 코드, profile 설정 을 직접 확인한다.
+이 저장소는 리팩토링 중일 수 있으므로 실제 파일 구조가 가장 정확한 기준이다.
+
+
+## 프로젝트 기본 원칙
 
 - 작업을 시작할 때는 `git status --short`로 기존 변경을 확인하고, 요청과 무관한 변경은 그대로 보존한다.
 - 내용 검색은 `rg`, 파일명 탐색은 `fd`가 있으면 `fd`, 없으면 `rg --files`를 우선 사용한다.
 - 새로 생성하거나 수정하는 텍스트 파일은 UTF-8로 저장한다.
-- 필요한 문서와 파일만 읽는다. 저장소 구조 설명이 필요할 때만 `.AI/context/**`를 연다.
-- 이 저장소는 여러 프로젝트가 공통으로 사용하는 SPT Framework Web Core(Base 프레임워크)를 활용하여 특정 영역의 비즈니스를 개발하기 위한 프로젝트이다. 새 코드는 단순한 구현보다 Base 프레임워크 코드와의 일관성을 우선한다.
-- 프레임워크 성격이 강한 공통 기술 요소는 Base 프레임워크 영역인 `__webFramework`에 두고, 비즈니스 전반에서 공유하는 확장 요소는 `_projectCommon`에, 구체적인 비즈니스 업무 코드는 `com._sptek.{project}.{domain}` 패키지 아래에 작성한다.
-- Base 프레임워크 코드의 실행 동작을 바꾸는 변경은 영향 범위와 장단점을 먼저 설명하고 사용자 확인을 받는다. 단순 오타, 주석, 문서, 명백히 잘못된 예제 보정은 필요한 범위에서 바로 수정할 수 있다.
-- 민감값, 비공개 환경 파일, keystore, 운영 설정값, 로컬 DB 파일은 명시적 요청 없이 출력하거나 수정하지 않는다.
 
-## 필요한 문서
+- 기억이나 이전 대화만 믿지 않는다. 이 저장소는 계속 리팩토링될 수 있으므로 현재 파일, 현재 디렉토리 구조, 현재 profile 설정을 기준으로 판단한다.
+- Base 프레임워크 실행 동작을 바꾸는 변경은 영향 범위를 먼저 설명하고 확인을 받는다. 단, 단순 오타, 주석, 문서, 명백히 잘못된 예제 보정은 필요한 범위에서 바로 수정할 수 있다.
+- 민감값, 비공개 환경 파일, keystore, 운영 설정값, DB 파일은 명시적 요청 없이 출력하거나 수정하지 않는다.
 
-- `.AI/policies/operating-policy.md`: 작업 시작, 검색, 파일 읽기, 수정, 보고 기본 규칙
-- `.AI/policies/safety-policy.md`: 사용자 변경 보존, 금지 작업, 민감값, DB/로그 안전 기준
-- `.AI/policies/project-boundary-policy.md`: Base 코드, 프로젝트 공통, 업무 코드의 변경 경계
-- `.AI/context/project-overview.md`: 프로젝트 성격, 기술 스택, 빌드 기준
-- `.AI/context/repository-map.md`: 루트 디렉터리와 주요 경로 역할
-- `.AI/context/framework-map.md`: `__webFramework`, `_projectCommon`, `example` 구조
-- `.AI/context/resource-map.md`: resources, profile, template, static 구조
-- `.AI/context/runtime-map.md`: `SptWfwApplication`, `@Enable_*`, profile, datasource 기준
-- `.AI/procedures/common/search-and-navigation.md`: 빠른 검색과 최소 파일 읽기 기준
-- `.AI/procedures/common/change-verification.md`: 변경 유형별 검증 기준
-- `.AI/procedures/common/completion-reporting.md`: 완료 보고 기준
-- `.AI/procedures/common/commit-message.md`: 커밋 메시지 작성 기준
+- 본 지침에 명시되지 않은 추가 기준과 세부 가이드는 `.AI/` 디렉터리 내부의 문서를 따른다.
+- 작업을 시작하기 전에 `.AI/` 하위의 Markdown 파일명을 검토하여 각 문서가 담고 있는 정보를 추론하고, 현재 작업과 관련성이 있다고 판단되는 문서만 선별적으로 읽어 적용한다.
+- 모든 문서를 일괄적으로 읽기보다는 작업 범위, 대상 기술, 도메인 및 수행 절차와 관련된 문서를 우선적으로 확인한다.
 
-## 도구별 어댑터
 
-`.codex`, `.claude`, `.github` 같은 도구별 폴더에는 각 도구가 인식하는 데 필요한 최소 설정과 `.AI` 문서로 연결되는 안내만 둔다. 공통 지침을 도구별 폴더에 복사하지 말고 `.AI/**` 문서를 참조한다. 자세한 기준은 `.AI/policies/adapter-policy.md`와 `.AI/adapters/README.md`를 따른다.
+## 프로젝트 실행 요약
+
+- 로컬 실행은 `local` profile 기준이다.
+- .\gradlew.bat bootRun --args=--spring.profiles.active=local
+- 기본 접속 주소는 https://localhost다.
+- 검증 명령과 변경 유형별 기준은 .AI/procedures/common/change-verification.md를 따른다.
+
+
+## AI가 스스로 생성/수정 하는 지침문서(md파일)의 작성 원칙
+
+- AI가 새 문서나 지침 파일을 스스로 만들 때는 파일명만 보고도 내용을 짐작할 수 있게 이름을 짓는다.
+예를 들어 `Agent-공통-가이드.md`, `Agent-확장기능-생성-가이드.md` 처럼 기술이나 작업 목적이 드러나야 한다.
+- 작업과 무관한 기존 Markdown 파일의 공백, 줄바꿈, 들여쓰기 등 서식을 임의로 변경하지 않는다.
+- 파일의 내용, 파일명, 파일 위치가 변경되는 경우 해당 파일을 참조하던 지침파일(.md)이 있었다면 관련 내용을 업데이트하고 변경된 내용을 현재 컨텍스트에 바로 반영한다.
+
+
