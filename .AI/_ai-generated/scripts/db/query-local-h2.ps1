@@ -66,7 +66,7 @@ if ($Sql -and $FilePath) {
 $repoRoot = Resolve-RepoRoot
 Set-Location -LiteralPath $repoRoot
 
-$dbFile = Join-Path $repoRoot 'infra\h2DB\spt_web_fw.mv.db'
+$dbFile = Join-Path $repoRoot 'infra\h2DB\webFrameworkExample.mv.db'
 if (-not (Test-Path -LiteralPath $dbFile)) {
     throw "Local H2 DB file does not exist. Refusing to create an empty DB: $dbFile"
 }
@@ -80,7 +80,7 @@ if ($FilePath) {
 Assert-ReadOnlySql -Statement $sqlToRun
 
 $h2Jar = Resolve-H2Jar
-$jdbcUrl = 'jdbc:h2:file:./infra/h2DB/spt_web_fw;AUTO_SERVER=TRUE;AUTO_SERVER_PORT=9092'
+$jdbcUrl = 'jdbc:h2:file:./infra/h2DB/webFrameworkExample;AUTO_SERVER=TRUE;AUTO_SERVER_PORT=9092'
 
 java -cp $h2Jar org.h2.tools.Shell `
     -url $jdbcUrl `

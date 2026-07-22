@@ -22,7 +22,7 @@ spring:
   config:
     import:
       #_sptek/__webFramework
-      - optional:classpath:_autoSqlInitialize/autoSqlInitialize.yml
+      - optional:classpath:_sptek/_webFrameworkExample/_autoSqlInitialize/autoSqlInitialize.yml
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/actuator/actuator.yml
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/frameworkPackage/frameworkPackage.yml
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/globalError/globalError.yml

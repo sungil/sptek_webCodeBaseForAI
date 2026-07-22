@@ -1,0 +1,6 @@
+spring:
+  sql:
+    init:
+      mode: always #(always, never, embedded)
+      schema-locations: classpath:_sptek/_webFrameworkExample/_autoSqlInitialize/schema*.sql
+      data-locations: classpath:_sptek/_webFrameworkExample/_autoSqlInitialize/data*.sql

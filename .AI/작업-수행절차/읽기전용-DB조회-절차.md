@@ -36,7 +36,7 @@
 ```powershell
 .\.AI\_ai-generated\scripts\db\query-jdbc.ps1 `
   -DbType h2 `
-  -JdbcUrl "jdbc:h2:file:./infra/h2DB/spt_web_fw;AUTO_SERVER=TRUE;AUTO_SERVER_PORT=9092" `
+  -JdbcUrl "jdbc:h2:file:./infra/h2DB/webFrameworkExample;AUTO_SERVER=TRUE;AUTO_SERVER_PORT=9092" `
   -User "sa" `
   -Password "" `
   -Sql "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'PUBLIC' ORDER BY TABLE_NAME"
@@ -58,7 +58,7 @@ MySQL 예시:
 ```powershell
 .\.AI\_ai-generated\scripts\db\query-jdbc.ps1 `
   -DbType h2 `
-  -JdbcUrl "jdbc:h2:file:./infra/h2DB/spt_web_fw;AUTO_SERVER=TRUE;AUTO_SERVER_PORT=9092" `
+  -JdbcUrl "jdbc:h2:file:./infra/h2DB/webFrameworkExample;AUTO_SERVER=TRUE;AUTO_SERVER_PORT=9092" `
   -User "sa" `
   -Password "" `
   -FilePath .\.AI\_ai-generated\snippets\sql\common\table-list.h2.sql
