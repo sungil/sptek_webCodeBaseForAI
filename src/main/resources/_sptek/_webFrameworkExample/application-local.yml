@@ -30,7 +30,7 @@ spring:
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/pageHelper/pageHelper.yml
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/ssl/ssl.yml
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/viewResolver/viewResolver.yml
-      #cesco/__projectsCommon(_system)
+      #cesco/__cescoCommon(_system)
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/cookie/cookie-local.yml
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/cors/corsPolicy.yml
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/daoPagination/daoPagination.yml
@@ -50,4 +50,4 @@ spring:
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/swagger/swagger.yml
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/storage/storage.yml
       - optional:classpath:_sptek/_webFrameworkExample/applicationProperties/viewModelAttribute/viewModelAttribute.yml
-      #cesco/__projectsCommon(extra)
+      #cesco/__cescoCommon(extra)

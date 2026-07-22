@@ -1,6 +1,6 @@
 package com._sptek._webFrameworkExample.dto;
 
-import com.cesco.__projectsCommon.commonObject.dto.PostBaseDto;
+import com.cesco.__cescoCommon.commonObject.dto.PostBaseDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
