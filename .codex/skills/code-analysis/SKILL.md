@@ -9,6 +9,7 @@ Base 코드와 Base 코드 관례를 바탕으로 작성되는 실제 업무 코
 
 ## 사용 절차
 
-1. 루트 `AI.md`를 먼저 따른다.
-2. 상세 분석 절차는 `.AI/procedures/tasks/code-analysis.md`를 따른다.
-3. 검증이나 완료 보고가 필요한 경우 `.AI/procedures/common/change-verification.md`, `.AI/procedures/common/completion-reporting.md`를 함께 따른다.
+- 코드 배치 경계가 관련되면 `.AI/프로젝트-이해자료/프로젝트-코드영역-구분.md`를 확인한다.
+- `@Enable_*` 어노테이션이나 프레임워크 확장 지점이 관련되면 `.AI/프로젝트-이해자료/프레임워크-확장방식-확인기준.md`를 확인한다.
+- 리소스나 profile 설정이 관련되면 `.AI/프로젝트-이해자료/리소스와-프로파일-구성.md`를 확인한다.
+- `_webFrameworkExample`을 참고해야 하면 `.AI/프로젝트-이해자료/예시프로젝트-참고기준.md`를 확인한다.

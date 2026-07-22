@@ -40,7 +40,7 @@ out/
 ### Codex local runtime ###
 .codex/config.toml
 .codex/run/
-.AI/assets/.cache/
+.AI/_ai-generated/.cache/
 
 ### Local runtime outputs ###
 infra/h2DB/*.db

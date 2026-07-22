@@ -1,3 +1,0 @@
-display_name: Pre-Commit Code Comments
-short_description: 커밋 전 변경 파일의 주석 보강 필요 여부를 점검합니다.
-default_prompt: 커밋 전에 변경 파일의 주석 보강 필요 여부를 점검하고 필요한 경우 write-code-comments 절차를 적용해줘.

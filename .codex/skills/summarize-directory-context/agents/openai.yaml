@@ -1,4 +1,0 @@
-interface:
-  display_name: "Summarize Directory Context"
-  short_description: "Create scoped AI.md directory summaries"
-  default_prompt: "Create or update an AI.md summary for this directory."
