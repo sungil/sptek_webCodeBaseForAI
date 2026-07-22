@@ -27,8 +27,7 @@ import java.util.Map;
  * <p>메인 클래스에 {@link Enable_JpaHybrid_At_Main}가 있을 때만 활성화되며,
  * 동일한 transactionManager Bean 이름으로 JpaTransactionManager를 등록해 JPA transaction 기준으로 동작하게 한다.</p>
  *
- * <p>중요!! 이 구성은 MyBatis 중심 코드에 일부 JPA repository를 도입하고 하나의 transactionManager로 통합하는 목적에 맞다.
- * 다만 같은 서비스 흐름에서 JPA와 MyBatis가 같은 aggregate/table을 동시에 수정하면 JPA 영속성 컨텍스트와
+ * <p>중요!! 같은 서비스 흐름에서 JPA와 MyBatis가 같은 aggregate/table을 동시에 수정하면 JPA 영속성 컨텍스트와
  * MyBatis 직접 SQL 사이의 상태가 어긋날 수 있으므로, 업무 코드는 같은 aggregate/table을 한 방식으로만 수정하는 것을 원칙으로 한다.</p>
  */
 @Slf4j
