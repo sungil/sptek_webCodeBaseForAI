@@ -1,6 +1,7 @@
 spring:
   servlet:
     session:
+      persistent: false
       timeout: 1m
       cookie:
         name: JSESSIONID

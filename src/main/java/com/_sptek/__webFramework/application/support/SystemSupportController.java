@@ -37,7 +37,6 @@ import java.util.Base64;
 public class SystemSupportController {
     private final InfoEndpoint infoEndpoint;
     private final HealthEndpoint healthEndpoint;
-    private final ViewLoginRedirectHelper viewLoginRedirectHelper;
 
     @GetMapping("/serverName")
     @Operation(summary = "시스템 환경 설정에 따른 서버 네임 제공", description = "")
@@ -83,7 +82,8 @@ public class SystemSupportController {
     @RequiredArgsConstructor
     @RequestMapping(value = "/", produces = MediaType.TEXT_HTML_VALUE)
     @Enable_ResponseOfViewGlobalException_At_ViewController
-    public class SystemSupportViewController {
+    public static class SystemSupportViewController {
+        private final ViewLoginRedirectHelper viewLoginRedirectHelper;
 
         @GetMapping({"/"})
         public String index() {
