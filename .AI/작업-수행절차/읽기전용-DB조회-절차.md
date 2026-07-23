@@ -18,7 +18,7 @@
    - 접속이 필요하면 사용자에게 접속 가능한 JDBC URL, 계정, 비밀번호 또는 실행 환경 제공을 요청한다.
 4. H2 file DB는 새 DB 파일이 생기지 않도록 본체 파일(`*.mv.db`) 존재 여부를 먼저 확인한다.
    - 본체 파일이 없으면 접속하지 않고 중단한다.
-   - DB 생성이나 `_autoSqlInitialize` 적용이 필요하면 이 절차로 처리하지 말고 애플리케이션 기동, Spring SQL init, Flyway/Liquibase 같은 별도 초기화·마이그레이션 절차로 다룬다.
+   - DB 생성이나 `_h2SqlInitialization` 적용이 필요하면 이 절차로 처리하지 말고 애플리케이션 기동, Spring SQL init, Flyway/Liquibase 같은 별도 초기화·마이그레이션 절차로 다룬다.
 
 ## 조회 원칙
 
@@ -36,7 +36,7 @@
 ```powershell
 .\.AI\_ai-generated\scripts\db\query-jdbc.ps1 `
   -DbType h2 `
-  -JdbcUrl "jdbc:h2:file:./infra/h2DB/webFrameworkExample;AUTO_SERVER=TRUE;AUTO_SERVER_PORT=9092" `
+  -JdbcUrl "jdbc:h2:file:./local-dev-support/h2DB/webFrameworkExample;AUTO_SERVER=TRUE;AUTO_SERVER_PORT=9092" `
   -User "sa" `
   -Password "" `
   -Sql "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'PUBLIC' ORDER BY TABLE_NAME"
@@ -58,7 +58,7 @@ MySQL 예시:
 ```powershell
 .\.AI\_ai-generated\scripts\db\query-jdbc.ps1 `
   -DbType h2 `
-  -JdbcUrl "jdbc:h2:file:./infra/h2DB/webFrameworkExample;AUTO_SERVER=TRUE;AUTO_SERVER_PORT=9092" `
+  -JdbcUrl "jdbc:h2:file:./local-dev-support/h2DB/webFrameworkExample;AUTO_SERVER=TRUE;AUTO_SERVER_PORT=9092" `
   -User "sa" `
   -Password "" `
   -FilePath .\.AI\_ai-generated\snippets\sql\common\table-list.h2.sql

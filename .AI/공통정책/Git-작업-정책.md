@@ -19,7 +19,7 @@
 - .codex/run/, .codex/config.toml
 - .AI/_ai-generated/.cache/
 - log/
-- infra/h2DB/*.db
+- local-dev-support/h2DB/*.db
 - log/와 log/logback/은 원인 분석을 위해 읽을 수 있지만 수정하거나 커밋 대상으로 취급하지 않는다.
 - 단, {AI별 디렉토리의}/skills/의 repo-local Adapter는 팀 공통 AI 작업 규칙이므로 소스 및 커밋 대상으로 취급한다.
 

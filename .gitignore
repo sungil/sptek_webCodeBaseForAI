@@ -43,5 +43,5 @@ out/
 .AI/_ai-generated/.cache/
 
 ### Local runtime outputs ###
-infra/h2DB/*.db
+local-dev-support/h2DB/*.db
 log/
