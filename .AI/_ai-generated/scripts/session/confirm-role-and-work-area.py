@@ -116,13 +116,23 @@ def print_area_question(repo_root: Path) -> int:
     return 0
 
 
-def common_package_for(area_package: str) -> str | None:
+def existing_common_package_for(area_package: str, repo_root: Path) -> str | None:
     parts = area_package.split(".")
     if len(parts) < 3 or parts[0] != "com":
         return None
 
     company_name = parts[1]
+    common_dir = repo_root / "src" / "main" / "java" / "com" / company_name / f"__{company_name}Common"
+    if not common_dir.is_dir():
+        return None
+
     return f"com.{company_name}.__{company_name}Common"
+
+
+def business_session_work_area(selected_area: str, common_package: str | None) -> str:
+    if common_package:
+        return f"업무 도메인 {selected_area} 및 회사 공통 {common_package}"
+    return f"업무 도메인 {selected_area}"
 
 
 def print_area_selected(role_number: str, area_number: str, repo_root: Path, *, color: bool) -> int:
@@ -156,11 +166,10 @@ def print_area_selected(role_number: str, area_number: str, repo_root: Path, *, 
         return 1
 
     selected_area = areas[selected_index - 1]
-    common_package = common_package_for(selected_area)
+    common_package = existing_common_package_for(selected_area, repo_root)
+    session_work_area = business_session_work_area(selected_area, common_package)
 
-    print(session_context_text(selected_role_name, selected_area, color=color))
-    if common_package and not selected_area.endswith(f".__{selected_area.split('.')[1]}Common"):
-        print(f"회사 공통 영역: {common_package}")
+    print(session_context_text(selected_role_name, session_work_area, color=color))
     print("이 세션이 종료될 때까지 최종 답변의 첫 줄에 위 세션 작업 기준을 표시합니다.")
     return 0
 
