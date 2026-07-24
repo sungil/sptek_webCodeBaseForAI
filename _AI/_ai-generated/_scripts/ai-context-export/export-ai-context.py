@@ -24,10 +24,10 @@ def sorted_children(path: Path) -> tuple[list[Path], list[Path]]:
 
 
 def default_root() -> Path:
-    for candidate in (Path(".AI"), Path(".ai")):
+    for candidate in (Path("_AI"), Path(".ai")):
         if candidate.is_dir():
             return candidate
-    return Path(".AI")
+    return Path("_AI")
 
 
 def read_markdown(path: Path) -> str:
@@ -68,7 +68,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Export a directory tree and indent Markdown file content below each .md file name."
     )
-    parser.add_argument("root", nargs="?", type=Path, default=None, help="Directory to export. Default: .AI, then .ai")
+    parser.add_argument("root", nargs="?", type=Path, default=None, help="Directory to export. Default: _AI, then .ai")
     parser.add_argument(
         "-o",
         "--output",

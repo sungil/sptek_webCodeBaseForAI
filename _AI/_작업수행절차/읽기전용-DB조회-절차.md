@@ -34,7 +34,7 @@
 저장소 루트에서 범용 JDBC 조회 스크립트를 우선 사용한다.
 
 ```powershell
-.\.AI\_ai-generated\scripts\db\query-jdbc.ps1 `
+.\_AI\_ai-generated\_scripts\db\query-jdbc.ps1 `
   -DbType h2 `
   -JdbcUrl "jdbc:h2:file:./local-dev-support/h2DB/webFrameworkExample;AUTO_SERVER=TRUE;AUTO_SERVER_PORT=9092" `
   -User "sa" `
@@ -45,46 +45,46 @@
 MySQL 예시:
 
 ```powershell
-.\.AI\_ai-generated\scripts\db\query-jdbc.ps1 `
+.\_AI\_ai-generated\_scripts\db\query-jdbc.ps1 `
   -DbType mysql `
   -JdbcUrl "jdbc:mysql://localhost:3306/spt_web_fw?serverTimezone=UTC" `
   -User "user" `
   -Password "password" `
-  -FilePath .\.AI\_ai-generated\snippets\sql\common\table-list.mysql.sql
+  -FilePath .\_AI\_ai-generated\_snippets\sql\common\table-list.mysql.sql
 ```
 
 여러 줄 SQL이나 반복 조회 SQL은 파일로 저장한 뒤 실행한다.
 
 ```powershell
-.\.AI\_ai-generated\scripts\db\query-jdbc.ps1 `
+.\_AI\_ai-generated\_scripts\db\query-jdbc.ps1 `
   -DbType h2 `
   -JdbcUrl "jdbc:h2:file:./local-dev-support/h2DB/webFrameworkExample;AUTO_SERVER=TRUE;AUTO_SERVER_PORT=9092" `
   -User "sa" `
   -Password "" `
-  -FilePath .\.AI\_ai-generated\snippets\sql\common\table-list.h2.sql
+  -FilePath .\_AI\_ai-generated\_snippets\sql\common\table-list.h2.sql
 ```
 
 기존 local H2 전용 조회가 필요하면 호환 스크립트를 사용할 수 있다.
 
 ```powershell
-.\.AI\_ai-generated\scripts\db\query-local-h2.ps1 "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'PUBLIC' ORDER BY TABLE_NAME"
+.\_AI\_ai-generated\_scripts\db\query-local-h2.ps1 "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'PUBLIC' ORDER BY TABLE_NAME"
 ```
 
-`query-jdbc.ps1`는 마지막 성공 접속 정보, JDBC driver jar 경로, 컴파일된 Java runner를 `.AI/_ai-generated/.cache/query-jdbc` 아래에 저장한다.
+`query-jdbc.ps1`는 마지막 성공 접속 정보, JDBC driver jar 경로, 컴파일된 Java runner를 `_AI/_ai-generated/_cache/query-jdbc` 아래에 저장한다.
 같은 DB에 반복 조회할 때는 `-JdbcUrl`을 생략하면 마지막 성공 접속 정보를 우선 사용하고, 실패했을 때만 다시 명시 URL과 driver jar 탐색 경로를 점검한다.
 
-스키마 확인은 먼저 `.AI/_ai-generated/.cache/query-jdbc/schema-cache.json`을 확인한다.
+스키마 확인은 먼저 `_AI/_ai-generated/_cache/query-jdbc/schema-cache.json`을 확인한다.
 캐시가 없거나, 사용자가 묻는 테이블/컬럼이 캐시에 없거나, 실제 조회에서 컬럼/테이블 오류가 발생했을 때만 다음 명령으로 갱신한다.
 
 ```powershell
-.\.AI\_ai-generated\scripts\db\query-jdbc.ps1 -RefreshSchemaCache
+.\_AI\_ai-generated\_scripts\db\query-jdbc.ps1 -RefreshSchemaCache
 ```
 
 스키마 캐시는 테이블/컬럼 구조를 빠르게 파악하기 위한 보조 자료다. 정확성이 중요하거나 최근 마이그레이션, 앱 재기동, SQL 초기화 이후라면 갱신 후 사용한다.
 
 ## 반복 쿼리 보관
 
-반복적으로 사용하는 SQL은 `.AI/_ai-generated/snippets/sql` 아래에 저장한다.
+반복적으로 사용하는 SQL은 `_AI/_ai-generated/_snippets/sql` 아래에 저장한다.
 
 - `common`: DB 구조 확인, 테이블/컬럼 목록, 건수 확인처럼 범용적인 SQL
 - `{domain}`: 특정 업무 도메인 분석에 반복적으로 쓰는 SQL

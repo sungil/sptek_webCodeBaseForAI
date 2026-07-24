@@ -17,7 +17,7 @@
 - build/, .gradle/
 - IDE 메타데이터
 - .codex/run/, .codex/config.toml
-- .AI/_ai-generated/.cache/
+- _AI/_ai-generated/_cache/
 - log/
 - local-dev-support/h2DB/*.db
 - log/와 log/logback/은 원인 분석을 위해 읽을 수 있지만 수정하거나 커밋 대상으로 취급하지 않는다.
