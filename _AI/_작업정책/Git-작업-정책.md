@@ -24,7 +24,8 @@
 - 단, {AI별 디렉토리의}/skills/의 repo-local Adapter는 팀 공통 AI 작업 규칙이므로 소스 및 커밋 대상으로 취급한다.
 
 
-## Push, PR 기본 정책
+## Push 기본 정책
 
-- Push, PR 요청이 있는 경우 `compileJava`, `test`, `build`까지 수행한다.
+- Push 요청을 받으면 대상 변경사항에 Framework코드영역이 포함되어 있는지 확인한다. Framework의 사용 방법이나 주요 동작에 영향을 주는 변경으로 판단되면 Push 전에 `Framework-참고-기준-키워드.md`의 관련 내용을 수정하거나 새로운 기준을 추가한다.
+- Push 요청이 있는 경우 `compileJava`, `test`, `build`까지 수행한다.
 - 단 마지막 작업 기준 이미 `compileJava`, `test`, `build` 중 수행된 작업이 있는 경우 중복 수행하지 않는다.
